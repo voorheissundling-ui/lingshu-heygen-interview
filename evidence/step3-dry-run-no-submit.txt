@@ -1,0 +1,3 @@
+$ node --import tsx interview/singleShot.ts
+step3_explicit_submit_flag_required
+[ELIFECYCLE] Command failed with exit code 1.

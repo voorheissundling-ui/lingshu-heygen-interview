@@ -18,7 +18,7 @@ function publicRecord(overrides: Partial<PublicHyGenPresenterRecord> = {}): Publ
     avatarId,
     voiceId,
     publicCatalogRef: `https://api.heygen.com/v3/avatars/looks/${avatarId}`,
-    providerTermsRef: 'https://www.heygen.com/terms-of-use',
+    providerTermsRef: 'https://www.heygen.com/terms',
     verifiedAt: '2026-10-22T12:00:00Z',
     accountId: 'acct_123456',
     ...overrides,
@@ -51,7 +51,7 @@ test('public presenter path accepts a recent public catalog and terms reference'
   assert.equal(result.avatarId, avatarId);
   assert.equal(result.voiceId, voiceId);
   assert.equal(result.evidence.ownership, 'public');
-  assert.equal(result.evidence.providerTermsRef, 'https://www.heygen.com/terms-of-use');
+  assert.equal(result.evidence.providerTermsRef, 'https://www.heygen.com/terms');
   assert.equal(result.evidence.accountId, 'acct_123456');
   assert.equal('consentRef' in result.evidence, false);
   assert.equal('authorizationRef' in result.evidence, false);

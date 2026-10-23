@@ -1,0 +1,54 @@
+{
+  "checkedAt": "2026-10-23T10:49:02.633Z",
+  "mode": "read_only_no_generation",
+  "keyFilePresent": true,
+  "billingType": "wallet",
+  "wallet": {
+    "currency": "usd",
+    "remainingBalance": 2.3,
+    "autoReloadEnabled": false
+  },
+  "walletChecks": {
+    "billingTypeWallet": true,
+    "currencyUsd": true,
+    "nonNegativeBalance": true,
+    "autoReloadDisabled": true
+  },
+  "catalog": {
+    "complete": false,
+    "warning": "catalog_truncated_after_20_pages",
+    "paginated": true,
+    "avatarPages": 20,
+    "voicePages": 20,
+    "publicAvatarCount": 1000,
+    "publicVoiceCount": 1000,
+    "sha256": "397dde0e1235636a2b6a859ec411adaaf934a473d4d6e6b4688b1c1bdaa3c7ce"
+  },
+  "storyboard": {
+    "language": "en",
+    "avatarId": "ee25a2363ef941a1b5b0f7b1172e57d1",
+    "voiceId": "c5e71f9038a2419d9d43c7132c31fe49",
+    "avatarFound": true,
+    "avatarCriteriaMet": true,
+    "voiceFound": true,
+    "voiceLanguageMatches": true,
+    "voiceCriteriaMet": true,
+    "verified": true
+  },
+  "matched": {
+    "avatar": {
+      "status": "completed",
+      "avatarType": "photo_avatar",
+      "supportedEngines": ["avatar_v", "avatar_iv", "avatar_iii"]
+    },
+    "voice": {
+      "language": "English",
+      "engines": ["orca"]
+    }
+  },
+  "preflightOk": true,
+  "paidGenerationVerified": false,
+  "accountSpendingCapConfigured": false,
+  "spendCny": 0,
+  "note": "Catalog snapshot is truncated at 20 pages; both storyboard IDs were found and verified. Wallet balance is 2.3 USD, below the 30 CNY authorized ceiling."
+}

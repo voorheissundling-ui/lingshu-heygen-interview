@@ -1,0 +1,127 @@
+{
+  "checkedAt": "2026-10-23T10:49:02Z",
+  "mode": "read_only_no_generation",
+  "key": {
+    "configured": true,
+    "keyFilePresent": true,
+    "preflight": "READ_ONLY_COMPLETE"
+  },
+  "directNetwork": {
+    "apiHeygen": "tcp_timeout",
+    "helpHeygen": "tcp_timeout",
+    "dns": {
+      "api.heygen.com": "199.59.148.8",
+      "help.heygen.com": "205.186.152.122",
+      "www.heygen.com": "199.16.158.190",
+      "note": "direct resolution returns addresses outside the expected provider/CDN ranges; treated as unavailable, not trusted"
+    },
+    "proxyEnvironmentVariables": "unset"
+  },
+  "systemProxy": {
+    "enabled": true,
+    "endpoint": "127.0.0.1:7897",
+    "tlsVerificationDisabled": false,
+    "nodeFlagRequired": "NODE_USE_ENV_PROXY=1"
+  },
+  "viaSystemProxy": {
+    "apiHeygen": {
+      "status": 401,
+      "meaning": "host reachable; no credential was sent"
+    },
+    "helpHeygen": {
+      "status": 302,
+      "meaning": "price page reachable"
+    },
+    "nodeFetch": {
+      "apiHeygenStatus": 401,
+      "helpHeygenStatus": 302
+    },
+    "realModeGuard": {
+      "apiHeygenStatus": 401,
+      "nonAllowlistedRequest": "interview_real_network_blocked"
+    }
+  },
+  "pricing": {
+    "photoAvatarUsdPerMinute": 2.31,
+    "fx": {
+      "date": "2026-10-22",
+      "cnyPerUsd": 6.674341811691209
+    },
+    "derived": {
+      "cnyPerMinute": 15.4177,
+      "fullStoryboardSeconds": 33.5,
+      "fullStoryboardUsd": 1.2898,
+      "fullStoryboardCny": 8.6082,
+      "presenterShotsSeconds": 16.5,
+      "presenterShotsUsd": 0.6353,
+      "presenterShotsCny": 4.2399,
+      "budgetCny": 30,
+      "budgetMinutesAtAvatarRate": 1.9458,
+      "budgetSecondsAtAvatarRate": 116.75
+    },
+    "caveat": "avatar rate only; voice/audio or other fees are not included"
+  },
+  "preflight": {
+    "status": "complete",
+    "billingType": "wallet",
+    "wallet": {
+      "currency": "usd",
+      "remainingBalance": 2.3,
+      "autoReloadEnabled": false
+    },
+    "walletChecks": {
+      "billingTypeWallet": true,
+      "currencyUsd": true,
+      "nonNegativeBalance": true,
+      "autoReloadDisabled": true
+    },
+    "walletCapacity": {
+      "balanceUsd": 2.3,
+      "balanceCny": 15.351,
+      "maxAvatarSecondsAtRate": 59.74,
+      "remainingAfterFullStoryboardUsd": 1.0102,
+      "remainingAfterFullStoryboardSeconds": 26.24
+    },
+    "catalog": {
+      "complete": false,
+      "warning": "catalog_truncated_after_20_pages",
+      "avatarPages": 20,
+      "voicePages": 20,
+      "publicAvatarCount": 1000,
+      "publicVoiceCount": 1000,
+      "sha256": "397dde0e1235636a2b6a859ec411adaaf934a473d4d6e6b4688b1c1bdaa3c7ce"
+    },
+    "storyboard": {
+      "language": "en",
+      "avatarId": "ee25a2363ef941a1b5b0f7b1172e57d1",
+      "voiceId": "c5e71f9038a2419d9d43c7132c31fe49",
+      "avatarFound": true,
+      "avatarCriteriaMet": true,
+      "voiceFound": true,
+      "voiceLanguageMatches": true,
+      "voiceCriteriaMet": true,
+      "verified": true
+    },
+    "matched": {
+      "avatar": {
+        "status": "completed",
+        "avatarType": "photo_avatar",
+        "supportedEngines": ["avatar_v", "avatar_iv", "avatar_iii"]
+      },
+      "voice": {
+        "language": "English",
+        "engines": ["orca"]
+      }
+    },
+    "preflightOk": true,
+    "paidGenerationVerified": false,
+    "accountSpendingCapConfigured": false
+  },
+  "paidGenerationPerformed": false,
+  "spendCny": 0,
+  "notes": [
+    "Catalog pagination stopped at the 20-page safety cap; both storyboard IDs were found in the fetched snapshot and verified.",
+    "Wallet balance (2.3 USD, about 15.35 CNY) is below the 30 CNY authorized ceiling; auto-reload is disabled.",
+    "No video generation, upload, billing change, or paid probe was performed."
+  ]
+}

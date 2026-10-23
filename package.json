@@ -18,13 +18,14 @@
     "smoke": "node --import ./interview/bootstrap.mjs --import tsx interview/smoke.ts",
     "storyboard:validate": "node --import ./interview/bootstrap.mjs --import tsx interview/storyboard-cli.ts",
     "assets:generate": "node assets/illustrations/generate.mjs",
-    "test": "node --import ./interview/bootstrap.mjs --import tsx --test server/runtime/socialWeeklyProductionAdapter.test.ts server/runtime/socialWeeklyExecutionRuntime.test.ts interview/storyboard.test.ts interview/realMode.test.ts interview/presenterPublicTrust.test.ts",
+    "test": "node --import ./interview/bootstrap.mjs --import tsx --test server/runtime/socialWeeklyProductionAdapter.test.ts server/runtime/socialWeeklyExecutionRuntime.test.ts interview/storyboard.test.ts interview/realMode.test.ts interview/presenterPublicTrust.test.ts interview/publicRuntimeBinding.test.ts",
     "test:queue": "node --import ./interview/bootstrap.mjs --import tsx --test server/contentExecution/durableQueue.test.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "verify": "node --import ./interview/bootstrap.mjs --import tsx interview/verify.ts",
     "provider:preflight": "node interview/provider-preflight.mjs",
     "provider:pricing": "node --import tsx interview/check-public-pricing.ts",
-    "provider:probe": "node --import tsx interview/provider-probe.ts"
+    "provider:probe": "node --import tsx interview/provider-probe.ts",
+    "step3:single-shot": "node --import tsx interview/singleShot.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1118.0",

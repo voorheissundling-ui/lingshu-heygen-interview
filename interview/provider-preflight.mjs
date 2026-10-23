@@ -6,6 +6,26 @@ import {createHash} from 'node:crypto';
 const API_BASE = 'https://api.heygen.com';
 const STORYBOARD_FILE = 'assets/storyboard.json';
 const MAX_CATALOG_PAGES = 20;
+const LANGUAGE_NAMES = {
+  english: 'en',
+  chinese: 'zh',
+  spanish: 'es',
+  french: 'fr',
+  german: 'de',
+  japanese: 'ja',
+  korean: 'ko',
+  portuguese: 'pt',
+  italian: 'it',
+  arabic: 'ar',
+  hindi: 'hi',
+  russian: 'ru',
+};
+
+function languageCode(value) {
+  const raw = String(value || '').trim().toLowerCase();
+  if (!raw) return '';
+  return LANGUAGE_NAMES[raw] ?? raw.split(/[-_]/)[0];
+}
 
 async function main() {
   const keyFile = process.env.HEYGEN_KEY_FILE;
@@ -70,6 +90,7 @@ async function main() {
     .map(value => ({
       id: value.voice_id,
       language: value.language ?? null,
+      status: value.status ?? null,
       engines: Array.isArray(value.available_engines) ? value.available_engines : [],
     }))
     .filter(value => typeof value.id === 'string' && value.id);
@@ -92,11 +113,12 @@ async function main() {
     && avatar.avatarType === 'photo_avatar'
     && avatar.supportedEngines.includes('avatar_iv'));
   const voiceLanguageMatches = Boolean(voice && language
-    && String(voice.language || '').toLowerCase().split('-')[0] === language.split('-')[0]);
+    && languageCode(voice.language) && languageCode(voice.language) === languageCode(language));
   const voiceCriteriaMet = Boolean(voice && voiceLanguageMatches);
   const catalogComplete = avatars.complete && voices.complete;
-  const storyboardPresenterVerified = Boolean(catalogComplete
-    && avatarId && voiceId && avatarCriteriaMet && voiceCriteriaMet);
+  // The IDs above are positive evidence. Catalog completeness only guards
+  // against a false "not found"; it is not required once both records matched.
+  const storyboardPresenterVerified = Boolean(avatarId && voiceId && avatarCriteriaMet && voiceCriteriaMet);
 
   const catalog = {avatars: publicAvatars, voices: publicVoices};
   const catalogSha256 = createHash('sha256').update(JSON.stringify(catalog)).digest('hex');
@@ -127,6 +149,7 @@ async function main() {
     walletChecks,
     catalog: {
       complete: catalogComplete,
+      warning: catalogComplete ? null : `catalog_truncated_after_${MAX_CATALOG_PAGES}_pages`,
       paginated: avatars.pages.length > 1 || voices.pages.length > 1,
       avatarPages: avatars.pages.length,
       voicePages: voices.pages.length,
@@ -163,6 +186,7 @@ async function main() {
     walletRemainingBalance: remainingBalance,
     autoReloadEnabled,
     catalogComplete,
+    catalogWarning: catalogComplete ? null : `catalog_truncated_after_${MAX_CATALOG_PAGES}_pages`,
     catalogPages: {avatars: avatars.pages.length, voices: voices.pages.length},
     publicAvatarCount: publicAvatars.length,
     publicVoiceCount: publicVoices.length,

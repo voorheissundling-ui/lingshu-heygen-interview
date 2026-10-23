@@ -1,37 +1,33 @@
-Step 2 network and credential readiness check
-Checked at: 2026-10-23 (local machine, Windows 11 China)
+checked_at_utc=2026-10-23T10:37:24Z
+https://www.baidu.com http=200 connect=0.297000s total=1.062000s
+https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml http=000 connect=0.203000s total=0.563000s
+curl: (60) SSL certificate problem: unable to get local issuer certificate
+More details here: https://curl.haxx.se/docs/sslcerts.html
 
-Credential locations (values never read or printed):
-- HEYGEN_KEY_FILE: unset
-- HEYGEN_API_KEY: unset
-- D:/secrets: directory does not exist
-- D:/secrets/heygen.key: missing
+curl performs SSL certificate verification by default, using a "bundle"
+ of Certificate Authority (CA) public keys (CA certs). If the default
+ bundle file isn't adequate, you can specify an alternate file
+ using the --cacert option.
+If this HTTPS server uses a certificate signed by a CA represented in
+ the bundle, the certificate verification probably failed due to a
+ problem with the certificate (it might be expired, or the name might
+ not match the domain name in the URL).
+If you'd like to turn off curl's verification of the certificate, use
+ the -k (or --insecure) option.
+HTTPS-proxy has similar options --proxy-cacert and --proxy-insecure.
+https://api.heygen.com/v3/users/me http=000 connect=0.000000s total=20.016000s
+curl: (28) Connection timed out after 20016 milliseconds
+https://help.heygen.com/ http=000 connect=0.000000s total=20.015000s
+curl: (28) Connection timed out after 20015 milliseconds
 
-Provider reachability (curl, 8-20 s timeout):
-- https://api.heygen.com/v3/users/me -> connection timed out (20 s)
-- https://help.heygen.com/en/articles/10060327-heygen-api-pricing-explained -> connection timed out (8 s)
-- https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml -> HTTP 200
-- https://www.baidu.com -> HTTP 200
-- https://www.example.com -> connection timed out
-- https://www.google.com -> TLS connection failed
-- https://api.openai.com -> connection timed out
-- https://1.1.1.1 -> connection timed out
+--- dns ---
+nslookup=unavailable
 
-DNS/proxy observations:
-- api.heygen.com resolved to 199.16.156.71; TCP connection to it timed out.
-- No HTTP_PROXY / HTTPS_PROXY / ALL_PROXY / NO_PROXY environment variables.
-- No local proxy listeners on common ports (1080, 10809, 7890, 7897, 8080, 8888, 3128).
-- No Clash / V2Ray / Shadowsocks / sing-box / proxy process found in tasklist.
-- pnpm proxy and git http(s).proxy: unset.
-
-Read-only pricing command:
-- `pnpm run provider:pricing` -> {"pricingStatus":0,"fxStatus":200,"photoAvatarUsdPerMinute":null,"fx":{"date":"2026-10-22","cnyPerUsd":6.674341811691209}}
-- ECB FX was fetched; the HeyGen help article was not reachable, so the USD per-minute price remains unverified on this machine.
-
-Read-only preflight command:
-- `pnpm run provider:preflight` -> missing_HEYGEN_KEY_FILE, exit 1.
-
-Conclusion:
-- This machine cannot reach the HeyGen API or help site, and the key file is absent.
-- No live supplier preflight, wallet check, catalog verification, or pricing confirmation was performed or fabricated.
-- Step 3/4 paid calls must not be attempted from this network until both prerequisites are fixed.
+--- proxy environment ---
+HTTPS_PROXY=unset
+https_proxy=unset
+HTTP_PROXY=unset
+http_proxy=unset
+ALL_PROXY=unset
+all_proxy=unset
+NODE_USE_ENV_PROXY=unset

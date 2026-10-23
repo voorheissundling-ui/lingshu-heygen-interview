@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "mode": "step3_single_shot_closed_loop",
+  "phase": "downloaded",
+  "requestId": "interview-step3-fd424ba2-6bf4-4cff-9cd6-d0ec411fb28b",
+  "requestHash": "98adb6227bccf13af89cd15770c6ac5d948aeded5ff1c7139c3a8ee511499d98",
+  "request": {
+    "type": "avatar",
+    "avatar_id": "ee25a2363ef941a1b5b0f7b1172e57d1",
+    "voice_id": "c5e71f9038a2419d9d43c7132c31fe49",
+    "script": "Hi there. Ready to launch your own skincare line?",
+    "aspect_ratio": "9:16",
+    "resolution": "720p",
+    "title": "LingShu Step 3 hook 6d78d775",
+    "output_format": "mp4"
+  },
+  "videoId": "15011b5480450b621a5c2248bb74cae5",
+  "providerStatus": "completed",
+  "providerDuration": 3.21306,
+  "title": "LingShu Step 3 hook 6d78d775",
+  "storyboardPath": "assets/storyboard.json",
+  "storyboardSha256": "6d78d775752986ce5c3ea22b0b42cedea0825f80842f67b351406752e8791cf2",
+  "shotId": "hook",
+  "speech": "Hi there. Ready to launch your own skincare line?",
+  "avatarId": "ee25a2363ef941a1b5b0f7b1172e57d1",
+  "voiceId": "c5e71f9038a2419d9d43c7132c31fe49",
+  "publicEvidence": {
+    "ownership": "public",
+    "publicCatalogRef": "heygen-public-catalog:397dde0e1235636a2b6a859ec411adaaf934a473d4d6e6b4688b1c1bdaa3c7ce",
+    "providerTermsRef": "https://www.heygen.com/terms",
+    "verifiedAt": "2026-10-23T10:49:02.633Z",
+    "accountId": "heygen:c8c7bbadf7e2dc23b6933e3f1d888288b84f35274e77da6e8843124bfbc7aada"
+  },
+  "providerEvidenceRef": "heygen-live-public-iv:c5ee83c6655c15eaa0ca901fda0a84123e11953cd4caab728351fe094c354806",
+  "preflight": {
+    "file": ".interview-data/provider-preflight.json",
+    "checkedAt": "2026-10-23T10:49:02.633Z",
+    "catalogSha256": "397dde0e1235636a2b6a859ec411adaaf934a473d4d6e6b4688b1c1bdaa3c7ce",
+    "avatar": {
+      "id": "ee25a2363ef941a1b5b0f7b1172e57d1",
+      "status": "completed",
+      "avatarType": "photo_avatar",
+      "supportedEngines": [
+        "avatar_v",
+        "avatar_iv",
+        "avatar_iii"
+      ]
+    },
+    "voice": {
+      "id": "c5e71f9038a2419d9d43c7132c31fe49",
+      "language": "English",
+      "status": null,
+      "engines": [
+        "orca"
+      ]
+    }
+  },
+  "approvedCny": 10,
+  "forecastSeconds": 8,
+  "forecastCny": 2.0556972780008924,
+  "priceUsdPerMinute": 2.31,
+  "fx": {
+    "date": "2026-10-22",
+    "cnyPerUsd": 6.674341811691209
+  },
+  "walletBefore": 2.3,
+  "walletAfter": 2.15,
+  "observedWalletDeltaUsd": 0.1499999999999999,
+  "observedWalletDeltaCny": 1.0011512717536808,
+  "estimatedCostCny": 0.8256348370066935,
+  "withinApprovedCap": true,
+  "paidSubmissions": 1,
+  "mediaBytes": 322958,
+  "mediaSha256": "ebe21080c420b1d75040140c35ceab45336ea7652afba68fcb9b2e4d0968f5eb",
+  "mediaMetadata": {
+    "duration": 3.22,
+    "width": 720,
+    "height": 1280,
+    "videoCodec": "h264",
+    "audioCodec": "aac",
+    "sampleRate": 48000,
+    "fps": 25
+  },
+  "validation": {
+    "durationMatchesProvider": true,
+    "decodable": true,
+    "resolution": "720x1280",
+    "videoCodec": "h264",
+    "audioCodec": "aac",
+    "sampleRate": 48000,
+    "fps": 25,
+    "errors": []
+  },
+  "frames": [
+    {
+      "at": 0.5,
+      "file": ".interview-data\\step3-single-shot\\frames\\frame-0.png",
+      "bytes": 116802
+    },
+    {
+      "at": 1.607,
+      "file": ".interview-data\\step3-single-shot\\frames\\frame-1.png",
+      "bytes": 119299
+    },
+    {
+      "at": 2.713,
+      "file": ".interview-data\\step3-single-shot\\frames\\frame-2.png",
+      "bytes": 122587
+    }
+  ],
+  "createdAt": "2026-10-23T11:12:29.362Z",
+  "submittedAt": "2026-10-23T11:12:41.665Z",
+  "acceptedAt": "2026-10-23T11:12:43.235Z",
+  "completedAt": "2026-10-23T11:13:34.187Z",
+  "completeEmployeeFlowVerified": false,
+  "note": "Isolated Step 3 real shot. It proves submit/query/download/decode; it does not write a business task or set review_required."
+}

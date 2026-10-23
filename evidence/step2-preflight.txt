@@ -1,3 +1,6 @@
+checked_at_utc=2026-10-23T10:48:41Z
+key_file=D:/secrets/heygen.key.txt (present)
+proxy=local_http_127.0.0.1:7897
 $ node interview/provider-preflight.mjs
-missing_HEYGEN_KEY_FILE
-[ELIFECYCLE] Command failed with exit code 1.
+{"preflight":"READ_ONLY_COMPLETE","billingType":"wallet","walletCurrency":"usd","walletRemainingBalance":2.3,"autoReloadEnabled":false,"catalogComplete":false,"catalogWarning":"catalog_truncated_after_20_pages","catalogPages":{"avatars":20,"voices":20},"publicAvatarCount":1000,"publicVoiceCount":1000,"storyboardPresenterVerified":true,"paidGenerationVerified":false,"report":".interview-data/provider-preflight.json"}
+exit_code=0

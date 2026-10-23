@@ -1,0 +1,2 @@
+$ node --import tsx interview/check-public-pricing.ts
+{"pricingStatus":200,"fxStatus":200,"photoAvatarUsdPerMinute":2.31,"fx":{"date":"2026-10-22","cnyPerUsd":6.674341811691209}}

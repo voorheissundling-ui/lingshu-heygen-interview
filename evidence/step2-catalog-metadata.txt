@@ -1,0 +1,14 @@
+checked_at_utc=2026-10-23T10:47:34Z
+list_status=200
+list_top_keys=data,has_more,next_token
+list_data_len=50
+list_has_more=true
+list_next_token_len=96
+list_total=absent
+look_status=200
+look_top_keys=data
+look_fields={"id":"ee25a2363ef941a1b5b0f7b1172e57d1","status":"completed","avatar_type":"photo_avatar","supported_api_engines":["avatar_v","avatar_iv","avatar_iii"],"group_id":"ac9b5d2334c44d219e6ccf4dc07edcc1"}
+voice_status=200
+voice_top_keys=data
+voice_fields={"voice_id":"c5e71f9038a2419d9d43c7132c31fe49","language":"English","status":"complete"}
+exit_code=0

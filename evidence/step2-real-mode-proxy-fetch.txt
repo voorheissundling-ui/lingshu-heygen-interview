@@ -1,0 +1,5 @@
+checked_at_utc=2026-10-23T10:42:21Z
+mode=real_guard_proxy_fetch_no_credential
+api_status=401
+blocked_test=interview_real_network_blocked
+exit_code=0
