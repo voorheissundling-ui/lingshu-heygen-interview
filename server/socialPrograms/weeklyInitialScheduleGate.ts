@@ -1,0 +1,1 @@
+export const INITIAL_CAPACITY_SCHEDULE_REQUIRED='weekly_initial_capacity_schedule_required';

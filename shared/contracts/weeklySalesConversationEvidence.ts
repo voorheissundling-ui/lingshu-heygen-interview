@@ -1,0 +1,2 @@
+export interface WeeklySalesConversationMessage{interactionId:string;type:'msg_in'|'msg_out_human';body:string;timestamp:number;providerMessageId:string;recordHash:string}
+export interface WeeklySalesConversationEvidence{tenantId:string;programId:string;packageId:string;packageVersion:number;handoffId:string;handoffVersion:number;customerId:string;ownerUserId:string;claimedAt:string;messages:WeeklySalesConversationMessage[];excludedCount:number;checkedAt:string;readonly:true}

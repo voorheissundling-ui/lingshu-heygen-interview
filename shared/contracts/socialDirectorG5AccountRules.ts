@@ -1,0 +1,26 @@
+import type {DirectorG5AccountPlaybookRequirement,DirectorG5CheckCode,SocialDirectorG5Check} from './socialDirectorG5Review';
+export interface DirectorG5RuleRequirement {ruleId:string;constraintHash:string;category:string;ruleText:string;checkCode:DirectorG5CheckCode}
+export interface DirectorG5SourceEvidenceRef {type:'confirmed_enterprise_facts';id:string;version:number;recordHash:string}
+export interface DirectorG5SourceRecordEvidence {ref:DirectorG5SourceEvidenceRef;tenantId:string;profileId:string;contentHash:string;confirmedBy:string;confirmedAt:string;facts:Array<{key:string;label:string;value:string}>;supportedRuleIds:string[]}
+/** Documentary facts prove only the declared source assertions, never rendered identity, language or rights. */
+export interface DirectorG5RuleCheck {ruleId:string;constraintHash:string;outcome:'passed'|'failed'|'unknown';observation:string;evidenceSceneIds:string[];observationBasis:'rendered_frames'|'rendered_audio'|'verified_source_record'|'unobserved';evidenceSourceRefs?:DirectorG5SourceEvidenceRef[]}
+/** Each frozen entry remains independent, including duplicates at different indices. */
+export function directorG5AccountRuleRequirements(value:DirectorG5AccountPlaybookRequirement|undefined):DirectorG5RuleRequirement[]{
+ if(!value)return [];if(!/^[a-f0-9]{64}$/.test(value.constraintHash)||value.reviewStatus!=='unverified'||!value.rules||!value.accountRef?.id||!value.playbookRef?.id||value.playbookRef.accountRef!==value.accountRef.id||!/^[a-f0-9]{64}$/.test(value.rules.recordHash))throw Error('scene_g5_rule_requirement_invalid');const out:DirectorG5RuleRequirement[]=[];
+ const groups=['audience','pillars','recurringFormats','evidenceRules','visualRules','languageRules','presenterRules','fixedFactors','experimentFactors'] as const;
+ for(const category of groups){if(!Array.isArray(value.rules[category])||value.rules[category].some(v=>typeof v!=='string'||!v.trim()))throw Error('scene_g5_rule_requirement_invalid');value.rules[category].forEach((ruleText,index)=>out.push({ruleId:`${value.constraintHash}:${category}:${index}`,constraintHash:value.constraintHash,category,ruleText,checkCode:category==='evidenceRules'?'truth_boundary':category==='experimentFactors'?'variant_difference':'account_tone'}));}
+ if(!value.rules.conversionRoute||typeof value.rules.conversionRoute.callToAction!=='string'||!value.rules.conversionRoute.callToAction.trim())throw Error('scene_g5_rule_requirement_invalid');out.push({ruleId:`${value.constraintHash}:conversionRoute:0`,constraintHash:value.constraintHash,category:'conversionRoute',ruleText:JSON.stringify(value.rules.conversionRoute),checkCode:'cta'});return out;
+}
+export function assertDirectorG5AccountRuleCoverage(checks:SocialDirectorG5Check[],requirement:DirectorG5AccountPlaybookRequirement|undefined,sceneIds:string[],mode?:'agent'|'human_fallback',sourceRecords:DirectorG5SourceRecordEvidence[]=[]){
+ const required=directorG5AccountRuleRequirements(requirement),seen=new Set<string>();
+ for(const check of checks){const rows=check.accountRuleChecks??[];if(!Array.isArray(rows))throw Error('scene_g5_rule_evidence_invalid');
+  for(const row of rows){const rule=required.find(r=>r.ruleId===row?.ruleId);if(!rule||seen.has(row.ruleId)||rule.checkCode!==check.code||row.constraintHash!==rule.constraintHash)throw Error('scene_g5_rule_coverage_invalid');seen.add(row.ruleId);
+   if(!['passed','failed','unknown'].includes(row.outcome)||typeof row.observation!=='string'||!row.observation.trim()||row.observation.length>2000||!Array.isArray(row.evidenceSceneIds)||new Set(row.evidenceSceneIds).size!==row.evidenceSceneIds.length||row.evidenceSceneIds.some(id=>!sceneIds.includes(id))||!['rendered_frames','rendered_audio','verified_source_record','unobserved'].includes(row.observationBasis)||row.outcome!=='unknown'&&(!row.evidenceSceneIds.length||row.observationBasis==='unobserved')||mode==='agent'&&row.observationBasis==='rendered_audio')throw Error('scene_g5_rule_evidence_invalid');
+   const refs=row.evidenceSourceRefs??[];if(!Array.isArray(refs)||refs.some(ref=>!ref||ref.type!=='confirmed_enterprise_facts'||typeof ref.id!=='string'||!ref.id.trim()||!Number.isSafeInteger(ref.version)||ref.version<=0||typeof ref.recordHash!=='string'||!/^[a-f0-9]{64}$/.test(ref.recordHash))||new Set(refs.map(ref=>`${ref.type}:${ref.id}:${ref.version}:${ref.recordHash}`)).size!==refs.length)throw Error('scene_g5_rule_source_evidence_invalid');
+   const records=refs.map(ref=>sourceRecords.find(source=>ref&&source.ref.type===ref.type&&source.ref.id===ref.id&&source.ref.version===ref.version&&source.ref.recordHash===ref.recordHash));if(records.some(source=>!source))throw Error('scene_g5_rule_source_evidence_invalid');
+   if(row.observationBasis==='verified_source_record'&&row.outcome!=='unknown'&&(rule.category!=='evidenceRules'||!records.length||records.some(source=>!source!.supportedRuleIds.includes(row.ruleId))))throw Error('scene_g5_rule_source_evidence_required');
+   if(row.outcome==='failed'&&check.outcome!=='failed'||row.outcome==='unknown'&&check.outcome==='passed')throw Error('scene_g5_rule_outcome_masked');
+  }
+ }
+ if(seen.size!==required.length)throw Error('scene_g5_rule_coverage_required');
+}

@@ -1,0 +1,48 @@
+$ node --import ./interview/bootstrap.mjs --import tsx --test server/contentExecution/durableQueue.test.ts
+✔ production defaults share three slots while preserving account throttling and explicit overrides (1.3244ms)
+✔ shared default pool claims three contents, not three per Agent or worker (29.9004ms)
+✔ three production slots do not raise a shared account limit or persisted customer limit (3.886ms)
+✔ frozen 37-shot executor checkpoints fit the durable map envelope (13.8222ms)
+✔ retry policy separates balance, rejection, network, system and provider reconciliation (1.204ms)
+✔ missing signed product-footage window blocks the original durable run without blind retries or plan edits (15.7444ms)
+✔ frozen footage review failure with an already bound finding retains explicit retry (0.6112ms)
+✔ durable admission is idempotent and provider receipts survive execution context loss (0.8978ms)
+✔ executor selection is visible atomically at admission and cannot change on replay (0.5298ms)
+✔ historic executor binding is allowed only before any durable execution or provider evidence (0.8947ms)
+✔ a pristine historical job upgrades its executor and graph bridge atomically (0.5893ms)
+✔ an unspent blocked admission may refresh only its executor binding (0.6496ms)
+✔ an unspent pre-provider graph failure may be discarded when refreshing its executor binding (0.5252ms)
+✔ graph binding refresh rejects any provider, cost, output, completed, or ambiguous graph evidence (1.2211ms)
+✔ explicit customer pause replaces a workflow review wait without losing its receipts (0.4071ms)
+✔ run lifecycle controls pause and resume only their own non-terminal production jobs (1.8428ms)
+✔ run resume is all-or-none while an original controlled worker is still settling (0.8534ms)
+✔ versioned checkpoints survive a new execution context and stale workers are fenced (0.8109ms)
+✔ provider receipt writers merge under a durable lock and stale callbacks cannot downgrade completion (0.6433ms)
+✔ customer runtime projection explains capacity, queue position and retry without exposing raw failures (1.1315ms)
+✔ active child boundary rejects a completed root group fence but preserves accepted unknown provider receipts (0.7257ms)
+✔ completed original group cancellation fences queued and unknown revision jobs without deleting evidence (0.6738ms)
+[content-execution] success callback requires reconciliation {
+  jobId: '1be806f753f6b2f',
+  error: 'completion_projection_write_failed'
+}
+✔ group fence suppresses a late worker success callback and preserves provider history (7.8047ms)
+✔ pause, cancel, resume and manual retry preserve the same durable job identity (1.2392ms)
+✔ failed success projection cannot retry a durably completed production job (2.4814ms)
+✔ worker enforces tenant and account caps while allowing another customer to run (3.6577ms)
+✔ two worker instances claim one durable job only once (1.2567ms)
+✔ abandoned accepted provider job enters reconciliation without blind resubmission (1.5559ms)
+✔ accepted Seedance receipt resumes polling and never submits a second paid task (5.1458ms)
+✔ worker pins local storage across claims, execution, callbacks and remote wakeups (1.4202ms)
+✔ durable phase pause settles without success or failure projections, then resumes the same provider identity (8.6514ms)
+✔ an execution stopped after durable pause cannot project a blocked failure (1.5479ms)
+✔ resume cannot erase an unsettled paused worker or let its late completion settle resumed production (2.599ms)
+✔ trusted job scope excludes unrelated queued jobs and abandoned recovery, and snapshots the allowlist (1.9907ms)
+✔ the existing worker claims a revision only through the complete production admission checkpoint (2.5161ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 449.0633

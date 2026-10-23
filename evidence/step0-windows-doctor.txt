@@ -1,0 +1,9 @@
+$ node interview/doctor.mjs
+{
+  "doctor": "PASS",
+  "node": "v25.5.0",
+  "platform": "win32",
+  "arch": "x64",
+  "ffmpeg": "ffmpeg version 6.1.1-essentials_build-www.gyan.dev Copyright (c) 2000-2023 the FFmpeg developers\r",
+  "note": "No real provider, database server or credentials required"
+}

@@ -1,0 +1,2 @@
+$ node --import ./interview/bootstrap.mjs --import tsx interview/verify.ts
+{"verify":"PASS","persistedCompletedTask":true,"wrongTenantRejected":true,"corruptActualMediaRejected":true,"restoredActualMediaAccepted":true,"artifactStatus":"review_required"}

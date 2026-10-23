@@ -1,0 +1,8 @@
+allowBuilds:
+  esbuild: true
+  ffmpeg-static: true
+  sharp: true
+  "@google/genai": false
+  msgpackr-extract: false
+  protobufjs: false
+  tesseract.js: false

@@ -1,0 +1,21 @@
+{
+  "id": "lingshu-automatic-v1",
+  "body": {
+    "font": "Source Han Sans SC",
+    "file": "SourceHanSansSC-Regular.otf",
+    "color": "#FFDF66",
+    "sha256": "f1d8611151880c6c336aabeac4640ef434fa13cbfbf1ffe82d0a71b2a5637256"
+  },
+  "emphasis": {
+    "font": "ZCOOL QingKe HuangYou",
+    "file": "ZCOOLQingKeHuangYou-Regular.ttf",
+    "color": "#FF5555",
+    "sha256": "54f0c0df4308cd74cd0f2fd3494ae054dbc4a1fd6fa7d71f4807eb4cdd8b4136"
+  },
+  "product": {
+    "font": "Smiley Sans Oblique",
+    "file": "SmileySans-Oblique.ttf",
+    "color": "#66C7FF",
+    "sha256": "b447d7e781f08bc95c4c9f23ba71ed2b8ebb639aa7184485c71c4ca5afcd25c4"
+  }
+}

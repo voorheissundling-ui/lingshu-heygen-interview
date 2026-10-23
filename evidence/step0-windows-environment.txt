@@ -1,0 +1,7 @@
+date: 2026-10-23T17:20:33+08:00
+pwd: /d/project/毕业项目/real-digital-employee-20fe685
+node: v25.5.0
+npm: 11.8.0
+pnpm: 11.25.0
+git: git version 2.13.0.windows.1
+ffmpeg: D:\project\毕业项目\real-digital-employee-20fe685\node_modules\.pnpm\ffmpeg-static@5.3.0_supports-color@8.1.1\node_modules\ffmpeg-static\ffmpeg.exe

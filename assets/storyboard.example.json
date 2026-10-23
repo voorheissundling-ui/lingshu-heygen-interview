@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Example input proposal only; import support remains candidate work. Not an analysed answer or finished script.",
+  "referenceFile": "assets/reference-analysis-only.mp4",
+  "targetDurationSeconds": 33.5,
+  "language": "en",
+  "presenter": {
+    "provider": "heygen",
+    "ownership": "public",
+    "avatarId": "SELECT_FROM_LIVE_CATALOG",
+    "voiceId": "SELECT_FROM_LIVE_CATALOG"
+  },
+  "shots": [
+    {
+      "id": "intro",
+      "kind": "presenter",
+      "startSeconds": 0,
+      "durationSeconds": 5,
+      "speech": "Welcome to this cosmetics production demonstration.",
+      "subtitle": "Cosmetics production demonstration",
+      "framing": "portrait medium shot",
+      "source": null
+    },
+    {
+      "id": "products",
+      "kind": "illustration",
+      "startSeconds": 5,
+      "durationSeconds": 7,
+      "speech": "Here are examples of product and packaging options.",
+      "subtitle": "Product and packaging examples",
+      "framing": "product close-ups",
+      "source": {
+        "localFile": "TO_BE_PROVIDED",
+        "sourceUrl": "TO_BE_PROVIDED",
+        "license": "TO_BE_VERIFIED"
+      }
+    },
+    {
+      "id": "process",
+      "kind": "illustration",
+      "startSeconds": 12,
+      "durationSeconds": 8,
+      "speech": "This sequence illustrates research, manufacturing and quality checks.",
+      "subtitle": "Research, manufacturing and quality checks",
+      "framing": "process detail and wide shot",
+      "source": {
+        "localFile": "TO_BE_PROVIDED",
+        "sourceUrl": "TO_BE_PROVIDED",
+        "license": "TO_BE_VERIFIED"
+      }
+    },
+    {
+      "id": "outro",
+      "kind": "presenter",
+      "startSeconds": 20,
+      "durationSeconds": 13.5,
+      "speech": "Edit this placeholder ending to match your analysed script and timing.",
+      "subtitle": "Replace with analysed closing statement",
+      "framing": "portrait medium shot",
+      "source": null
+    }
+  ]
+}

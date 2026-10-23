@@ -1,0 +1,13 @@
+{
+  "file": "reference-analysis-only.mp4",
+  "sha256": "501ec2c4d39ce67630448eff7001e2f911561e962533ca1bdb6aa10e6d2388e9",
+  "bytes": 6412289,
+  "durationSeconds": 33.58,
+  "width": 576,
+  "height": 1024,
+  "fps": 30,
+  "referenceUrl": "https://www.tiktok.com/@yuchengcosmeticsfactory/video/7449962848203181354",
+  "source": "Existing local historical cache, matched by hash to historical acceptance notes; direct TikTok retrieval returned a verification page.",
+  "liveUrlIdentityReverified": false,
+  "usage": "Analysis and structural reference only. Do not use original pixels, voice, identity or branding in generated output."
+}

@@ -1,0 +1,6 @@
+export type CustomerRelationshipKind='new_inquiry'|'existing_customer'|'unknown';
+export interface CustomerRelationshipEvidenceRef {kind:'prior_buyer_conversation'|'canonical_order_record'|'manual_relationship_confirmation'|'first_buyer_message';id:string;recordHash:string;occurredAt:string;note:string}
+export interface CustomerRelationshipAssessment {tenantId:string;customerId:string;weekStart:string;weekEnd:string;classification:CustomerRelationshipKind;evidence:CustomerRelationshipEvidenceRef[];gaps:string[];evidenceHash:string;checkedAt:string;purchaseConclusion:'not_verified'}
+export interface CustomerRelationshipConfirmation {schemaVersion:'customer-relationship-confirmation.v1';id:string;tenantId:string;customerId:string;classification:'new_inquiry'|'existing_customer';weekStart:string;weekEnd:string;relationshipSince:string;firstInteractionId:string;firstInteractionHash:string;reason:string;confirmedBy:string;confirmedAt:string;recordHash:string}
+
+export interface WeeklyCustomerRelationshipCheck {runId:string;memberId:string;customerId:string;customerName:string;weekStart:string;weekEnd:string;assessment:CustomerRelationshipAssessment;programId?:string;packageId?:string;packageVersion?:number;segmentId?:string;segmentVersion?:number}

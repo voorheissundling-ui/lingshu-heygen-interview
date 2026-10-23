@@ -1,0 +1,15 @@
+import {createHash} from 'node:crypto';
+import {mkdtemp,writeFile,rm} from 'node:fs/promises';
+import os from 'node:os';import path from 'node:path';
+import {runVisualFfmpeg} from '../lib/renderVisualQuality.js';
+import {assertDirectorG5QwenConfigured,reviewDirectorG5FramesWithQwen} from '../agents/qwen.js';
+import type {DirectorG5PaidCall} from './socialDirectorG5PaidRequest.js';
+import type {SocialDirectorG5Context,SocialDirectorG5Check} from '../../shared/contracts/socialDirectorG5Review.js';
+export interface DirectorG5Frame{sceneId:string;timeSeconds:number;sha256:string;base64:string;mimeType:'image/jpeg'}
+export interface DirectorG5RuntimeDescriptor{configured:boolean;model:string;reservedCostCny:number|null;inputPricePerMillion:number|null;outputPricePerMillion:number|null}
+export interface DirectorG5RuntimeResult{model:string;providerResponseId:string;inputTokens:number|null;outputTokens:number|null;cacheTokens:number|null;checks:SocialDirectorG5Check[];rawOutput:string}
+export interface DirectorG5RuntimePort{descriptor():DirectorG5RuntimeDescriptor;execute(input:{requestId:string;context:SocialDirectorG5Context;frames:DirectorG5Frame[];paidCall?:DirectorG5PaidCall}):Promise<DirectorG5RuntimeResult>}
+function configuredPositive(name:string){const v=Number(process.env[name]);return typeof process.env[name]==='string'&&Number.isFinite(v)&&v>0?v:null;}
+export const directorG5Runtime:DirectorG5RuntimePort={descriptor(){let configured=false;try{assertDirectorG5QwenConfigured();configured=true;}catch{}return {configured,model:(process.env.QWEN_EXACT_VL_MODEL??'qwen3-vl-plus').trim(),reservedCostCny:configuredPositive('DIRECTOR_G5_RESERVED_COST_CNY'),inputPricePerMillion:configuredPositive('DIRECTOR_G5_INPUT_PRICE_CNY_PER_MILLION'),outputPricePerMillion:configuredPositive('DIRECTOR_G5_OUTPUT_PRICE_CNY_PER_MILLION')};},execute:reviewDirectorG5FramesWithQwen};
+/** Decodes actual owned MP4 bytes. No URL, caller screenshot or production asset is accepted as the rendered output. */
+export async function extractDirectorG5Frames(bytes:Buffer,context:SocialDirectorG5Context):Promise<DirectorG5Frame[]>{const folder=await mkdtemp(path.join(os.tmpdir(),'social-g5-')),file=path.join(folder,'owned.mp4');try{await writeFile(file,bytes);const out:DirectorG5Frame[]=[];for(const scene of context.requirements.script){if(!Number.isFinite(scene.startSeconds)||!Number.isFinite(scene.endSeconds)||scene.endSeconds<=scene.startSeconds)throw Error('scene_g5_timeline_unverified');for(const fraction of [0.15,0.5,0.85]){const timeSeconds=scene.startSeconds+(scene.endSeconds-scene.startSeconds)*fraction;const frame=await runVisualFfmpeg(['-ss',String(timeSeconds),'-i',file,'-frames:v','1','-vf','scale=640:-2','-f','image2pipe','-vcodec','mjpeg','pipe:1'],true);if(!frame.ok||frame.stdout.length<4||frame.stdout[0]!==0xff||frame.stdout[1]!==0xd8)throw Error('scene_g5_frame_decode_unavailable');out.push({sceneId:scene.sceneId,timeSeconds,sha256:createHash('sha256').update(frame.stdout).digest('hex'),base64:frame.stdout.toString('base64'),mimeType:'image/jpeg'});}}return out;}finally{await rm(folder,{recursive:true,force:true});}}

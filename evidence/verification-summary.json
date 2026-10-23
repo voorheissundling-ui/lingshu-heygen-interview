@@ -1,0 +1,32 @@
+{
+  "baseline": "20fe685fa87c33680e3cc079fac62dcd07e0272a",
+  "checkedOn": "2026-10-23",
+  "environment": {
+    "node": "24.19.0",
+    "pnpm": "11.25.0",
+    "os": "macOS arm64",
+    "ffmpeg": "6.0"
+  },
+  "originalRuntimeTests": {
+    "passed": 47,
+    "failed": 0
+  },
+  "originalQueueTests": {
+    "passed": 35,
+    "failed": 0
+  },
+  "typecheck": "passed",
+  "controlledLocalSmoke": "passed",
+  "negativeMediaAndTenantValidation": "passed",
+  "httpAfterRestart": "passed",
+  "media": {
+    "size": 415797,
+    "sha256": "d15c95042f21716f8e6700ba101e222254e38c759f27a70d05c24c05204fcece"
+  },
+  "browserVisualVerification": "not_performed",
+  "realHeyGenGeneration": "isolated_short_probe_passed_not_complete_employee_flow",
+  "benchmarkVideoFile": "historical_cache_attached_complete_decode_passed_live_url_identity_not_reverified",
+  "formalIssueReady": false,
+  "freshExtractInstallAndLocalTests": "passed",
+  "readyForCandidateReview": true
+}

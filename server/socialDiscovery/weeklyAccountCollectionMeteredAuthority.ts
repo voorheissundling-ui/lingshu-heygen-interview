@@ -1,0 +1,49 @@
+import {createHash} from 'node:crypto';
+import type {DataStore,Record_} from '../storage/datastore.js';
+import {socialRequestHash} from '../starter198/socialContentValidation.js';
+import {verifyFrozenWeeklyAccountCollectionOriginalOperation} from './weeklyAccountCollectionOperationAuthority.js';
+import {apifyTokenFingerprint,APIFY_PREPAID_TOKEN_FINGERPRINT_SCHEME} from './apifyTokenFingerprint.js';
+import type {PrepaidCollectionOperationAuthority,WeeklyAccountCollectionBudgetAuthorization} from './weeklyAccountCollectionBudget.js';
+import type {WeeklyAccountCollectionAuthenticatedCostFeasibility,WeeklyAccountCollectionFxObservation} from './weeklyAccountCollectionCostPreflight.js';
+import type {WeeklyAccountCollectionProviderEvidence} from './weeklyAccountCollectionProviderEvidence.js';
+
+export const WEEKLY_ACCOUNT_COLLECTION_METERED_AUTHORITIES='social_weekly_account_collection_cost_ceilings';
+export const WEEKLY_ACCOUNT_COLLECTION_FX_BUFFER=1.15;
+const fail=(code:string):never=>{throw Error(`weekly_account_collection_metered_authority_${code}`);};
+const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
+const micros=(value:number)=>Math.ceil(value*1_000_000-1e-9);
+export interface WeeklyAccountCollectionMeteredAuthority {
+ schema:'weekly-account-collection-metered-authority.v1';authorityId:string;tenantId:string;programId:string;packageId:string;packageVersion:number;
+ authorizationId:string;authorizationHash:string;scopeId:string;scopeVersion:number;scopeHash:string;jobId:string;jobRecordHash:string;originalRunKey:string;
+ actorId:string;tokenFingerprintScheme:typeof APIFY_PREPAID_TOKEN_FINGERPRINT_SCHEME;tokenFingerprint:string;providerEvidenceId:string;providerEvidenceHash:string;
+ fxEvidenceHash:string;observedCnyPerUsd:number;fxBufferMultiplier:typeof WEEKLY_ACCOUNT_COLLECTION_FX_BUFFER;fxCnyPerUsdUpper:number;
+ actorRunCapUsd:number;nonRunCostUsd:number;maximumTotalCostUsd:number;reservedCny:number;issuedAt:string;expiresAt:string;permitsPaidCollection:true;recordHash:string;
+}
+type Inputs={store:DataStore;authorization:WeeklyAccountCollectionBudgetAuthorization;operation:PrepaidCollectionOperationAuthority;token:string;providerEvidence:WeeklyAccountCollectionProviderEvidence;feasibility:WeeklyAccountCollectionAuthenticatedCostFeasibility;fx:WeeklyAccountCollectionFxObservation;now?:number};
+const authorityId=(a:WeeklyAccountCollectionBudgetAuthorization)=>socialRequestHash({schema:'weekly-account-collection-metered-authority.v1',authorizationId:a.authorizationId}).slice(0,15);
+function validateEvidence(input:Inputs,now:number){
+ const {authorization:a,operation:o,providerEvidence:p,feasibility:f,fx}=input;
+ if(!input.token.trim()||p.schema!=='weekly-account-provider-evidence.v2'||p.authorizationId!==a.authorizationId||p.authorizationHash!==a.recordHash||p.jobId!==o.jobId||p.jobRecordHash!==o.jobRecordHash||p.originalRunKey!==o.runOperationId||p.tokenFingerprint!==createHash('sha256').update(input.token).digest('hex')||p.recordHash!==socialRequestHash({...p,recordHash:''})||Date.parse(p.validUntil)<=now)return fail('provider_evidence_invalid');
+ if(f.schema!=='weekly-account-collection-authenticated-cost-feasibility.v1'||f.authorizationId!==a.authorizationId||f.authorizationHash!==a.recordHash||f.providerEvidenceId!==p.evidenceId||f.providerEvidenceHash!==p.recordHash||!f.fitsAuthorizedBudget||f.reason!=='authenticated_cost_fits_observed_scenario'||f.permitsPaidCollection!==false||f.requiredMinimumRunCapUsd!==p.provider.minimalMaxTotalChargeUsd||f.nonRunCostUsd<0)return fail('cost_feasibility_invalid');
+ if(fx.schema!=='weekly-account-collection-fx-observation.v1'||fx.authorizationId!==a.authorizationId||fx.authorizationHash!==a.recordHash||fx.permitsPaidCollection!==false||Date.parse(fx.validUntil)<=now||fx.observedCnyPerUsd!==f.observedCnyPerUsd)return fail('fx_evidence_invalid');
+ const upper=fx.observedCnyPerUsd*WEEKLY_ACCOUNT_COLLECTION_FX_BUFFER,total=f.requiredMinimumRunCapUsd+f.nonRunCostUsd,reserved=micros(total*upper)/1_000_000,limit=Math.min(a.totalLimitCny,a.perRunLimitCny);
+ if(!Number.isFinite(upper)||!Number.isFinite(total)||f.requiredMinimumRunCapUsd<=0||micros(reserved)>micros(limit)||f.requiredMinimumRunCapUsd>p.accountLimits.observedHeadroomUsd||f.maximumStoredBytes!==90_000_000)return fail('buffered_budget_exceeded');
+ return {upper,total,reserved,limit};
+}
+export async function issueWeeklyAccountCollectionMeteredAuthority(input:Inputs):Promise<WeeklyAccountCollectionMeteredAuthority>{
+ const now=input.now??Date.now();await verifyFrozenWeeklyAccountCollectionOriginalOperation({store:input.store,authorization:input.authorization,operation:input.operation,now});const v=validateEvidence(input,now),a=input.authorization,o=input.operation,id=authorityId(a);
+ const item:WeeklyAccountCollectionMeteredAuthority={schema:'weekly-account-collection-metered-authority.v1',authorityId:id,tenantId:a.tenantId,programId:a.programId,packageId:a.packageId,packageVersion:a.packageVersion,authorizationId:a.authorizationId,authorizationHash:a.recordHash,scopeId:a.scopeId,scopeVersion:a.scopeVersion,scopeHash:a.scopeHash,jobId:o.jobId,jobRecordHash:o.jobRecordHash,originalRunKey:o.runOperationId,actorId:a.actorId,tokenFingerprintScheme:APIFY_PREPAID_TOKEN_FINGERPRINT_SCHEME,tokenFingerprint:apifyTokenFingerprint(input.token,APIFY_PREPAID_TOKEN_FINGERPRINT_SCHEME),providerEvidenceId:input.providerEvidence.evidenceId,providerEvidenceHash:input.providerEvidence.recordHash,fxEvidenceHash:hash(input.fx),observedCnyPerUsd:input.fx.observedCnyPerUsd,fxBufferMultiplier:WEEKLY_ACCOUNT_COLLECTION_FX_BUFFER,fxCnyPerUsdUpper:v.upper,actorRunCapUsd:input.feasibility.requiredMinimumRunCapUsd,nonRunCostUsd:input.feasibility.nonRunCostUsd,maximumTotalCostUsd:v.total,reservedCny:v.limit,issuedAt:new Date(now).toISOString(),expiresAt:a.expiresAt,permitsPaidCollection:true,recordHash:''};item.recordHash=socialRequestHash({...item,recordHash:''});
+ const prior=await input.store.getById<Record_>(WEEKLY_ACCOUNT_COLLECTION_METERED_AUTHORITIES,id);if(prior){const p=prior.payload as WeeklyAccountCollectionMeteredAuthority;if(prior.record_hash!==p.recordHash||socialRequestHash({...p,recordHash:''})!==p.recordHash||p.authorizationHash!==a.recordHash||p.jobId!==o.jobId||p.jobRecordHash!==o.jobRecordHash||p.originalRunKey!==o.runOperationId||p.tokenFingerprint!==item.tokenFingerprint||p.actorRunCapUsd!==item.actorRunCapUsd||p.reservedCny!==item.reservedCny)return fail('reservation_conflict');return p;}
+ if(!await input.store.create(WEEKLY_ACCOUNT_COLLECTION_METERED_AUTHORITIES,{id,tenant_id:a.tenantId,authorization_id:a.authorizationId,job_id:o.jobId,status:'reserved',record_hash:item.recordHash,payload:item}))return fail('reservation_write_unknown');return item;
+}
+export async function readWeeklyAccountCollectionMeteredReservation(input:{store:DataStore;authorization:WeeklyAccountCollectionBudgetAuthorization;operation:PrepaidCollectionOperationAuthority;now?:number}){
+ const now=input.now??Date.now();await verifyFrozenWeeklyAccountCollectionOriginalOperation({store:input.store,authorization:input.authorization,operation:input.operation,now});const id=authorityId(input.authorization),row=await input.store.getById<Record_>(WEEKLY_ACCOUNT_COLLECTION_METERED_AUTHORITIES,id),a=row?.payload as WeeklyAccountCollectionMeteredAuthority|undefined;
+ if(!a||row?.record_hash!==a.recordHash||socialRequestHash({...a,recordHash:''})!==a.recordHash||a.authorityId!==id||a.authorizationId!==input.authorization.authorizationId||a.authorizationHash!==input.authorization.recordHash||a.jobId!==input.operation.jobId||a.jobRecordHash!==input.operation.jobRecordHash||a.originalRunKey!==input.operation.runOperationId||a.reservedCny!==Math.min(input.authorization.totalLimitCny,input.authorization.perRunLimitCny)||a.permitsPaidCollection!==true||Date.parse(a.expiresAt)<=now)return fail('reservation_invalid');return a;
+}
+/** Rechecks current account prices and FX before every irreversible request.
+ * A newer snapshot may replace the issuing snapshot only when it still fits
+ * inside the frozen 15%-buffered rate and the same run cap/reservation. */
+export async function assertWeeklyAccountCollectionMeteredAuthority(input:Inputs&{authorityId:string;request:{kind:'original_post'|'actor_get'|'run_get'|'dataset_get';operationIdentity:string;requestHash:string;tokenFingerprint:string;actorInputSha256?:string;runId:string|null;datasetId:string|null}}):Promise<void>{
+ const now=input.now??Date.now();await verifyFrozenWeeklyAccountCollectionOriginalOperation({store:input.store,authorization:input.authorization,operation:input.operation,now});const current=validateEvidence(input,now),row=await input.store.getById<Record_>(WEEKLY_ACCOUNT_COLLECTION_METERED_AUTHORITIES,input.authorityId),a=row?.payload as WeeklyAccountCollectionMeteredAuthority|undefined,r=input.request;
+ if(!a||row?.record_hash!==a.recordHash||socialRequestHash({...a,recordHash:''})!==a.recordHash||a.authorityId!==authorityId(input.authorization)||a.authorizationHash!==input.authorization.recordHash||a.jobId!==input.operation.jobId||a.jobRecordHash!==input.operation.jobRecordHash||a.originalRunKey!==input.operation.runOperationId||a.tokenFingerprint!==apifyTokenFingerprint(input.token,APIFY_PREPAID_TOKEN_FINGERPRINT_SCHEME)||r.tokenFingerprint!==a.tokenFingerprint||!['original_post','actor_get','run_get','dataset_get'].includes(r.kind)||!/^[a-f0-9]{64}$/.test(r.operationIdentity)||!/^[a-f0-9]{64}$/.test(r.requestHash)||current.upper>a.fxCnyPerUsdUpper+1e-12||input.feasibility.requiredMinimumRunCapUsd>a.actorRunCapUsd||micros((a.actorRunCapUsd+input.feasibility.nonRunCostUsd)*current.upper)>micros(a.reservedCny)||Date.parse(a.expiresAt)<=now)return fail('authority_not_current');
+}

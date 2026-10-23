@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "mode": "isolated_supplier_probe",
+  "baseline": "20fe685fa87c33680e3cc079fac62dcd07e0272a",
+  "phase": "downloaded",
+  "requestId": "interview-776273dc-8a65-4336-af92-a9ae108c6e11",
+  "approvedCny": 30,
+  "reservedCny": 15.417729585006693,
+  "priceUsdPerMinute": 2.31,
+  "fx": {
+    "date": "2026-10-22",
+    "cnyPerUsd": 6.674341811691209
+  },
+  "avatarId": "ee25a2363ef941a1b5b0f7b1172e57d1",
+  "voiceId": "c5e71f9038a2419d9d43c7132c31fe49",
+  "script": "Hello. This is a test.",
+  "createdAt": "2026-10-23T03:47:24.686Z",
+  "paidSubmissions": 1,
+  "requestHash": "9d164e9e49383d24cb6a18394cc012a9efabc2de6d0ba6b4a580ff05bf728953",
+  "videoId": "8dc5e75acf48bf27c0f153d9917b319b",
+  "providerStatus": "completed",
+  "lastCheckedAt": "2026-10-23T03:48:20.172Z",
+  "providerDuration": 2.06367,
+  "duration": 2.06367,
+  "bytes": 220334,
+  "sha256": "662ce8bfc9d750ae86fb5dd9a6b0a520b1e12ba670a579f4e79e2af3958c1843",
+  "estimatedCostCny": 0.5302851002115128,
+  "observedWalletDeltaUsd": 0.09999999999999964,
+  "observedWalletDeltaCny": 0.6674341811691186,
+  "withinApprovedCap": true,
+  "completeEmployeeFlowVerified": false,
+  "mediaDecode": "passed"
+}

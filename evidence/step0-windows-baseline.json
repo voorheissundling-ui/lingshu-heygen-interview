@@ -1,0 +1,59 @@
+{
+  "step": "Step 0 - environment and baseline",
+  "timestamp": "2026-10-23T17:20:33+08:00",
+  "cwd": "D:/project/毕业项目/real-digital-employee-20fe685",
+  "platform": "win32 x64",
+  "node": "v25.5.0",
+  "npm": "11.8.0",
+  "pnpm": "11.25.0",
+  "git": "2.13.0.windows.1",
+  "ffmpeg": "6.1.1-essentials_build (ffmpeg-static)",
+  "commands": {
+    "install": { "command": "pnpm install --frozen-lockfile", "result": "PASS", "note": "first run 1m37.7s with registry warnings only; verification rerun 522ms, already up to date" },
+    "doctor": { "command": "pnpm run doctor", "result": "PASS" },
+    "typecheck": { "command": "pnpm run typecheck", "result": "PASS", "output": "no diagnostics" },
+    "test": { "command": "pnpm test", "result": "PASS", "tests": 47, "fail": 0, "durationMs": 7927.87 },
+    "test_queue": { "command": "pnpm run test:queue", "result": "PASS", "tests": 35, "fail": 0, "durationMs": 449.06 },
+    "smoke": { "command": "pnpm run smoke", "result": "PASS" },
+    "verify": { "command": "pnpm run verify", "result": "PASS" }
+  },
+  "smoke": {
+    "taskId": "video",
+    "jobId": "b723a160da693f0",
+    "runId": "run",
+    "artifactId": "socialart_3c262749ad75db406ea5d877",
+    "sha256": "74c8dc577c5a70ccf6d86342903c126dd7156198f0f7509d0f8048a32a5d8a7b",
+    "humanReview": "pending",
+    "replay": "no_duplicate",
+    "note": "artifact id is regenerated per seed; sha256 stayed identical across two consecutive smoke runs"
+  },
+  "verify": {
+    "persistedCompletedTask": true,
+    "wrongTenantRejected": true,
+    "corruptActualMediaRejected": true,
+    "restoredActualMediaAccepted": true,
+    "artifactStatus": "review_required"
+  },
+  "windows_compatibility_fixes": [
+    {
+      "file": "interview/fsync-compat.mjs",
+      "change": "Added Windows-only fsync shim; ignores EPERM/EINVAL for read-only file and directory handles, rethrows everything else.",
+      "reason": "Local store fsyncs a read-only temp handle and the store directory; both return EPERM on Windows."
+    },
+    {
+      "file": "interview/bootstrap.mjs",
+      "change": "Imports the fsync compatibility shim before application modules load.",
+      "reason": "Applies the shim to every seed/render/scan/smoke/test entry point."
+    },
+    {
+      "file": "desktop/render.cjs",
+      "change": "Recognizes Windows drive paths (D:\\ or D:/) as local files before URL-scheme detection.",
+      "reason": "D: was parsed as a URL scheme, so local material paths fell through to fetch and hit interview_external_network_blocked."
+    }
+  ],
+  "notes": [
+    "No business logic, gate, budget, queue, or validation rule was relaxed.",
+    "Node 25.5.0 was used; the README recommends >=22.19.0. No fallback to Node 24 was needed.",
+    "Baseline evidence is stored as .txt/.json because .gitignore ignores *.log."
+  ]
+}
