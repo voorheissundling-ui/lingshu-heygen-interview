@@ -128,5 +128,5 @@ curl -X POST -H 'Content-Type: application/json' \
 - [x] 页面支持导入、编辑、预览和字段级错误展示；读取/预览不触发生成。
 - [x] Step 2：真实模式和公开人物证据校验路径已实现；HeyGen 经系统代理可达，官方 Photo Avatar 价格已取得；真实只读预检已确认钱包 wallet/USD、余额 2.3、自动充值关闭，分镜公共 avatar/voice 均通过。公共目录在 20 页处截断，但目标 ID 已在前 1000 条中找到并验证。
 - [x] Step 3：公共人物运行时绑定与独立单镜头闭环已实现并测试；在 10 CNY 预算内完成 1 次真实提交，取得 3.21306 s、720×1280/H.264/AAC 的 MP4，全片解码通过，钱包 2.30→2.15 USD。证据见 `evidence/step3-single-shot.mp4` 与 `.json`。
-- [ ] Step 3 遗留（Step 4 处理）：原始 9:16 输出上下白边明显（内容区约 720×408），且公共人物为西装办公室风格，与分镜“实验室白大褂”不一致；需在渲染层裁切/模糊填充或改原生竖屏 look，不得手工改最终视频。
-- [ ] 真实 API 完整业务链路、多镜头成片合成、人工听感/ASR 与人工审核仍待后续步骤。
+- [x] Step 4：3 段真实人物口播（hook / capabilities / cta，`fit=cover`，四边条带检测 0 px）+ 3 个原创说明镜头 + 真实旁白（product-range / lab-process / factory-quality）+ 6 条烧录字幕，合成 33.52 s、1080×1920、H.264/AAC 成片；计划 33.5 s，人物口播不裁剪，余量分配给静态说明镜头。证据见 `evidence/step4-final.mp4`、`evidence/step4-final.json`、`evidence/step4-frames/`。
+- [ ] 仍待后续步骤：真实 API 完整业务链路（bridge、任务回写、review_required、页面播放下载）、业务幂等/中断恢复/异常矩阵、人工完整听感/ASR 与人工审核。公共人物仍为西装办公室风格而非实验室白大褂；说明镜头为矢量插画而非实拍，均为已记录的取舍。

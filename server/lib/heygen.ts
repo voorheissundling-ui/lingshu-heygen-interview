@@ -1,5 +1,5 @@
 /** HeyGen v3 adapter. Never retries a generation with a different idempotency key. */
-export interface HeyGenInput { avatarId: string; voiceId: string; script: string; engine?: 'avatar_iv'; ratio: string; transparent: boolean; title: string; imageAssetId?: string; imageUrl?: string; audioAssetId?: string; audioRef?: { url: string; start: number; duration: number } }
+export interface HeyGenInput { avatarId: string; voiceId: string; script: string; engine?: 'avatar_iv'; ratio: string; transparent: boolean; title: string; fit?: 'cover' | 'contain'; imageAssetId?: string; imageUrl?: string; audioAssetId?: string; audioRef?: { url: string; start: number; duration: number } }
 export class HeyGenRequestError extends Error {
   constructor(readonly status: number, readonly code: string, message?: string) {
     super(`HeyGen ${status}: ${code}${message ? ` (${message.slice(0, 180)})` : ''}`);
@@ -25,7 +25,7 @@ export class HeyGenClient {
     if (input.engine && input.engine !== 'avatar_iv') throw new Error('HeyGen受控音频镜头仅允许Avatar IV');
     const image = input.imageAssetId ? { type: 'asset_id', asset_id: input.imageAssetId } : input.imageUrl ? { type: 'url', url: input.imageUrl } : null;
     const request = { ...(image ? { type: 'image', image } : { type: 'avatar', avatar_id: input.avatarId }), ...(input.audioAssetId ? { audio_asset_id: input.audioAssetId } : { voice_id: input.voiceId, script: input.script }),
-      ...(!image && input.engine ? { engine: { type: input.engine } } : {}), aspect_ratio: input.ratio, resolution: '720p', title: input.title, output_format: input.transparent ? 'webm' : 'mp4' };
+      ...(!image && input.engine ? { engine: { type: input.engine } } : {}), ...(input.fit ? { fit: input.fit } : {}), aspect_ratio: input.ratio, resolution: '720p', title: input.title, output_format: input.transparent ? 'webm' : 'mp4' };
     await this.paidSubmission?.beforeSubmit(structuredClone(request),requestId);
     const data=await this.call('',request,requestId);
     if (typeof data.video_id !== 'string') throw new Error('提交结果未知：未返回video_id，请检查供应商任务，不要重复付费提交');

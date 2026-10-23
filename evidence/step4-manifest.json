@@ -1,0 +1,145 @@
+{
+  "schemaVersion": "step4-multishot-manifest.v1",
+  "jobId": "step4-244a6fb03b0f",
+  "spec": {
+    "duration": 33.5,
+    "ratio": "9:16",
+    "resolution": "1080p",
+    "bgmVol": 0,
+    "voiceVol": 100
+  },
+  "frameContract": {
+    "schemaVersion": "social-render-frame-contract.v1",
+    "fps": 30,
+    "durationSeconds": 33.5,
+    "expectedFrames": 1005
+  },
+  "requireVisualAssets": true,
+  "timeline": [
+    {
+      "url": "D:\\project\\毕业项目\\real-digital-employee-20fe685\\.interview-data\\step4-shots\\hook\\provider-output.mp4",
+      "type": "video",
+      "sceneId": "hook",
+      "targetStart": 0,
+      "targetDuration": 3.213,
+      "trimStart": 0,
+      "trimEnd": 3.213,
+      "speed": 1,
+      "cropMode": "cover",
+      "production": {
+        "sound": "source"
+      }
+    },
+    {
+      "url": "assets/illustrations/product-range.png",
+      "type": "image",
+      "sceneId": "product-range",
+      "targetStart": 3.213,
+      "targetDuration": 6.597,
+      "production": {
+        "sound": "voiceover"
+      },
+      "voiceAligned": true,
+      "voiceStart": 3.213,
+      "voiceEnd": 9.143
+    },
+    {
+      "url": "D:\\project\\毕业项目\\real-digital-employee-20fe685\\.interview-data\\step4-shots\\capabilities\\provider-output.mp4",
+      "type": "video",
+      "sceneId": "capabilities",
+      "targetStart": 9.81,
+      "targetDuration": 4.702,
+      "trimStart": 0,
+      "trimEnd": 4.702,
+      "speed": 1,
+      "cropMode": "cover",
+      "production": {
+        "sound": "source"
+      }
+    },
+    {
+      "url": "assets/illustrations/lab-process.png",
+      "type": "image",
+      "sceneId": "lab-process",
+      "targetStart": 14.512,
+      "targetDuration": 5.6,
+      "production": {
+        "sound": "voiceover"
+      },
+      "voiceAligned": true,
+      "voiceStart": 14.512,
+      "voiceEnd": 19.762
+    },
+    {
+      "url": "assets/illustrations/factory-quality.png",
+      "type": "image",
+      "sceneId": "factory-quality",
+      "targetStart": 20.112,
+      "targetDuration": 6.23,
+      "production": {
+        "sound": "voiceover"
+      },
+      "voiceAligned": true,
+      "voiceStart": 20.112,
+      "voiceEnd": 25.992
+    },
+    {
+      "url": "D:\\project\\毕业项目\\real-digital-employee-20fe685\\.interview-data\\step4-shots\\cta\\provider-output.mp4",
+      "type": "video",
+      "sceneId": "cta",
+      "targetStart": 26.342,
+      "targetDuration": 7.158,
+      "trimStart": 0,
+      "trimEnd": 7.158,
+      "speed": 1,
+      "cropMode": "cover",
+      "production": {
+        "sound": "source"
+      }
+    }
+  ],
+  "subtitles": {
+    "mode": "on",
+    "cues": [
+      {
+        "start": 0.1,
+        "end": 3.133,
+        "text": "Launch your own skincare line"
+      },
+      {
+        "start": 3.293,
+        "end": 9.73,
+        "text": "Serums, creams, cleansers — retail-ready"
+      },
+      {
+        "start": 9.89,
+        "end": 14.432,
+        "text": "Low MOQs. Clear pricing. Your branding."
+      },
+      {
+        "start": 14.592,
+        "end": 20.032,
+        "text": "Every batch tested for stability and safety"
+      },
+      {
+        "start": 20.192,
+        "end": 26.262,
+        "text": "Automated filling, sealing, and QC"
+      },
+      {
+        "start": 26.422,
+        "end": 33.42,
+        "text": "15 years of manufacturing. Contact us for a quote."
+      }
+    ],
+    "style": {
+      "font": "sans",
+      "fontScale": 1.3,
+      "bottomRatio": 0.2,
+      "lineWidth": 12
+    }
+  },
+  "voiceover": {
+    "url": "D:\\project\\毕业项目\\real-digital-employee-20fe685\\.interview-data\\step4-compose\\voiceover.wav"
+  }
+}

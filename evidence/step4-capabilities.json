@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "mode": "step4_multi_shot_presenter",
+  "phase": "downloaded",
+  "requestId": "interview-step4-capabilities-436bb29b-4e20-4f03-9b34-a78125128f57",
+  "requestHash": "a6f59f4451b3e5b1a200ead521ce8c9d955466c75548066aa781e0e6657faadb",
+  "request": {
+    "type": "avatar",
+    "avatar_id": "ee25a2363ef941a1b5b0f7b1172e57d1",
+    "voice_id": "c5e71f9038a2419d9d43c7132c31fe49",
+    "script": "Low minimums, transparent pricing, and packaging that fits your brand.",
+    "fit": "cover",
+    "aspect_ratio": "9:16",
+    "resolution": "720p",
+    "title": "LingShu Step 4 capabilities 6d78d775",
+    "output_format": "mp4"
+  },
+  "videoId": "9c7ab31c7ef49df5a9a92a6804c73599",
+  "providerStatus": "completed",
+  "providerDuration": 4.70204,
+  "title": "LingShu Step 4 capabilities 6d78d775",
+  "fit": "cover",
+  "storyboardPath": "assets/storyboard.json",
+  "storyboardSha256": "6d78d775752986ce5c3ea22b0b42cedea0825f80842f67b351406752e8791cf2",
+  "shotId": "capabilities",
+  "speech": "Low minimums, transparent pricing, and packaging that fits your brand.",
+  "avatarId": "ee25a2363ef941a1b5b0f7b1172e57d1",
+  "voiceId": "c5e71f9038a2419d9d43c7132c31fe49",
+  "publicEvidence": {
+    "ownership": "public",
+    "publicCatalogRef": "heygen-public-catalog:397dde0e1235636a2b6a859ec411adaaf934a473d4d6e6b4688b1c1bdaa3c7ce",
+    "providerTermsRef": "https://www.heygen.com/terms",
+    "verifiedAt": "2026-10-23T10:49:02.633Z",
+    "accountId": "heygen:c8c7bbadf7e2dc23b6933e3f1d888288b84f35274e77da6e8843124bfbc7aada"
+  },
+  "providerEvidenceRef": "heygen-live-public-iv:c5ee83c6655c15eaa0ca901fda0a84123e11953cd4caab728351fe094c354806",
+  "preflight": {
+    "file": ".interview-data/provider-preflight.json",
+    "checkedAt": "2026-10-23T10:49:02.633Z",
+    "catalogSha256": "397dde0e1235636a2b6a859ec411adaaf934a473d4d6e6b4688b1c1bdaa3c7ce",
+    "avatar": {
+      "id": "ee25a2363ef941a1b5b0f7b1172e57d1",
+      "status": "completed",
+      "avatarType": "photo_avatar",
+      "supportedEngines": [
+        "avatar_v",
+        "avatar_iv",
+        "avatar_iii"
+      ]
+    },
+    "voice": {
+      "id": "c5e71f9038a2419d9d43c7132c31fe49",
+      "language": "English",
+      "status": null,
+      "engines": [
+        "orca"
+      ]
+    }
+  },
+  "approvedCny": 8,
+  "budgetCommittedCny": 1.208246,
+  "forecastCny": 1.9272161981258367,
+  "estimatedCostCny": 1.2082463536314145,
+  "chargedCny": 1.334868,
+  "walletBefore": 2.15,
+  "walletAfter": 1.95,
+  "observedWalletDeltaUsd": 0.19999999999999996,
+  "observedWalletDeltaCny": 1.334868,
+  "withinApprovedCap": true,
+  "paidSubmissions": 1,
+  "mediaBytes": 1386685,
+  "mediaSha256": "82c1be19cfeb66413d1f4d34399545dc4070b0919de3e458f265c56d5ae3531f",
+  "mediaMetadata": {
+    "duration": 4.72,
+    "width": 720,
+    "height": 1280,
+    "videoCodec": "h264",
+    "audioCodec": "aac",
+    "sampleRate": 48000,
+    "fps": 25
+  },
+  "validation": {
+    "durationMatchesProvider": true,
+    "decodable": true,
+    "resolution": "720x1280",
+    "videoCodec": "h264",
+    "audioCodec": "aac",
+    "sampleRate": 48000,
+    "fps": 25,
+    "errors": []
+  },
+  "barAnalysis": {
+    "sampledAt": 2.36,
+    "width": 720,
+    "height": 1280,
+    "topBarPx": 0,
+    "bottomBarPx": 0,
+    "leftBarPx": 0,
+    "rightBarPx": 0,
+    "criteria": ">=97% sampled pixels near-black(<=20) or near-white(>=235) from the edge"
+  },
+  "frames": [
+    {
+      "at": 0.5,
+      "file": ".interview-data\\step4-shots\\capabilities\\frames\\frame-0.png",
+      "bytes": 311724
+    },
+    {
+      "at": 2.351,
+      "file": ".interview-data\\step4-shots\\capabilities\\frames\\frame-1.png",
+      "bytes": 356873
+    },
+    {
+      "at": 4.202,
+      "file": ".interview-data\\step4-shots\\capabilities\\frames\\frame-2.png",
+      "bytes": 334690
+    }
+  ],
+  "createdAt": "2026-10-23T12:04:33.043Z",
+  "submittedAt": "2026-10-23T12:04:45.944Z",
+  "acceptedAt": "2026-10-23T12:04:47.650Z",
+  "completedAt": "2026-10-23T12:05:44.812Z",
+  "completeEmployeeFlowVerified": false,
+  "note": "Isolated Step 4 presenter shot with fit=cover. It proves submit/query/download/layout; business task write-back is a later step."
+}

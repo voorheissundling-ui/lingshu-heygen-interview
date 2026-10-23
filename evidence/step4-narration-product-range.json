@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "mode": "step4_explainer_narration",
+  "phase": "downloaded",
+  "requestId": "interview-step4-tts-product-range-d7e91ca9-40fc-43cc-b779-634850f52b49",
+  "requestHash": "6269a6d0a2455e13009aa154a1a168937a3a458daa87656b0e482ed954640293",
+  "request": {
+    "text": "From brightening serums to gentle cleansers, we turn your formula into a retail-ready product.",
+    "voice_id": "c5e71f9038a2419d9d43c7132c31fe49",
+    "input_type": "text",
+    "speed": 1,
+    "language": "en",
+    "force_regenerate": false,
+    "engine": "orca"
+  },
+  "shotId": "product-range",
+  "text": "From brightening serums to gentle cleansers, we turn your formula into a retail-ready product.",
+  "voiceId": "c5e71f9038a2419d9d43c7132c31fe49",
+  "engine": "orca",
+  "language": "en",
+  "storyboardSha256": "6d78d775752986ce5c3ea22b0b42cedea0825f80842f67b351406752e8791cf2",
+  "provider": {
+    "engine": "orca",
+    "requestId": "7dafbef1e77344509233041054f3d1a9",
+    "audioUrlHost": "resource2.heygen.ai",
+    "duration": 5.929795918367347
+  },
+  "providerDuration": 5.929795918367347,
+  "audioBytes": 189753,
+  "audioSha256": "b2a6f27794ae73cdeff2e190d481a85d5b232d27b8e3e5fa5ea07894e094cac2",
+  "audioProbe": {
+    "duration": 5.93,
+    "codec": "mp3",
+    "sampleRate": 44100
+  },
+  "approvedCny": 8,
+  "forecastCny": 0.009410821954484606,
+  "estimatedCostCny": 0.009410821954484606,
+  "chargedCny": 0.333717,
+  "walletBefore": 1.5,
+  "walletAfter": 1.45,
+  "observedWalletDeltaUsd": 0.050000000000000044,
+  "observedWalletDeltaCny": 0.3337170905845608,
+  "withinApprovedCap": true,
+  "paidSubmissions": 1,
+  "createdAt": "2026-10-23T12:08:20.158Z",
+  "submittedAt": "2026-10-23T12:08:24.365Z",
+  "acceptedAt": "2026-10-23T12:08:27.741Z",
+  "completedAt": "2026-10-23T12:08:29.306Z",
+  "note": "Step 4 explainer narration via the public voice. Audio only; the visual is an original local illustration."
+}

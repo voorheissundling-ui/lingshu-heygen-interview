@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "mode": "step4_multi_shot_presenter",
+  "phase": "downloaded",
+  "requestId": "interview-step4-hook-62426984-859b-4f2c-aac9-0c4cbc7c4c66",
+  "requestHash": "b4a33c07bca4c7963913631e7d981501e6a7c8355efb51de46d5cd916a8a58fc",
+  "request": {
+    "type": "avatar",
+    "avatar_id": "ee25a2363ef941a1b5b0f7b1172e57d1",
+    "voice_id": "c5e71f9038a2419d9d43c7132c31fe49",
+    "script": "Hi there. Ready to launch your own skincare line?",
+    "fit": "cover",
+    "aspect_ratio": "9:16",
+    "resolution": "720p",
+    "title": "LingShu Step 4 hook 6d78d775",
+    "output_format": "mp4"
+  },
+  "videoId": "c15b32aecb501970d0f0d0fa3958cf03",
+  "providerStatus": "completed",
+  "providerDuration": 3.21306,
+  "title": "LingShu Step 4 hook 6d78d775",
+  "fit": "cover",
+  "storyboardPath": "assets/storyboard.json",
+  "storyboardSha256": "6d78d775752986ce5c3ea22b0b42cedea0825f80842f67b351406752e8791cf2",
+  "shotId": "hook",
+  "speech": "Hi there. Ready to launch your own skincare line?",
+  "avatarId": "ee25a2363ef941a1b5b0f7b1172e57d1",
+  "voiceId": "c5e71f9038a2419d9d43c7132c31fe49",
+  "publicEvidence": {
+    "ownership": "public",
+    "publicCatalogRef": "heygen-public-catalog:397dde0e1235636a2b6a859ec411adaaf934a473d4d6e6b4688b1c1bdaa3c7ce",
+    "providerTermsRef": "https://www.heygen.com/terms",
+    "verifiedAt": "2026-10-23T10:49:02.633Z",
+    "accountId": "heygen:c8c7bbadf7e2dc23b6933e3f1d888288b84f35274e77da6e8843124bfbc7aada"
+  },
+  "providerEvidenceRef": "heygen-live-public-iv:c5ee83c6655c15eaa0ca901fda0a84123e11953cd4caab728351fe094c354806",
+  "preflight": {
+    "file": ".interview-data/provider-preflight.json",
+    "checkedAt": "2026-10-23T10:49:02.633Z",
+    "catalogSha256": "397dde0e1235636a2b6a859ec411adaaf934a473d4d6e6b4688b1c1bdaa3c7ce",
+    "avatar": {
+      "id": "ee25a2363ef941a1b5b0f7b1172e57d1",
+      "status": "completed",
+      "avatarType": "photo_avatar",
+      "supportedEngines": [
+        "avatar_v",
+        "avatar_iv",
+        "avatar_iii"
+      ]
+    },
+    "voice": {
+      "id": "c5e71f9038a2419d9d43c7132c31fe49",
+      "language": "English",
+      "status": null,
+      "engines": [
+        "orca"
+      ]
+    }
+  },
+  "approvedCny": 8,
+  "budgetCommittedCny": 2.336019,
+  "forecastCny": 2.0556972780008924,
+  "estimatedCostCny": 0.8256348370066935,
+  "chargedCny": 1.001151,
+  "walletBefore": 1.95,
+  "walletAfter": 1.8,
+  "observedWalletDeltaUsd": 0.1499999999999999,
+  "observedWalletDeltaCny": 1.0011512717536808,
+  "withinApprovedCap": true,
+  "paidSubmissions": 1,
+  "mediaBytes": 961494,
+  "mediaSha256": "163b50edd0c9f1c7e2c770d45ea3bd51104a4469ec5665363b1d604be4547dcc",
+  "mediaMetadata": {
+    "duration": 3.22,
+    "width": 720,
+    "height": 1280,
+    "videoCodec": "h264",
+    "audioCodec": "aac",
+    "sampleRate": 48000,
+    "fps": 25
+  },
+  "validation": {
+    "durationMatchesProvider": true,
+    "decodable": true,
+    "resolution": "720x1280",
+    "videoCodec": "h264",
+    "audioCodec": "aac",
+    "sampleRate": 48000,
+    "fps": 25,
+    "errors": []
+  },
+  "barAnalysis": {
+    "sampledAt": 1.61,
+    "width": 720,
+    "height": 1280,
+    "topBarPx": 0,
+    "bottomBarPx": 0,
+    "leftBarPx": 0,
+    "rightBarPx": 0,
+    "criteria": ">=97% sampled pixels near-black(<=20) or near-white(>=235) from the edge"
+  },
+  "frames": [
+    {
+      "at": 0.5,
+      "file": ".interview-data\\step4-shots\\hook\\frames\\frame-0.png",
+      "bytes": 326636
+    },
+    {
+      "at": 1.607,
+      "file": ".interview-data\\step4-shots\\hook\\frames\\frame-1.png",
+      "bytes": 344455
+    },
+    {
+      "at": 2.713,
+      "file": ".interview-data\\step4-shots\\hook\\frames\\frame-2.png",
+      "bytes": 359853
+    }
+  ],
+  "createdAt": "2026-10-23T12:06:07.767Z",
+  "submittedAt": "2026-10-23T12:06:13.428Z",
+  "acceptedAt": "2026-10-23T12:06:15.230Z",
+  "completedAt": "2026-10-23T12:07:01.134Z",
+  "completeEmployeeFlowVerified": false,
+  "note": "Isolated Step 4 presenter shot with fit=cover. It proves submit/query/download/layout; business task write-back is a later step."
+}

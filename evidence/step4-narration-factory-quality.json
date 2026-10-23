@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "mode": "step4_explainer_narration",
+  "phase": "downloaded",
+  "requestId": "interview-step4-tts-factory-quality-187ec7f5-f132-471e-9b7c-183f5e998c9f",
+  "requestHash": "c3c3870fec9f7e8247cd32ef7389897628c632cd1d2e7ac545123a581cde8084",
+  "request": {
+    "text": "Then our automated line fills, seals, and inspects each unit for a consistent finish.",
+    "voice_id": "c5e71f9038a2419d9d43c7132c31fe49",
+    "input_type": "text",
+    "speed": 1,
+    "language": "en",
+    "force_regenerate": false,
+    "engine": "orca"
+  },
+  "shotId": "factory-quality",
+  "text": "Then our automated line fills, seals, and inspects each unit for a consistent finish.",
+  "voiceId": "c5e71f9038a2419d9d43c7132c31fe49",
+  "engine": "orca",
+  "language": "en",
+  "storyboardSha256": "6d78d775752986ce5c3ea22b0b42cedea0825f80842f67b351406752e8791cf2",
+  "provider": {
+    "engine": "orca",
+    "requestId": "6e73620599e1436286539a3a20e32cc1",
+    "audioUrlHost": "resource2.heygen.ai",
+    "duration": 5.877551020408164
+  },
+  "providerDuration": 5.877551020408164,
+  "audioBytes": 188081,
+  "audioSha256": "365ca299dc34e537e2ac2aaa350bec6640f938ca89891b275df0dcc8a5a974e3",
+  "audioProbe": {
+    "duration": 5.88,
+    "codec": "mp3",
+    "sampleRate": 44100
+  },
+  "approvedCny": 8,
+  "forecastCny": 0.008509785809906292,
+  "estimatedCostCny": 0.008509785809906292,
+  "chargedCny": 0.333717,
+  "walletBefore": 1.4,
+  "walletAfter": 1.35,
+  "observedWalletDeltaUsd": 0.04999999999999982,
+  "observedWalletDeltaCny": 0.3337170905845593,
+  "withinApprovedCap": true,
+  "paidSubmissions": 1,
+  "createdAt": "2026-10-23T12:08:45.719Z",
+  "submittedAt": "2026-10-23T12:08:46.831Z",
+  "acceptedAt": "2026-10-23T12:08:50.759Z",
+  "completedAt": "2026-10-23T12:08:52.025Z",
+  "note": "Step 4 explainer narration via the public voice. Audio only; the visual is an original local illustration."
+}

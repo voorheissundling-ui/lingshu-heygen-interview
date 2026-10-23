@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "mode": "step4_explainer_narration",
+  "phase": "downloaded",
+  "requestId": "interview-step4-tts-lab-process-07de7ace-310e-4864-bb3e-b59c50018597",
+  "requestHash": "81f38a7ec6f6194eace91fb64129d15a1ce95d70fd288b712830d99f1eb4f027",
+  "request": {
+    "text": "Our lab tests every batch for stability, texture, and safety before production.",
+    "voice_id": "c5e71f9038a2419d9d43c7132c31fe49",
+    "input_type": "text",
+    "speed": 1,
+    "language": "en",
+    "force_regenerate": false,
+    "engine": "orca"
+  },
+  "shotId": "lab-process",
+  "text": "Our lab tests every batch for stability, texture, and safety before production.",
+  "voiceId": "c5e71f9038a2419d9d43c7132c31fe49",
+  "engine": "orca",
+  "language": "en",
+  "storyboardSha256": "6d78d775752986ce5c3ea22b0b42cedea0825f80842f67b351406752e8791cf2",
+  "provider": {
+    "engine": "orca",
+    "requestId": "40cfbcb31e3149ad8ae76dddab3b9189",
+    "audioUrlHost": "resource2.heygen.ai",
+    "duration": 5.250612244897959
+  },
+  "providerDuration": 5.250612244897959,
+  "audioBytes": 168019,
+  "audioSha256": "d04a3960f753418aff6c19d6d6309e15b786249dbd6220b90075685e948dcd4d",
+  "audioProbe": {
+    "duration": 5.25,
+    "codec": "mp3",
+    "sampleRate": 44100
+  },
+  "approvedCny": 8,
+  "forecastCny": 0.007909095046854085,
+  "estimatedCostCny": 0.007909095046854085,
+  "chargedCny": 0.333717,
+  "walletBefore": 1.45,
+  "walletAfter": 1.4,
+  "observedWalletDeltaUsd": 0.050000000000000044,
+  "observedWalletDeltaCny": 0.3337170905845608,
+  "withinApprovedCap": true,
+  "paidSubmissions": 1,
+  "createdAt": "2026-10-23T12:08:34.434Z",
+  "submittedAt": "2026-10-23T12:08:35.541Z",
+  "acceptedAt": "2026-10-23T12:08:38.925Z",
+  "completedAt": "2026-10-23T12:08:41.096Z",
+  "note": "Step 4 explainer narration via the public voice. Audio only; the visual is an original local illustration."
+}
