@@ -1,0 +1,13 @@
+$ node --import ./interview/bootstrap.mjs --import tsx interview/smoke.ts
+{"event":"local_render_registered","jobId":"b723a160da693f0","runId":"run","artifactId":"socialart_613221b78707b470b843965d","sha256":"74c8dc577c5a70ccf6d86342903c126dd7156198f0f7509d0f8048a32a5d8a7b"}
+{"event":"weekly_adapter","result":{"status":"succeeded","resultRefs":[{"type":"starter_social_content_artifact","id":"socialart_613221b78707b470b843965d","version":1}]}}
+{
+  "smoke": "PASS",
+  "taskId": "video",
+  "jobId": "b723a160da693f0",
+  "runId": "run",
+  "artifactId": "socialart_613221b78707b470b843965d",
+  "sha256": "74c8dc577c5a70ccf6d86342903c126dd7156198f0f7509d0f8048a32a5d8a7b",
+  "humanReview": "pending",
+  "replay": "no_duplicate"
+}
