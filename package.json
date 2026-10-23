@@ -18,7 +18,7 @@
     "smoke": "node --import ./interview/bootstrap.mjs --import tsx interview/smoke.ts",
     "storyboard:validate": "node --import ./interview/bootstrap.mjs --import tsx interview/storyboard-cli.ts",
     "assets:generate": "node assets/illustrations/generate.mjs",
-    "test": "node --import ./interview/bootstrap.mjs --import tsx --test server/runtime/socialWeeklyProductionAdapter.test.ts server/runtime/socialWeeklyExecutionRuntime.test.ts interview/storyboard.test.ts interview/realMode.test.ts interview/presenterPublicTrust.test.ts interview/publicRuntimeBinding.test.ts interview/step4Plan.test.ts",
+    "test": "node --import ./interview/bootstrap.mjs --import tsx --test server/runtime/socialWeeklyProductionAdapter.test.ts server/runtime/socialWeeklyExecutionRuntime.test.ts interview/storyboard.test.ts interview/realMode.test.ts interview/presenterPublicTrust.test.ts interview/publicRuntimeBinding.test.ts interview/step4Plan.test.ts interview/step5Pipeline.test.ts",
     "test:queue": "node --import ./interview/bootstrap.mjs --import tsx --test server/contentExecution/durableQueue.test.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "verify": "node --import ./interview/bootstrap.mjs --import tsx interview/verify.ts",

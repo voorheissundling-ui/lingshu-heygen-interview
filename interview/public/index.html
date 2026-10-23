@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>真实数字员工 · 分镜导入与本地验收</title>
+<title>真实数字员工 · 分镜导入与任务工作台</title>
 <style>
   :root {
     --bg: #eef2f8;
@@ -306,14 +306,41 @@
     .actions { width: 100%; }
     .actions button { flex: 1 1 auto; }
   }
+
+  .workbench { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(300px, 1.15fr); gap: 18px; margin-top: 12px; }
+  @media (max-width: 860px) { .workbench { grid-template-columns: 1fr; } }
+  .phases { display: grid; gap: 6px; align-content: start; }
+  .phase {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px;
+    background: #fbfcfe; font-size: 12.5px;
+  }
+  .phase .dot {
+    width: 9px; height: 9px; border-radius: 50%; margin-top: 5px; flex: 0 0 auto;
+    background: #c8d2e0;
+  }
+  .phase[data-status="active"] { border-color: #99d6cf; background: #f0faf8; }
+  .phase[data-status="active"] .dot { background: #0d9488; box-shadow: 0 0 0 4px rgba(13, 148, 136, .16); }
+  .phase[data-status="done"] .dot { background: var(--ok); }
+  .phase[data-status="failed"] { border-color: #f3c1bc; background: #fff5f3; }
+  .phase[data-status="failed"] .dot { background: var(--danger); }
+  .phase strong { display: block; font-size: 12.5px; }
+  .phase small { color: var(--muted); display: block; overflow-wrap: anywhere; }
+  .phase .phase-time { margin-left: auto; color: var(--muted); font-family: var(--mono); font-size: 10.5px; white-space: nowrap; }
+  .run-meta { display: grid; gap: 8px; align-content: start; }
+  .run-meta .row { display: flex; gap: 10px; justify-content: space-between; border-bottom: 1px dashed var(--line); padding: 5px 0; font-size: 12px; }
+  .run-meta .row span:first-child { color: var(--muted); flex: 0 0 96px; }
+  .run-meta .row code { font-family: var(--mono); font-size: 11px; overflow-wrap: anywhere; text-align: right; }
+  .run-meta .provider-list { margin: 4px 0 0; padding-left: 16px; font-size: 11.5px; color: #334155; }
+  .run-meta .provider-list li { margin: 3px 0; overflow-wrap: anywhere; }
 </style>
 </head>
 <body>
 <main>
   <header>
     <p class="eyebrow">LINGSHU · INTERVIEW HARNESS</p>
-    <h1>分镜导入与本地验收</h1>
-    <p class="lede">基于基线 20fe685。分镜的读取、编辑和预览不会触发任何生成、队列领取或付费调用；生成只从下方“受控本地生产”入口开始。</p>
+    <h1>分镜导入与任务工作台</h1>
+    <p class="lede">基于基线 20fe685。分镜的读取、编辑和预览不会触发任何生成、队列领取或付费调用；执行只从下方“启动任务”入口开始。产物保持 <code>review_required</code>，播放与下载通过原媒体接口完成。</p>
     <div class="chips" id="storyboard-summary" aria-live="polite"></div>
   </header>
 
@@ -346,17 +373,21 @@
   <section class="panel" aria-labelledby="production-title">
     <div class="panel-head">
       <div>
-        <h2 id="production-title">2. 受控本地生产</h2>
-        <p class="hint">沿用原队列、结果校验、人工审核与产物登记。这里只做本地闭环验收，不代表真实 HeyGen 全链路已接通。</p>
+        <h2 id="production-title">2. 数字员工任务工作台</h2>
+        <p class="hint">启动后按固定阶段执行：确认 Step 4 已付费的供应商记录 → 合成/校验 1080×1920 成片 → 用原 file/artifact 命令回写 → 原周任务消费者结算。产物强制为 <code>review_required</code>，技术/创意审核保持未通过。页面读取、刷新和播放都不会触发生成。</p>
       </div>
       <div class="actions">
-        <button type="button" id="render">运行受控本地生产</button>
-        <button type="button" id="scan">运行周任务消费者</button>
+        <button type="button" id="start" class="primary">启动任务</button>
         <button type="button" id="refresh">刷新状态</button>
+        <button type="button" id="scan">重新结算周任务</button>
       </div>
     </div>
     <p class="status" id="run-status" role="status"></p>
-    <pre id="message" aria-label="运行结果"></pre>
+    <div class="issues" id="pipeline-error" role="alert" hidden></div>
+    <div class="workbench">
+      <div class="phases" id="phases" aria-label="执行阶段"></div>
+      <div class="run-meta" id="run-meta" aria-label="任务信息"></div>
+    </div>
     <div id="media" class="media"></div>
     <details>
       <summary>原始状态 JSON</summary>
@@ -382,11 +413,13 @@
     format: $('storyboard-format'),
     previewButton: $('storyboard-preview'),
     save: $('storyboard-save'),
-    render: $('render'),
+    start: $('start'),
     scan: $('scan'),
     refresh: $('refresh'),
     runStatus: $('run-status'),
-    message: $('message'),
+    pipelineError: $('pipeline-error'),
+    phases: $('phases'),
+    runMeta: $('run-meta'),
     media: $('media'),
     state: $('state'),
   };
@@ -747,11 +780,131 @@
     return data;
   }
 
-  function renderMedia(state) {
+  function setRunStatus(text, kind) {
+    els.runStatus.textContent = text;
+    els.runStatus.dataset.kind = kind || '';
+  }
+
+  function shortHash(value) {
+    const text = value === null || value === undefined ? '' : String(value);
+    return text ? text.slice(0, 12) + '…' : '—';
+  }
+
+  function renderPipelineError(pipeline) {
+    const error = pipeline && pipeline.error;
+    els.pipelineError.replaceChildren();
+    if (!error) { els.pipelineError.hidden = true; return; }
+    els.pipelineError.append(el('strong', '', '执行失败'));
+    const list = el('ul');
+    const item = el('li', '', error.message || '未知错误');
+    item.append(el('p', '', '阶段：' + valueText(error.phase) + ' · 代码：' + valueText(error.code) + ' · 时间：' + formatDate(error.at)));
+    list.append(item);
+    els.pipelineError.append(list);
+    els.pipelineError.hidden = false;
+  }
+
+  function renderPhases(pipeline) {
+    els.phases.replaceChildren();
+    const phases = pipeline && Array.isArray(pipeline.phases) ? pipeline.phases : [];
+    if (phases.length === 0) {
+      els.phases.append(el('p', 'media-empty', '尚未启动任务。点击“启动任务”后，这里会显示每个阶段的真实状态。'));
+      return;
+    }
+    const statusText = {pending: '待执行', active: '执行中', done: '完成', failed: '失败'};
+    for (const phase of phases) {
+      const card = el('article', 'phase');
+      card.dataset.status = phase.status || 'pending';
+      const dot = el('span', 'dot');
+      const body = el('div');
+      body.append(el('strong', '', valueText(phase.label)));
+      body.append(el('small', '', phase.detail || statusText[phase.status] || phase.status));
+      if (phase.source) body.append(el('small', '', '来源：' + phase.source));
+      const time = phase.completedAt || phase.startedAt;
+      const stamp = el('span', 'phase-time', time ? formatDate(time) : statusText[phase.status] || '');
+      card.append(dot, body, stamp);
+      els.phases.append(card);
+    }
+  }
+
+  function metaRow(label, value) {
+    const row = el('div', 'row');
+    row.append(el('span', '', label));
+    const code = el('code', '', valueText(value));
+    row.append(code);
+    return row;
+  }
+
+  function renderRunMeta(pipeline) {
+    els.runMeta.replaceChildren();
+    if (!pipeline) {
+      els.runMeta.append(el('p', 'media-empty', '尚无任务记录。'));
+      return;
+    }
+    els.runMeta.append(metaRow('内容任务', pipeline.contentTaskId));
+    els.runMeta.append(metaRow('周任务', pipeline.weeklyTaskId));
+    els.runMeta.append(metaRow('run', pipeline.runId));
+    els.runMeta.append(metaRow('jobId', pipeline.jobId));
+    els.runMeta.append(metaRow('幂等键', pipeline.idempotencyKeyShort));
+    els.runMeta.append(metaRow('分镜 SHA-256', shortHash(pipeline.storyboardSha256)));
+    els.runMeta.append(metaRow('人物 / 声音', shortHash(pipeline.avatarId) + ' / ' + shortHash(pipeline.voiceId)));
+    if (pipeline.provider) {
+      const provider = pipeline.provider;
+      const budget = [];
+      if (provider.approvedCny !== null) budget.push('上限 ' + provider.approvedCny + ' CNY');
+      if (provider.chargedCny !== null) budget.push('已记账 ' + provider.chargedCny + ' CNY');
+      if (provider.paidSubmissions !== null) budget.push(provider.paidSubmissions + ' 次付费');
+      els.runMeta.append(metaRow('供应商阶段', provider.source));
+      els.runMeta.append(metaRow('费用', budget.join(' · ') || '—'));
+      const list = el('ul', 'provider-list');
+      for (const shot of provider.shots) {
+        list.append(el('li', '', shot.id + ' · ' + shot.kind + ' · ' +
+          'video_id ' + (shot.videoId || '—') + ' · requestId ' + shot.requestId +
+          (shot.durationSeconds ? ' · ' + shot.durationSeconds.toFixed(2) + 's' : '')));
+      }
+      els.runMeta.append(list);
+    }
+    if (pipeline.composition) {
+      const composition = pipeline.composition;
+      els.runMeta.append(metaRow('合成', composition.mode + ' · ' + composition.probe.durationSeconds.toFixed(2) + 's · ' +
+        composition.probe.width + '×' + composition.probe.height + ' · ' + composition.probe.videoCodec + '/' + composition.probe.audioCodec));
+      els.runMeta.append(metaRow('成片 SHA-256', shortHash(composition.sha256)));
+    }
+    if (pipeline.writeBack) {
+      els.runMeta.append(metaRow('产物', pipeline.writeBack.artifactId));
+      els.runMeta.append(metaRow('产物状态', pipeline.writeBack.status + ' · 技术审核 ' +
+        (pipeline.writeBack.technicalApproved ? '通过' : '未通过') + ' · 创意审核 ' +
+        (pipeline.writeBack.creativeApproved ? '通过' : '未通过')));
+      els.runMeta.append(metaRow('文件', pipeline.writeBack.fileRef + ' · ' + pipeline.writeBack.bytes + ' 字节'));
+    }
+    if (pipeline.settlement) {
+      els.runMeta.append(metaRow('周任务结算', pipeline.settlement.status +
+        (pipeline.settlement.code ? ' · ' + pipeline.settlement.code : '')));
+    }
+  }
+
+  function renderMedia(pipeline, state) {
     els.media.replaceChildren();
+    if (pipeline && pipeline.mediaUrl) {
+      const card = el('article', 'media-card');
+      const video = document.createElement('video');
+      video.controls = true;
+      video.preload = 'auto';
+      video.src = pipeline.mediaUrl;
+      video.addEventListener('loadedmetadata', () => {
+        try { video.currentTime = Math.min(1, video.duration / 10); } catch { /* keep poster frame */ }
+      });
+      const title = el('strong', '', '成片 · ' + valueText(pipeline.writeBack && pipeline.writeBack.artifactId));
+      const detail = el('small', '', 'task ' + valueText(pipeline.taskId) + ' · review_required · 播放与下载走原 /api/media');
+      const link = document.createElement('a');
+      link.href = pipeline.downloadUrl || (pipeline.mediaUrl + '&download=1');
+      link.textContent = '下载 MP4';
+      card.append(video, title, detail, link);
+      els.media.append(card);
+      return;
+    }
     const artifacts = state && Array.isArray(state.artifacts) ? state.artifacts : [];
     if (artifacts.length === 0) {
-      els.media.append(el('p', 'media-empty', '尚无本地产物。运行受控本地生产后，这里会显示可播放、可下载的 MP4。'));
+      els.media.append(el('p', 'media-empty', '尚无产物。点击“启动任务”后，这里会显示可播放、可下载的审核中成片。'));
       return;
     }
     for (const artifact of artifacts) {
@@ -761,7 +914,7 @@
       video.preload = 'metadata';
       video.src = '/api/media?artifactId=' + encodeURIComponent(artifact.artifact_id);
       const title = el('strong', '', valueText(artifact.artifact_id));
-      const detail = el('small', '', 'task ' + valueText(artifact.task_id) + ' · ' + valueText(artifact.kind || artifact.artifact_type));
+      const detail = el('small', '', 'task ' + valueText(artifact.task_id) + ' · ' + valueText(artifact.kind || artifact.artifact_type) + ' · ' + valueText(artifact.status));
       const link = document.createElement('a');
       link.href = video.src + '&download=1';
       link.textContent = '下载 MP4';
@@ -770,34 +923,95 @@
     }
   }
 
+  function renderPipeline(pipeline, state) {
+    renderPhases(pipeline);
+    renderRunMeta(pipeline);
+    renderPipelineError(pipeline);
+    renderMedia(pipeline, state);
+  }
+
+  let pollTimer = null;
+  function stopPolling() {
+    if (pollTimer) clearTimeout(pollTimer);
+    pollTimer = null;
+  }
+  function schedulePoll() {
+    stopPolling();
+    pollTimer = setTimeout(async () => {
+      const pipeline = await refreshPipelineOnly();
+      if (pipeline && pipeline.active) schedulePoll();
+    }, 1200);
+  }
+
+  async function refreshPipelineOnly() {
+    try {
+      const data = await requestJson('/api/pipeline', {cache: 'no-store'});
+      renderPipeline(data.pipeline, null);
+      return data.pipeline;
+    } catch (error) {
+      setRunStatus('读取任务状态失败：' + (error instanceof Error ? error.message : String(error)), 'error');
+      return null;
+    }
+  }
+
   async function refreshState() {
     try {
-      const state = await requestJson('/api/state', {cache: 'no-store'});
+      const [pipelineData, state] = await Promise.all([
+        requestJson('/api/pipeline', {cache: 'no-store'}),
+        requestJson('/api/state', {cache: 'no-store'}),
+      ]);
       els.state.textContent = JSON.stringify(state, null, 2);
-      renderMedia(state);
-      return state;
+      renderPipeline(pipelineData.pipeline, state);
+      if (pipelineData.pipeline && pipelineData.pipeline.active) schedulePoll();
+      return pipelineData.pipeline;
     } catch (error) {
       setRunStatus('刷新状态失败：' + (error instanceof Error ? error.message : String(error)), 'error');
       return null;
     }
   }
 
-  async function runProduction(pathname, label, button) {
-    const original = button.textContent;
-    button.disabled = true;
-    button.textContent = label + '…';
-    setRunStatus(label + '执行中…', '');
+  async function startRun() {
+    els.start.disabled = true;
+    els.start.textContent = '启动中…';
+    setRunStatus('正在启动任务；只会创建一次执行，重复点击不会重复提交。', '');
     try {
-      const data = await requestJson(pathname, {method: 'POST'});
-      els.message.textContent = JSON.stringify(data, null, 2);
+      const data = await requestJson('/api/start', {method: 'POST'});
+      const pipeline = data.pipeline;
+      if (!pipeline) throw new Error('服务端未返回任务状态');
+      if (data.status === 'already_complete') {
+        setRunStatus('该任务已有审核中产物，不会再次生成或回写。', 'ok');
+      } else if (data.status === 'already_running') {
+        setRunStatus('任务已在执行，继续显示当前阶段。', '');
+      } else {
+        setRunStatus('任务已启动，正在推进阶段…', '');
+      }
       await refreshState();
-      setRunStatus(label + '完成。', 'ok');
+      if (pipeline.active) schedulePoll();
+      else if (pipeline.phase === 'review_required') setRunStatus('成片已回写，等待人工审核。', 'ok');
+      else if (pipeline.phase === 'failed') setRunStatus('任务失败：' + valueText(pipeline.error && pipeline.error.message), 'error');
     } catch (error) {
-      setRunStatus(label + '失败：' + (error instanceof Error ? error.message : String(error)), 'error');
-      els.message.textContent = error && error.data ? JSON.stringify(error.data, null, 2) : String(error);
+      const message = error instanceof Error ? error.message : String(error);
+      setRunStatus('启动失败：' + message, 'error');
     } finally {
-      button.disabled = false;
-      button.textContent = original;
+      els.start.disabled = false;
+      els.start.textContent = '启动任务';
+    }
+  }
+
+  async function runScan() {
+    els.scan.disabled = true;
+    els.scan.textContent = '结算中…';
+    setRunStatus('正在让原周任务消费者结算；不会触发生成。', '');
+    try {
+      const data = await requestJson('/api/scan', {method: 'POST'});
+      const result = data.result;
+      setRunStatus('周任务消费者：' + valueText(result && result.status), result && result.status === 'succeeded' ? 'ok' : '');
+      await refreshState();
+    } catch (error) {
+      setRunStatus('结算失败：' + (error instanceof Error ? error.message : String(error)), 'error');
+    } finally {
+      els.scan.disabled = false;
+      els.scan.textContent = '重新结算周任务';
     }
   }
 
@@ -807,8 +1021,8 @@
   els.format.addEventListener('click', formatDraft);
   els.previewButton.addEventListener('click', previewDraft);
   els.save.addEventListener('click', saveDraft);
-  els.render.addEventListener('click', () => runProduction('/api/render', '受控本地生产', els.render));
-  els.scan.addEventListener('click', () => runProduction('/api/scan', '周任务消费者', els.scan));
+  els.start.addEventListener('click', startRun);
+  els.scan.addEventListener('click', runScan);
   els.refresh.addEventListener('click', () => refreshState());
 
   renderChips(null);

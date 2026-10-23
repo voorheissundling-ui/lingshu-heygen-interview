@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "step": 5,
+  "mode": "clean-seed",
+  "checkedAt": "2026-10-23T12:46:14.893Z",
+  "summary": "模拟干净仓库：无 .interview-data/step4-*，仅使用已提交的 evidence/step4-final.mp4 与每镜头 JSON。",
+  "pipeline": {
+    "phase": "review_required",
+    "compositionMode": "reused-verified-evidence",
+    "sha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
+    "providerSource": "committed-step4-evidence",
+    "providerShots": 6,
+    "approvedCny": 8,
+    "chargedCny": 5.339473,
+    "paidSubmissions": 6,
+    "artifactId": "socialart_00e1468657b81ffc8df69375",
+    "fileId": "socialfile_5a9010c6111b602283cf65e4",
+    "status": "review_required",
+    "technicalApproved": false,
+    "creativeApproved": false,
+    "settlement": "succeeded"
+  },
+  "stored": {
+    "jobs": 1,
+    "artifacts": 1,
+    "files": 1,
+    "weekly": "succeeded",
+    "artifactStatus": "review_required",
+    "artifactKind": "short_video",
+    "fileSha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f"
+  },
+  "download": {
+    "bytes": 8995181,
+    "sha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f"
+  },
+  "repeatedStart": {
+    "status": "already_complete",
+    "artifactId": "socialart_00e1468657b81ffc8df69375"
+  },
+  "checks": {
+    "reusedVerifiedEvidence": true,
+    "providerFromCommittedEvidence": true,
+    "allShaderValuesPresent": true,
+    "budgetCapFromCommittedEvidence": true,
+    "artifactReviewRequired": true,
+    "reviewsFalse": true,
+    "shaChainEqual": true,
+    "singleRecords": true,
+    "weeklySucceeded": true,
+    "repeatIdempotent": true
+  },
+  "allPassed": true
+}

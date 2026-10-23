@@ -129,4 +129,5 @@ curl -X POST -H 'Content-Type: application/json' \
 - [x] Step 2：真实模式和公开人物证据校验路径已实现；HeyGen 经系统代理可达，官方 Photo Avatar 价格已取得；真实只读预检已确认钱包 wallet/USD、余额 2.3、自动充值关闭，分镜公共 avatar/voice 均通过。公共目录在 20 页处截断，但目标 ID 已在前 1000 条中找到并验证。
 - [x] Step 3：公共人物运行时绑定与独立单镜头闭环已实现并测试；在 10 CNY 预算内完成 1 次真实提交，取得 3.21306 s、720×1280/H.264/AAC 的 MP4，全片解码通过，钱包 2.30→2.15 USD。证据见 `evidence/step3-single-shot.mp4` 与 `.json`。
 - [x] Step 4：3 段真实人物口播（hook / capabilities / cta，`fit=cover`，四边条带检测 0 px）+ 3 个原创说明镜头 + 真实旁白（product-range / lab-process / factory-quality）+ 6 条烧录字幕，合成 33.52 s、1080×1920、H.264/AAC 成片；计划 33.5 s，人物口播不裁剪，余量分配给静态说明镜头。证据见 `evidence/step4-final.mp4`、`evidence/step4-final.json`、`evidence/step4-frames/`。
-- [ ] 仍待后续步骤：真实 API 完整业务链路（bridge、任务回写、review_required、页面播放下载）、业务幂等/中断恢复/异常矩阵、人工完整听感/ASR 与人工审核。公共人物仍为西装办公室风格而非实验室白大褂；说明镜头为矢量插画而非实拍，均为已记录的取舍。
+- [x] Step 5：原任务回写与页面工作台已完成。复用 Step 4 已付费记录自动合成/校验 33.52 s 成片，经原 file/artifact 命令回写为 `review_required`（技术/创意审核 false），写入 2 张 G4 receipt 与 scene cache，原周任务消费者结算 `succeeded`。文件/产物/下载 SHA-256 均为 `c8fe2f84…cf815f`。页面“启动任务”是唯一执行入口，持久幂等键 + 文件租约替代 `busy`，重复启动返回同一产物；读取、刷新、播放不触发生成。证据见 `evidence/step5-writeback.json`、`evidence/step5-page.png`、`evidence/step5-page-bottom.png`。
+- [ ] 仍待后续步骤：真实在线 API 的完整业务 bridge（Step 5 供应商阶段复用 Step 4 记录，不是新一轮在线生成）、并发/强杀恢复与异常矩阵、人工完整听感/ASR 与人工审核。公共人物仍为西装办公室风格而非实验室白大褂；说明镜头为矢量插画而非实拍，均为已记录的取舍。

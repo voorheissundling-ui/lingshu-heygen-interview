@@ -1,6 +1,9 @@
 import {createServer, type IncomingMessage} from 'node:http';
 import fs from 'node:fs/promises';
-import {snapshot, scan, executeLocal, local} from './control.js';
+import {snapshot, scan, local} from './control.js';
+import {
+  describeError, readPublicPipeline, startPipeline, step5ErrorCode,
+} from './step5Pipeline.js';
 import {pbStore} from '../server/storage/pbStore.js';
 import {createStarter198Repository} from '../server/starter198/repository.js';
 import {openSocialArtifactPreviewMedia} from '../server/starter198/socialArtifactMedia.js';
@@ -16,7 +19,6 @@ import {
 } from './storyboard.js';
 
 const html = await fs.readFile(new URL('./public/index.html', import.meta.url));
-let busy = false;
 
 type BodyResult =
   | {ok: true; text: string}
@@ -137,6 +139,12 @@ const server = createServer(async (req, res) => {
       });
     }
 
+    // Read-only pipeline state. Loading this endpoint never starts, resumes, or
+    // settles anything; execution is only reachable through POST /api/start.
+    if (req.method === 'GET' && url.pathname === '/api/pipeline') {
+      return send(200, {ok: true, pipeline: await readPublicPipeline()});
+    }
+
     if (req.method === 'GET' && url.pathname === '/api/state') return send(200, await snapshot());
 
     if (req.method === 'GET' && url.pathname === '/api/media') {
@@ -165,13 +173,25 @@ const server = createServer(async (req, res) => {
       return;
     }
 
-    if (req.method === 'POST' && ['/api/scan', '/api/render'].includes(url.pathname)) {
-      if (busy) return send(409, {error: 'sandbox_operation_busy'});
-      busy = true;
+    if (req.method === 'POST' && url.pathname === '/api/start') {
       try {
-        return send(200, url.pathname === '/api/scan' ? await scan() : await executeLocal());
-      } finally {
-        busy = false;
+        const result = await startPipeline();
+        return send(result.status === 'started' ? 202 : 200, {ok: true, ...result});
+      } catch (error) {
+        const code = step5ErrorCode(error);
+        const status = code === 'step5_execution_running' ? 409
+          : code === 'step5_seed_required' || code === 'step5_session_missing' ? 409 : 400;
+        return send(status, {ok: false, error: describeError(error), code});
+      }
+    }
+
+    // Explicit settlement retry: it consumes the weekly queue but never submits
+    // or re-renders a provider operation.
+    if (req.method === 'POST' && url.pathname === '/api/scan') {
+      try {
+        return send(200, {ok: true, result: await scan()});
+      } catch (error) {
+        return send(500, {ok: false, error: describeError(error), code: step5ErrorCode(error)});
       }
     }
 
