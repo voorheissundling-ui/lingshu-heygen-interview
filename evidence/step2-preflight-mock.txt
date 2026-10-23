@@ -1,0 +1,1 @@
+{"preflight":"READ_ONLY_COMPLETE","billingType":"wallet","walletCurrency":"USD","walletRemainingBalance":12.34,"autoReloadEnabled":false,"catalogComplete":true,"catalogPages":{"avatars":2,"voices":1},"publicAvatarCount":2,"publicVoiceCount":1,"storyboardPresenterVerified":true,"paidGenerationVerified":false,"report":".interview-data/provider-preflight.json"}

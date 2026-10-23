@@ -1,0 +1,3 @@
+$ node interview/provider-preflight.mjs
+missing_HEYGEN_KEY_FILE
+[ELIFECYCLE] Command failed with exit code 1.

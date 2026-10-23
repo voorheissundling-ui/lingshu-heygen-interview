@@ -120,6 +120,23 @@ const server = createServer(async (req, res) => {
       });
     }
 
+    // Public, non-secret runtime state. It never returns the key or the key file path.
+    if (req.method === 'GET' && url.pathname === '/api/real/status') {
+      const real = process.env.INTERVIEW_REAL_MODE === '1';
+      return send(200, {
+        mode: real ? 'real' : 'offline',
+        keyConfigured: real && Boolean(process.env.HEYGEN_API_KEY),
+        credentialHash: real ? process.env.INTERVIEW_CREDENTIAL_SHA256 ?? null : null,
+        providerHost: 'api.heygen.com',
+        socialContentHeyGenEnabled: process.env.SOCIAL_CONTENT_HEYGEN_ENABLED === 'true',
+        generationEnabled: process.env.HEYGEN_GENERATION_ENABLED === 'true',
+        paidGenerationPerformed: false,
+        notice: real
+          ? '真实模式只加载凭据并限制外网；供应商操作仍需显式开关和预算。'
+          : '离线模式；bootstrap 已阻断外网。',
+      });
+    }
+
     if (req.method === 'GET' && url.pathname === '/api/state') return send(200, await snapshot());
 
     if (req.method === 'GET' && url.pathname === '/api/media') {

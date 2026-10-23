@@ -1,0 +1,63 @@
+$ node --import ./interview/bootstrap.mjs --import tsx interview/storyboard-cli.ts
+{
+  "ok": true,
+  "path": "assets/storyboard.json",
+  "sha256": "6d78d775752986ce5c3ea22b0b42cedea0825f80842f67b351406752e8791cf2",
+  "savedAt": "2026-10-23T09:46:33.133Z",
+  "summary": {
+    "shots": 6,
+    "presenterShots": 3,
+    "illustrationShots": 3,
+    "totalSeconds": 33.5
+  },
+  "presenter": {
+    "provider": "heygen",
+    "ownership": "public",
+    "avatarId": "ee25a2363ef941a1b5b0f7b1172e57d1",
+    "voiceId": "c5e71f9038a2419d9d43c7132c31fe49"
+  },
+  "shots": [
+    {
+      "id": "hook",
+      "kind": "presenter",
+      "startSeconds": 0,
+      "durationSeconds": 5,
+      "subtitle": "Launch your own skincare line"
+    },
+    {
+      "id": "product-range",
+      "kind": "illustration",
+      "startSeconds": 5,
+      "durationSeconds": 6.5,
+      "subtitle": "Serums, creams, cleansers — retail-ready"
+    },
+    {
+      "id": "capabilities",
+      "kind": "presenter",
+      "startSeconds": 11.5,
+      "durationSeconds": 4.5,
+      "subtitle": "Low MOQs. Clear pricing. Your branding."
+    },
+    {
+      "id": "lab-process",
+      "kind": "illustration",
+      "startSeconds": 16,
+      "durationSeconds": 5.5,
+      "subtitle": "Every batch tested for stability and safety"
+    },
+    {
+      "id": "factory-quality",
+      "kind": "illustration",
+      "startSeconds": 21.5,
+      "durationSeconds": 5,
+      "subtitle": "Automated filling, sealing, and QC"
+    },
+    {
+      "id": "cta",
+      "kind": "presenter",
+      "startSeconds": 26.5,
+      "durationSeconds": 7,
+      "subtitle": "15 years of manufacturing. Contact us for a quote."
+    }
+  ]
+}

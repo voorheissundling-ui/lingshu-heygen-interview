@@ -1,0 +1,37 @@
+Step 2 network and credential readiness check
+Checked at: 2026-10-23 (local machine, Windows 11 China)
+
+Credential locations (values never read or printed):
+- HEYGEN_KEY_FILE: unset
+- HEYGEN_API_KEY: unset
+- D:/secrets: directory does not exist
+- D:/secrets/heygen.key: missing
+
+Provider reachability (curl, 8-20 s timeout):
+- https://api.heygen.com/v3/users/me -> connection timed out (20 s)
+- https://help.heygen.com/en/articles/10060327-heygen-api-pricing-explained -> connection timed out (8 s)
+- https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml -> HTTP 200
+- https://www.baidu.com -> HTTP 200
+- https://www.example.com -> connection timed out
+- https://www.google.com -> TLS connection failed
+- https://api.openai.com -> connection timed out
+- https://1.1.1.1 -> connection timed out
+
+DNS/proxy observations:
+- api.heygen.com resolved to 199.16.156.71; TCP connection to it timed out.
+- No HTTP_PROXY / HTTPS_PROXY / ALL_PROXY / NO_PROXY environment variables.
+- No local proxy listeners on common ports (1080, 10809, 7890, 7897, 8080, 8888, 3128).
+- No Clash / V2Ray / Shadowsocks / sing-box / proxy process found in tasklist.
+- pnpm proxy and git http(s).proxy: unset.
+
+Read-only pricing command:
+- `pnpm run provider:pricing` -> {"pricingStatus":0,"fxStatus":200,"photoAvatarUsdPerMinute":null,"fx":{"date":"2026-10-22","cnyPerUsd":6.674341811691209}}
+- ECB FX was fetched; the HeyGen help article was not reachable, so the USD per-minute price remains unverified on this machine.
+
+Read-only preflight command:
+- `pnpm run provider:preflight` -> missing_HEYGEN_KEY_FILE, exit 1.
+
+Conclusion:
+- This machine cannot reach the HeyGen API or help site, and the key file is absent.
+- No live supplier preflight, wallet check, catalog verification, or pricing confirmation was performed or fabricated.
+- Step 3/4 paid calls must not be attempted from this network until both prerequisites are fixed.

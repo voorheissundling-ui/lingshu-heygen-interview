@@ -104,3 +104,69 @@ export function validateHeyGenPresenterRecord(record: TrustedPresenterRecord, no
   return { ok: true, presenterAssetId: id, avatarId, voiceId,
     assetVersion: Math.max(1, Number(record.assetVersion) || 1), rights: rights.evidence };
 }
+
+export interface PublicPresenterEvidence {
+  ownership: 'public';
+  publicCatalogRef: string;
+  providerTermsRef: string;
+  verifiedAt: string;
+  accountId: string;
+}
+
+export interface PublicHyGenPresenterRecord {
+  id?: unknown; ownership?: unknown; assetVersion?: unknown;
+  avatarId?: unknown; voiceId?: unknown;
+  publicCatalogRef?: unknown; providerTermsRef?: unknown; verifiedAt?: unknown; accountId?: unknown;
+  toolMappings?: unknown;
+}
+
+const PUBLIC_CATALOG_REF = /^(?:https:\/\/api\.heygen\.com\/v3\/avatars\/looks\/([A-Za-z0-9_-]{8,128})|heygen-public-catalog:[a-f0-9]{64})$/;
+const PROVIDER_TERMS_REF = /^(?:https:\/\/(?:www\.)?heygen\.com\/[^\s]+|document:\/\/[^\s]+|policy:\/\/[^\s]+)$/i;
+const VERIFIED_AT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/;
+const PUBLIC_VERIFICATION_MAX_AGE_MS = 7 * 24 * 3600 * 1000;
+
+/**
+ * Public catalog entries are supplier-owned stock assets. They must not be
+ * dressed up as a cloned person: no consentRef is fabricated. Instead the
+ * record carries the public catalog URL/response hash, the provider terms
+ * reference, a recent verification time and the provider account identity.
+ * The clone path above stays unchanged and still requires authorization and
+ * subject consent evidence.
+ */
+export function validatePublicHeyGenPresenterRecord(record: PublicHyGenPresenterRecord, now = new Date()):
+  | { ok: true; presenterAssetId: string; avatarId: string; voiceId: string; assetVersion: number; evidence: PublicPresenterEvidence }
+  | { ok: false; reasons: string[] } {
+  const id = String(record.id || '').trim();
+  const mappings = record.toolMappings && typeof record.toolMappings === 'object'
+    ? record.toolMappings as { heygen?: { avatarId?: unknown; voiceId?: unknown } } : {};
+  const avatarId = String(mappings.heygen?.avatarId || record.avatarId || '').trim();
+  const voiceId = String(mappings.heygen?.voiceId || record.voiceId || '').trim();
+  const ownership = String(record.ownership || '').trim().toLowerCase();
+  const publicCatalogRef = String(record.publicCatalogRef || '').trim();
+  const providerTermsRef = String(record.providerTermsRef || '').trim();
+  const verifiedAtText = String(record.verifiedAt || '').trim();
+  const verifiedAt = VERIFIED_AT.test(verifiedAtText) ? isoTime(verifiedAtText) : null;
+  const accountId = String(record.accountId || '').trim();
+  const assetVersion = record.assetVersion === undefined ? 1 : Number(record.assetVersion);
+  const reasons: string[] = [];
+
+  if (ownership !== 'public') reasons.push('public_ownership_required');
+  if (!id) reasons.push('presenter_id_missing');
+  if (!/^[A-Za-z0-9_-]{8,128}$/.test(avatarId)) reasons.push('heygen_avatar_id_missing');
+  if (!/^[A-Za-z0-9_-]{8,128}$/.test(voiceId)) reasons.push('heygen_voice_id_missing');
+
+  const catalog = publicCatalogRef.match(PUBLIC_CATALOG_REF);
+  if (!catalog) reasons.push('public_catalog_ref_invalid');
+  else if (catalog[1] && catalog[1] !== avatarId) reasons.push('public_catalog_ref_avatar_mismatch');
+  if (!PROVIDER_TERMS_REF.test(providerTermsRef)) reasons.push('provider_terms_ref_invalid');
+  if (!accountId || accountId.length > 160 || /\s/.test(accountId)) reasons.push('provider_account_id_invalid');
+  if (verifiedAt === null || verifiedAt > now.getTime()) reasons.push('public_catalog_verified_at_invalid');
+  else if (now.getTime() - verifiedAt > PUBLIC_VERIFICATION_MAX_AGE_MS) reasons.push('public_catalog_verification_stale');
+  if (!Number.isSafeInteger(assetVersion) || assetVersion < 1) reasons.push('asset_version_invalid');
+
+  if (reasons.length) return { ok: false, reasons: [...new Set(reasons)] };
+  return {
+    ok: true, presenterAssetId: id, avatarId, voiceId, assetVersion,
+    evidence: { ownership: 'public', publicCatalogRef, providerTermsRef, verifiedAt: verifiedAtText, accountId },
+  };
+}

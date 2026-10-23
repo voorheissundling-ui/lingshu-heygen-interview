@@ -1,0 +1,2 @@
+{"event":"real_mode_started","mode":"real","keyConfigured":true,"credentialHash":"a7fbf8b12efe939f20b3ca06d0a99eb5768e6f50e65281f924a47e5bcec92f81","providerHost":"api.heygen.com","allowedDownloadHosts":[],"socialContentHeyGenEnabled":false,"generationEnabled":false,"removedSecretEnvCount":6,"paidGenerationPerformed":false}
+http://127.0.0.1:4319
