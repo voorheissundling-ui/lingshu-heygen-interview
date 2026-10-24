@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "kind": "step8-clean-acceptance",
+  "step": 8,
+  "title": "干净克隆独立启动、成片/任务记录核验、重复执行与中断恢复",
+  "verifiedAt": "2026-10-24T07:40:00.000Z",
+  "commit": "64ce85c7ae6e582e4025fb78286a282466ab8004",
+  "environment": {
+    "platform": "Windows 11 (win32 x64)",
+    "node": "v25.5.0",
+    "pnpm": "11.25.0",
+    "coreAutocrlf": true,
+    "clonePath": "D:/tmp/accept-clean",
+    "cloneCommand": "git clone --branch step5-writeback --depth 1 git@github.com:voorheissundling-ui/lingshu-heygen-interview.git",
+    "isolation": "全新克隆：无 node_modules、无 .interview-data、无本机 Key；全程离线模式，未调用供应商，未产生费用。"
+  },
+  "foundAndFixed": {
+    "symptom": "首次干净克隆执行 pnpm test 失败：saved.sha256=ce3de043…（LF）与 loaded.sha256=6b6a43d1…（CRLF）不一致。",
+    "cause": "Windows core.autocrlf=true 在检出时把 assets/storyboard.json 转成 CRLF；storyboard SHA-256 按文件字节计算，任务身份因此漂移。",
+    "fix": "新增 .gitattributes（* text=auto eol=lf，媒体文件标记 binary），commit 64ce85c，重新克隆后 storyboard 保持 LF，SHA=ce3de043…c86a6。",
+    "impact": "修复前 Windows 干净环境无法通过验收启动；修复后所有检查通过。"
+  },
+  "checks": [
+    {"name": "pnpm install --frozen-lockfile", "result": "PASS", "exitCode": 0},
+    {"name": "pnpm run doctor", "result": "PASS", "detail": "ffmpeg 6.1.1, no provider/db/credentials required"},
+    {"name": "pnpm run typecheck", "result": "PASS", "exitCode": 0},
+    {"name": "pnpm test", "result": "129/129 pass"},
+    {"name": "pnpm run test:queue", "result": "37/37 pass"},
+    {"name": "pnpm run smoke", "result": "PASS", "artifactId": "socialart_a22a0e18b001ef945d06c4d4", "replay": "no_duplicate"},
+    {"name": "pnpm run verify", "result": "PASS", "detail": "persistedCompletedTask, wrongTenantRejected, corruptActualMediaRejected, restoredActualMediaAccepted"}
+  ],
+  "startupRun": {
+    "steps": ["pnpm run seed", "PORT=4320 pnpm run dev", "POST /api/start {\"mode\":\"reuse\"}"],
+    "phase": "review_required",
+    "composition": {
+      "mode": "reused-verified-evidence",
+      "providerMedia": "committed-evidence",
+      "bytes": 7701275,
+      "sha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7",
+      "probe": {"durationSeconds": 33.52, "width": 1080, "height": 1920, "videoCodec": "h264", "audioCodec": "aac", "sampleRate": 44100, "decodable": true}
+    },
+    "writeBack": {
+      "artifactId": "socialart_3978fbbe96419f5901ef0836",
+      "fileId": "socialfile_0cebb5aadda2eca1561e5369",
+      "status": "review_required",
+      "technicalApproved": false,
+      "creativeApproved": false,
+      "jobId": "b723a160da693f0"
+    },
+    "settlement": "succeeded",
+    "page": {"httpStatus": 200, "screenshot": "evidence/step8-clean-page.png"},
+    "playback": {"httpStatus": 200, "contentType": "video/mp4", "bytes": 7701275},
+    "download": {"httpStatus": 200, "contentDisposition": "attachment; filename=\"interview-output.mp4\"", "bytes": 7701275, "sha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7"},
+    "records": {"weekly": "succeeded", "jobs": 1, "artifacts": 1, "files": 1},
+    "repeatedStart": {"status": "already_complete", "recordsUnchanged": true}
+  },
+  "interruptionRun": {
+    "setup": "为获得可中断的合成窗口，把本机 Step 4 媒体与 state 复制进克隆目录（仍为 reuse，无供应商调用），seed 后启动。",
+    "interrupt": {
+      "method": "服务进程强杀（Stop-Process -Force），未等待合成完成",
+      "phaseAtKill": "compositing",
+      "persistedState": ".interview-data/step5/state.json phase=compositing",
+      "portAfterKill": "closed"
+    },
+    "recovery": {
+      "steps": ["相同命令重启 dev", "POST /api/start {\"mode\":\"reuse\"}"],
+      "observedPhases": ["submitting", "compositing", "writing_back", "review_required"],
+      "phase": "review_required",
+      "compositionMode": "recomposed",
+      "bytes": 7701275,
+      "sha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7",
+      "providerSource": "local-step4-state",
+      "paidSubmissions": 6,
+      "chargedCny": 4.204836,
+      "newPaidSubmissions": 0,
+      "newChargeCny": 0,
+      "artifactId": "socialart_1efb56ac631e04f1f7a6179f",
+      "fileId": "socialfile_06521c2042b39a541757a735",
+      "status": "review_required",
+      "settlement": "succeeded",
+      "records": {"jobs": 1, "artifacts": 1, "files": 1},
+      "repeatedStart": {"status": "already_complete"}
+    }
+  },
+  "checksSummary": {
+    "cleanCloneInstallsAndPasses": true,
+    "storyboardHashStableOnWindows": true,
+    "independentStartupWorks": true,
+    "finalVideoHashMatchesEvidence": true,
+    "pagePlaybackAndDownloadVerified": true,
+    "taskRecordsSingleAndReviewRequired": true,
+    "repeatStartIdempotent": true,
+    "hardKillMidCompositionRecovers": true,
+    "noDuplicateArtifactsOrFiles": true,
+    "noNewPaidSubmissionsOnRecovery": true
+  },
+  "limitations": [
+    "真实模式付费生成（generate）未在干净克隆重跑；该路径需要真实 Key 与预算，本验收只使用 reuse。",
+    "人工完整看片/听感与 ASR 逐字校对仍由验收人完成；自动化只覆盖时长、分辨率、编码、字幕帧、响度与音高。",
+    "3-5 分钟演示录屏未包含在仓库内。",
+    "账户未设置供应商侧消费硬上限；应用侧预算闸门为 8 CNY。"
+  ]
+}

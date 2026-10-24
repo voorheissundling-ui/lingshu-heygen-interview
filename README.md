@@ -2,7 +2,7 @@
 
 基线：`20fe685fa87c33680e3cc079fac62dcd07e0272a`。
 
-> **交付状态（2026-10-24）**：分镜导入 → HeyGen 生成 → 查询/下载 → 合成 → 原任务回写 → 页面播放/下载的全链路已完成，最终成片为 33.52 s、1080×1920、Brodie 英文男声，artifact `socialart_ae42c3e4f47b90c0dbdbc554`，状态 `review_required`。实现与取舍见 [SOLUTION.md](SOLUTION.md)，启动/恢复/回滚见 [OPERATIONS.md](OPERATIONS.md)，音色修订证据见 [evidence/voice-fix-brodie.md](evidence/voice-fix-brodie.md)，其余执行证据见 [evidence/](evidence/)。人工看片/听感与 3–5 分钟演示录制尚未完成。
+> **交付状态（2026-10-24）**：分镜导入 → HeyGen 生成 → 查询/下载 → 合成 → 原任务回写 → 页面播放/下载的全链路已完成，最终成片为 33.52 s、1080×1920、Brodie 英文男声，artifact `socialart_ae42c3e4f47b90c0dbdbc554`，状态 `review_required`。已在全新克隆中复验独立启动、成片/任务记录、重复执行与中断恢复（见 [evidence/step8-clean-acceptance.md](evidence/step8-clean-acceptance.md)），并修复 Windows 换行导致的 storyboard 哈希漂移。实现与取舍见 [SOLUTION.md](SOLUTION.md)，启动/恢复/回滚见 [OPERATIONS.md](OPERATIONS.md)，音色修订证据见 [evidence/voice-fix-brodie.md](evidence/voice-fix-brodie.md)，其余执行证据见 [evidence/](evidence/)。人工看片/听感、ASR 校对与 3–5 分钟演示录制仍由验收人完成。
 
 **以下保留出题方原始说明。** 本包最初为供审阅的面试包；已附可解码的历史缓存参考片。真实短片探针不是完整数字员工链路，不能替代候选人交付。
 

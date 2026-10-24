@@ -16,6 +16,7 @@ pnpm run dev         # http://127.0.0.1:4318
 
 - 端口：`PORT` 可覆盖，默认 4318；只绑定 `127.0.0.1`。
 - 页面读取（`GET /`、`/api/pipeline`、`/api/state`）不触发生成；只有 `POST /api/start` 执行。
+- 仓库用 `.gitattributes` 强制文本文件 LF 检出。`assets/storyboard.json` 的 SHA-256 是任务身份的一部分，**不要用会改成 CRLF 的编辑器重新保存该文件**，否则哈希和已有证据/状态不再匹配。
 - `seed` 是**破坏性**操作：删除 `.interview-data/store` 后重建 fixture。执行前先备份（见 §6）。
 
 ### 1.2 真实模式（HeyGen，经系统代理）
