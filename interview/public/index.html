@@ -1,5 +1,818 @@
-<!doctype html><html lang="zh"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>真实周生产模块 · 本地验收</title><style>body{font:16px system-ui;color:#202435;background:#f6f7fb;margin:0}main{max-width:1000px;margin:32px auto;padding:24px;background:white}button{font:inherit;padding:10px 16px;margin:4px;border:1px solid #ddd;border-radius:6px;cursor:pointer}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f5f7;padding:16px}video{width:min(100%,360px)}p{line-height:1.6}</style><main><h1>真实数字员工周生产模块</h1><p>基线20fe685 · 合成数据 · 单条已确认任务 · 仅本地执行</p><p>这是验证入口，候选人需完善任务详情、异常恢复及状态展示。真实模块执行结果在下方显示；本页不代表原产品完整界面。</p><button id="render">运行受控本地生产</button><button id="scan">运行周任务消费者</button><button id="refresh">刷新</button><pre id="message" role="status"></pre><div id="media"></div><pre id="state"></pre></main><script>
-const $=id=>document.getElementById(id);async function refresh(){const r=await fetch('/api/state');const data=await r.json();$('state').textContent=JSON.stringify(data,null,2);$('media').replaceChildren();for(const a of data.artifacts){const video=document.createElement('video');video.controls=true;video.src='/api/media?artifactId='+encodeURIComponent(a.artifact_id);$('media').append(video)}}
-for(const name of ['render','scan'])$(name).onclick=async()=>{try{$('message').textContent='执行中';const r=await fetch('/api/'+name,{method:'POST'});const result=await r.json();$('message').textContent=JSON.stringify({http:r.status,result},null,2);await refresh()}catch(e){$('message').textContent=e.message}};
-$('refresh').onclick=refresh;refresh().catch(e=>$('message').textContent=e.message);
-</script></html>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>真实数字员工 · 分镜导入与本地验收</title>
+<style>
+  :root {
+    --bg: #eef2f8;
+    --panel: #ffffff;
+    --ink: #0f172a;
+    --muted: #5b6b82;
+    --line: #dbe3ee;
+    --accent: #0f766e;
+    --presenter: #2563eb;
+    --illustration: #d97706;
+    --danger: #b42318;
+    --ok: #067647;
+    --shadow: 0 14px 36px rgba(15, 23, 42, .08);
+    --mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    min-height: 100vh;
+    color: var(--ink);
+    background:
+      radial-gradient(900px 500px at 8% -10%, rgba(20, 184, 166, .13), transparent 60%),
+      radial-gradient(800px 480px at 100% 0%, rgba(37, 99, 235, .10), transparent 58%),
+      var(--bg);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+    line-height: 1.55;
+  }
+  main { max-width: 1320px; margin: 0 auto; padding: 36px 24px 64px; display: grid; gap: 22px; }
+
+  header { padding: 6px 4px 0; }
+  .eyebrow {
+    margin: 0 0 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .16em;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  h1 { margin: 0; font-size: clamp(27px, 3.4vw, 38px); line-height: 1.15; letter-spacing: -.02em; }
+  .lede { margin: 10px 0 0; color: var(--muted); font-size: 14px; max-width: 860px; }
+
+  .panel {
+    background: rgba(255, 255, 255, .94);
+    border: 1px solid rgba(219, 227, 238, .95);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    padding: 22px;
+  }
+  .panel-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  h2 { margin: 0 0 4px; font-size: 19px; letter-spacing: -.01em; }
+  .hint { margin: 0; color: var(--muted); font-size: 13px; max-width: 760px; }
+  .hint code { font-family: var(--mono); font-size: 11.5px; }
+
+  .actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  button {
+    appearance: none;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 13px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease, filter .15s ease;
+  }
+  button:hover:not(:disabled) { background: #f8fafc; border-color: #b9c8da; }
+  button.primary {
+    color: #fff;
+    background: linear-gradient(135deg, #0f766e, #0d9488);
+    border-color: #0f766e;
+    box-shadow: 0 6px 16px rgba(13, 148, 136, .22);
+  }
+  button.primary:hover:not(:disabled) { background: linear-gradient(135deg, #0d6b64, #0f9f93); border-color: #0d6b64; }
+  button:disabled { opacity: .55; cursor: not-allowed; }
+  button:focus-visible, textarea:focus-visible, summary:focus-visible {
+    outline: 3px solid rgba(20, 184, 166, .30);
+    outline-offset: 2px;
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid #d6e9e5;
+    background: #eef5f3;
+    color: #0f5f58;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .chip.warn { background: #fff7e8; border-color: #f5dfb8; color: #8a4b0f; }
+  .chip.ok { background: #ecfdf3; border-color: #bbf7d0; color: #067647; }
+  .chip.muted { background: #f1f4f9; border-color: #e2e8f0; color: #5b6b82; }
+
+  .meta { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; color: var(--muted); font-size: 12px; margin: 12px 0 0; min-height: 20px; }
+  .meta code {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #334155;
+    background: #f4f6fa;
+    border: 1px solid var(--line);
+    padding: 2px 6px;
+    border-radius: 6px;
+  }
+  .status { min-height: 20px; margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+  .status[data-kind="ok"] { color: var(--ok); }
+  .status[data-kind="error"] { color: var(--danger); font-weight: 600; }
+
+  .issues {
+    margin: 12px 0;
+    border: 1px solid #f3c7c3;
+    background: #fff6f5;
+    color: #6d1f17;
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+  .issues strong { display: block; margin-bottom: 6px; font-size: 13px; }
+  .issues ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+  .issues li { font-size: 12px; }
+  .issues p { margin: 2px 0 0; color: #7a2e26; overflow-wrap: anywhere; }
+  .issues code {
+    font-family: var(--mono);
+    background: #ffe7e4;
+    border: 1px solid #f4c8c3;
+    padding: 1px 5px;
+    border-radius: 5px;
+    font-size: 11px;
+  }
+  .issue-code {
+    display: inline-block;
+    margin-left: 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #9a3412;
+    background: #ffedd5;
+    border: 1px solid #fed7aa;
+    padding: 1px 5px;
+    border-radius: 999px;
+  }
+
+  .editor-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(320px, .92fr);
+    gap: 16px;
+    margin-top: 14px;
+  }
+  textarea {
+    width: 100%;
+    height: 100%;
+    min-height: 640px;
+    resize: vertical;
+    border: 1px solid #1e293b;
+    border-radius: 14px;
+    background: #0b1220;
+    color: #d8e4f5;
+    padding: 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.55;
+    tab-size: 2;
+    caret-color: #5eead4;
+  }
+  textarea::selection { background: rgba(94, 234, 212, .25); }
+
+  .preview {
+    min-height: 640px;
+    max-height: 1000px;
+    overflow: auto;
+    scroll-behavior: smooth;
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px;
+  }
+  .preview-empty {
+    color: var(--muted);
+    font-size: 13px;
+    padding: 22px 16px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    text-align: center;
+    background: #fff;
+  }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; font-size: 11px; color: var(--muted); margin: 2px 0 8px; }
+  .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 5px; }
+
+  .timeline {
+    display: flex;
+    width: 100%;
+    height: 46px;
+    border: 1px solid #d5deea;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #e2e8f0;
+  }
+  .seg {
+    appearance: none;
+    border: 0;
+    border-right: 2px solid #fff;
+    border-radius: 0;
+    min-width: 0;
+    height: 100%;
+    padding: 0 6px 6px;
+    color: #fff;
+    font: inherit;
+    font-size: 10px;
+    font-weight: 700;
+    text-align: left;
+    display: flex;
+    align-items: flex-end;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+  }
+  .seg:last-child { border-right: 0; }
+  .seg.presenter { background: linear-gradient(180deg, #3b82f6, #1d4ed8); }
+  .seg.illustration { background: linear-gradient(180deg, #f59e0b, #b45309); }
+  .seg.unknown { background: #64748b; }
+  .seg:hover { filter: brightness(1.08); }
+  .timeline-scale { display: flex; justify-content: space-between; margin: 5px 2px 12px; color: var(--muted); font-size: 11px; }
+
+  .shots { display: grid; gap: 10px; }
+  .shot {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-left: 4px solid #94a3b8;
+    border-radius: 12px;
+    padding: 12px 14px;
+    scroll-margin: 16px;
+  }
+  .shot.presenter { border-left-color: var(--presenter); }
+  .shot.illustration { border-left-color: var(--illustration); }
+  .shot:focus { outline: 2px solid rgba(20, 184, 166, .45); outline-offset: 2px; }
+  .shot-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .shot-index { font-family: var(--mono); font-size: 10px; color: var(--muted); background: #f1f5f9; padding: 2px 6px; border-radius: 5px; }
+  .shot h3 { margin: 0; font-size: 14px; letter-spacing: .01em; }
+  .badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: #e8f0fe; color: #1d4ed8; }
+  .shot.illustration .badge { background: #fff2df; color: #9a4d06; }
+  .shot-time { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .shot dl { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 5px 10px; margin: 0; font-size: 12px; }
+  .shot dt { color: var(--muted); font-weight: 600; }
+  .shot dd { margin: 0; color: #24344b; overflow-wrap: anywhere; }
+  .shot dd code { font-family: var(--mono); font-size: 11px; color: #334155; background: #f4f6fa; border: 1px solid var(--line); padding: 1px 5px; border-radius: 5px; }
+  .shot .source { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); }
+
+  .media { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-top: 14px; }
+  .media-card {
+    display: grid;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px;
+  }
+  .media-card video { width: 100%; aspect-ratio: 9 / 16; object-fit: contain; background: #0b1220; border-radius: 8px; }
+  .media-card small { color: var(--muted); font-size: 11px; overflow-wrap: anywhere; }
+  .media-card a { font-size: 12px; font-weight: 600; color: var(--accent); }
+  .media-empty { color: var(--muted); font-size: 13px; padding: 12px 0 2px; }
+
+  pre {
+    margin: 12px 0 0;
+    padding: 14px;
+    max-height: 420px;
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    border-radius: 12px;
+    background: #0b1220;
+    color: #d8e4f5;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    line-height: 1.55;
+  }
+  pre:empty { display: none; }
+  details { margin-top: 12px; }
+  summary { cursor: pointer; font-size: 13px; font-weight: 600; color: #334155; }
+
+  .foot { color: var(--muted); font-size: 12px; text-align: center; padding: 0 12px; }
+
+  @media (max-width: 980px) {
+    .editor-grid { grid-template-columns: 1fr; }
+    textarea { min-height: 420px; }
+    .preview { min-height: 320px; max-height: none; }
+  }
+  @media (max-width: 620px) {
+    main { padding: 22px 14px 44px; }
+    .panel { padding: 16px; border-radius: 16px; }
+    .actions { width: 100%; }
+    .actions button { flex: 1 1 auto; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">LINGSHU · INTERVIEW HARNESS</p>
+    <h1>分镜导入与本地验收</h1>
+    <p class="lede">基于基线 20fe685。分镜的读取、编辑和预览不会触发任何生成、队列领取或付费调用；生成只从下方“受控本地生产”入口开始。</p>
+    <div class="chips" id="storyboard-summary" aria-live="polite"></div>
+  </header>
+
+  <section class="panel" aria-labelledby="storyboard-title">
+    <div class="panel-head">
+      <div>
+        <h2 id="storyboard-title">1. 分镜</h2>
+        <p class="hint">导入或编辑 JSON，先本地预览时间轴与逐镜内容，再点击“校验并导入”。服务端会重新校验并原子写入 <code>assets/storyboard.json</code>；字段错误会逐条显示。</p>
+      </div>
+      <div class="actions">
+        <button type="button" id="storyboard-file-button">选择 JSON 文件</button>
+        <input type="file" id="storyboard-file" accept="application/json,.json" hidden>
+        <button type="button" id="storyboard-reload">读取已保存</button>
+        <button type="button" id="storyboard-format">格式化</button>
+        <button type="button" id="storyboard-preview">预览</button>
+        <button type="button" id="storyboard-save" class="primary">校验并导入</button>
+      </div>
+    </div>
+    <div class="meta" id="storyboard-meta"></div>
+    <p class="status" id="storyboard-status" role="status"></p>
+    <div class="issues" id="storyboard-issues" role="alert" hidden></div>
+    <div class="editor-grid">
+      <textarea id="storyboard-json" spellcheck="false" autocomplete="off" aria-label="分镜 JSON 编辑器"></textarea>
+      <div class="preview" id="storyboard-preview-area" aria-label="分镜预览">
+        <div class="preview-empty">尚无分镜预览。载入已保存的分镜，或粘贴 JSON 后点击“预览”。</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="production-title">
+    <div class="panel-head">
+      <div>
+        <h2 id="production-title">2. 受控本地生产</h2>
+        <p class="hint">沿用原队列、结果校验、人工审核与产物登记。这里只做本地闭环验收，不代表真实 HeyGen 全链路已接通。</p>
+      </div>
+      <div class="actions">
+        <button type="button" id="render">运行受控本地生产</button>
+        <button type="button" id="scan">运行周任务消费者</button>
+        <button type="button" id="refresh">刷新状态</button>
+      </div>
+    </div>
+    <p class="status" id="run-status" role="status"></p>
+    <pre id="message" aria-label="运行结果"></pre>
+    <div id="media" class="media"></div>
+    <details>
+      <summary>原始状态 JSON</summary>
+      <pre id="state"></pre>
+    </details>
+  </section>
+
+  <footer class="foot">本地沙箱仅监听 127.0.0.1；不读取、展示或回传任何供应商凭据。</footer>
+</main>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    summary: $('storyboard-summary'),
+    meta: $('storyboard-meta'),
+    issues: $('storyboard-issues'),
+    json: $('storyboard-json'),
+    preview: $('storyboard-preview-area'),
+    storyboardStatus: $('storyboard-status'),
+    fileButton: $('storyboard-file-button'),
+    file: $('storyboard-file'),
+    reload: $('storyboard-reload'),
+    format: $('storyboard-format'),
+    previewButton: $('storyboard-preview'),
+    save: $('storyboard-save'),
+    render: $('render'),
+    scan: $('scan'),
+    refresh: $('refresh'),
+    runStatus: $('run-status'),
+    message: $('message'),
+    media: $('media'),
+    state: $('state'),
+  };
+  const MAX_BYTES = 256 * 1024;
+
+  function el(tag, className, textValue) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (textValue !== undefined) node.textContent = textValue;
+    return node;
+  }
+
+  function valueText(value) {
+    return value === null || value === undefined || value === '' ? '—' : String(value);
+  }
+
+  function formatSeconds(value) {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return '—';
+    return number.toFixed(2).replace(/\.?0+$/, '') + 's';
+  }
+
+  function formatDate(value) {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString('zh-CN', {hour12: false});
+  }
+
+  function setStoryboardStatus(text, kind) {
+    els.storyboardStatus.textContent = text;
+    els.storyboardStatus.dataset.kind = kind || '';
+  }
+
+  function setRunStatus(text, kind) {
+    els.runStatus.textContent = text;
+    els.runStatus.dataset.kind = kind || '';
+  }
+
+  function renderIssues(issues, title) {
+    els.issues.replaceChildren();
+    if (!Array.isArray(issues) || issues.length === 0) {
+      els.issues.hidden = true;
+      return;
+    }
+    els.issues.append(el('strong', '', title || '校验未通过'));
+    const list = el('ul');
+    for (const issue of issues) {
+      const item = el('li');
+      item.append(el('code', '', valueText(issue && issue.path)));
+      item.append(el('span', 'issue-code', valueText(issue && issue.code)));
+      item.append(el('p', '', valueText(issue && issue.message)));
+      list.append(item);
+    }
+    els.issues.append(list);
+    els.issues.hidden = false;
+  }
+
+  function stats(data) {
+    const shots = data && Array.isArray(data.shots) ? data.shots : [];
+    const presenter = shots.filter((shot) => shot && shot.kind === 'presenter').length;
+    const illustration = shots.filter((shot) => shot && shot.kind === 'illustration').length;
+    const sum = shots.reduce((total, shot) => {
+      const duration = Number(shot && shot.durationSeconds);
+      return total + (Number.isFinite(duration) ? duration : 0);
+    }, 0);
+    const target = Number(data && data.targetDurationSeconds);
+    return {
+      shots: shots.length,
+      presenter,
+      illustration,
+      total: Number.isFinite(target) && target > 0 ? target : sum,
+      sum,
+    };
+  }
+
+  function kindLabel(kind) {
+    if (kind === 'presenter') return '人物';
+    if (kind === 'illustration') return '说明图';
+    return '未知';
+  }
+
+  function renderChips(data, counts, options) {
+    const settings = options || {};
+    els.summary.replaceChildren();
+    if (!data) {
+      els.summary.append(el('span', 'chip muted', '尚未载入分镜'));
+      return;
+    }
+    els.summary.append(el('span', 'chip', counts.shots + ' 个镜头'));
+    els.summary.append(el('span', 'chip', counts.presenter + ' 人物'));
+    els.summary.append(el('span', 'chip', counts.illustration + ' 说明图'));
+    els.summary.append(el('span', 'chip', formatSeconds(counts.total) + ' 总长'));
+    if (data.language) els.summary.append(el('span', 'chip muted', '语言 ' + data.language));
+    if (settings.saved) els.summary.append(el('span', 'chip ok', '服务端已保存'));
+    if (settings.draft) els.summary.append(el('span', 'chip muted', '草稿预览 · 未写入'));
+    if (counts.presenter < 2) els.summary.append(el('span', 'chip warn', '人物镜头不足 2'));
+    if (counts.illustration < 2) els.summary.append(el('span', 'chip warn', '说明图不足 2'));
+    if (!(counts.total >= 30 && counts.total <= 37)) els.summary.append(el('span', 'chip warn', '总长不在 30–37s'));
+    if (Math.abs(counts.sum - counts.total) > 0.05) els.summary.append(el('span', 'chip warn', '镜头总长与目标不一致'));
+  }
+
+  function legendItem(color, label) {
+    const item = el('span');
+    const dot = el('i');
+    dot.style.background = color;
+    item.append(dot, document.createTextNode(label));
+    return item;
+  }
+
+  function appendRow(list, label, value, asCode) {
+    list.append(el('dt', '', label));
+    const detail = el('dd');
+    if (asCode && value !== '—') detail.append(el('code', '', value));
+    else detail.textContent = String(value);
+    list.append(detail);
+  }
+
+  function shotCard(shot, index) {
+    const kind = shot && (shot.kind === 'presenter' || shot.kind === 'illustration') ? shot.kind : 'unknown';
+    const card = el('article', 'shot ' + kind);
+    card.dataset.shotIndex = String(index);
+    card.tabIndex = -1;
+
+    const head = el('div', 'shot-head');
+    head.append(el('span', 'shot-index', String(index + 1).padStart(2, '0')));
+    head.append(el('h3', '', valueText(shot && shot.id)));
+    head.append(el('span', 'badge', kindLabel(kind)));
+    const start = Number(shot && shot.startSeconds);
+    const duration = Number(shot && shot.durationSeconds);
+    head.append(el('span', 'shot-time', formatSeconds(start) + ' – ' + formatSeconds(start + duration)));
+    card.append(head);
+
+    const list = el('dl');
+    appendRow(list, '口播', valueText(shot && shot.speech));
+    appendRow(list, '字幕', valueText(shot && shot.subtitle));
+    appendRow(list, '构图', valueText(shot && shot.framing));
+    if (kind === 'presenter') {
+      appendRow(list, '来源', 'HeyGen 公共授权形象（provider / avatar / voice 见 JSON）');
+    }
+    card.append(list);
+
+    if (kind === 'illustration') {
+      const box = el('div', 'source');
+      const sourceList = el('dl');
+      const source = shot && shot.source;
+      if (source && typeof source === 'object') {
+        if (source.localFile) appendRow(sourceList, '本地文件', source.localFile, true);
+        if (source.sourceUrl) appendRow(sourceList, '来源 URL', source.sourceUrl);
+        appendRow(sourceList, '许可', valueText(source.license));
+        appendRow(sourceList, '作者', valueText(source.author));
+        if (source.notes) appendRow(sourceList, '说明', source.notes);
+      } else {
+        appendRow(sourceList, '来源', '缺少来源对象（导入会被拒绝）');
+      }
+      box.append(sourceList);
+      card.append(box);
+    }
+    return card;
+  }
+
+  function renderStoryboard(data, options) {
+    const settings = options || {};
+    const counts = stats(data);
+    renderChips(data, counts, settings);
+    els.preview.replaceChildren();
+    const shots = data && Array.isArray(data.shots) ? data.shots : [];
+    if (shots.length === 0) {
+      els.preview.append(el('div', 'preview-empty', '无法预览：分镜缺少非空 shots 数组。'));
+      return;
+    }
+
+    const legend = el('div', 'legend');
+    legend.append(legendItem('#2563eb', '人物镜头'), legendItem('#d97706', '说明图镜头'));
+    els.preview.append(legend);
+
+    const timeline = el('div', 'timeline');
+    timeline.setAttribute('aria-label', '分镜时间轴');
+    const total = Math.max(counts.total, 0.001);
+    shots.forEach((shot, index) => {
+      const duration = Number(shot && shot.durationSeconds);
+      const start = Number(shot && shot.startSeconds);
+      const kind = shot && (shot.kind === 'presenter' || shot.kind === 'illustration') ? shot.kind : 'unknown';
+      const width = Number.isFinite(duration) && duration > 0 ? (duration / total) * 100 : 0;
+      const segment = el('button', 'seg ' + kind);
+      segment.type = 'button';
+      segment.style.width = width + '%';
+      const label = valueText(shot && shot.id) + ' · ' + kindLabel(kind) + ' · ' +
+        formatSeconds(start) + '–' + formatSeconds(start + duration);
+      segment.title = label;
+      segment.setAttribute('aria-label', label);
+      segment.append(el('span', '', valueText(shot && shot.id)));
+      segment.addEventListener('click', () => {
+        const card = els.preview.querySelector('[data-shot-index="' + index + '"]');
+        if (card) {
+          card.scrollIntoView({behavior: 'smooth', block: 'center'});
+          card.focus({preventScroll: true});
+        }
+      });
+      timeline.append(segment);
+    });
+    els.preview.append(timeline);
+
+    const scale = el('div', 'timeline-scale');
+    scale.append(el('span', '', '0s'), el('span', '', formatSeconds(counts.total)));
+    els.preview.append(scale);
+
+    const list = el('div', 'shots');
+    shots.forEach((shot, index) => list.append(shotCard(shot, index)));
+    els.preview.append(list);
+  }
+
+  function setStoryboardMeta(data) {
+    els.meta.replaceChildren();
+    if (!data) return;
+    if (data.path) els.meta.append(el('span', '', data.path));
+    if (data.sha256) {
+      const hash = el('code', '', 'sha256 ' + String(data.sha256).slice(0, 16) + '…');
+      hash.title = String(data.sha256);
+      els.meta.append(hash);
+    }
+    if (data.savedAt) els.meta.append(el('span', '', '保存于 ' + formatDate(data.savedAt)));
+    if (data.bytes !== undefined) els.meta.append(el('span', '', data.bytes + ' 字节'));
+  }
+
+  function parseEditor() {
+    try {
+      return {ok: true, value: JSON.parse(els.json.value)};
+    } catch (error) {
+      renderIssues([{
+        path: '$',
+        code: 'invalid_json',
+        message: error instanceof Error ? error.message : String(error),
+      }], 'JSON 解析失败');
+      setStoryboardStatus('JSON 解析失败；未调用服务端，也未写入文件。', 'error');
+      return {ok: false};
+    }
+  }
+
+  function previewDraft() {
+    const parsed = parseEditor();
+    if (!parsed.ok) return;
+    renderIssues([]);
+    renderStoryboard(parsed.value, {draft: true});
+    setStoryboardMeta({path: '（草稿，尚未写入）'});
+    setStoryboardStatus('草稿预览完成。服务端校验与写入尚未执行。', '');
+  }
+
+  function formatDraft() {
+    const parsed = parseEditor();
+    if (!parsed.ok) return;
+    els.json.value = JSON.stringify(parsed.value, null, 2);
+    previewDraft();
+  }
+
+  async function loadSaved() {
+    els.reload.disabled = true;
+    setStoryboardStatus('正在读取已保存的分镜…', '');
+    try {
+      const response = await fetch('/api/storyboard', {cache: 'no-store'});
+      const data = await response.json().catch(() => null);
+      if (!data) {
+        setStoryboardStatus('读取失败：服务端响应不是 JSON。', 'error');
+        return;
+      }
+      if (typeof data.raw === 'string') els.json.value = data.raw;
+      else if (data.storyboard) els.json.value = JSON.stringify(data.storyboard, null, 2);
+      else els.json.value = '';
+
+      if (data.storyboard) {
+        renderIssues([]);
+        renderStoryboard(data.storyboard, {saved: data.ok === true});
+        setStoryboardMeta(data);
+        setStoryboardStatus('已读取 ' + data.path + '。读取不会触发生成。', 'ok');
+      } else {
+        renderChips(null);
+        els.preview.replaceChildren(el('div', 'preview-empty',
+          data.raw ? '已保存的分镜未通过校验，原始内容已载入编辑器，问题见上方。' : '尚无已保存的分镜。可粘贴 JSON 后预览或导入。'));
+        renderIssues(data.issues || [], '已保存的分镜未通过校验');
+        setStoryboardMeta(data.path ? {path: data.path, sha256: data.sha256, savedAt: data.savedAt} : null);
+        setStoryboardStatus(data.ok === true ? '尚未保存分镜，可粘贴 JSON 后导入。' : '已保存的分镜未通过校验，见上方问题列表。', data.ok === true ? '' : 'error');
+      }
+    } catch (error) {
+      setStoryboardStatus('读取失败：' + (error instanceof Error ? error.message : String(error)), 'error');
+    } finally {
+      els.reload.disabled = false;
+    }
+  }
+
+  async function saveDraft() {
+    const parsed = parseEditor();
+    if (!parsed.ok) return;
+    els.save.disabled = true;
+    els.save.textContent = '校验中…';
+    setStoryboardStatus('服务端校验中…', '');
+    try {
+      const response = await fetch('/api/storyboard', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(parsed.value),
+      });
+      const data = await response.json().catch(() => null);
+      if (!data) throw new Error('服务端响应不是 JSON');
+      if (!response.ok || data.ok !== true) {
+        const issues = Array.isArray(data.issues) && data.issues.length
+          ? data.issues
+          : [{path: '$', code: data.error || 'request_failed', message: 'HTTP ' + response.status}];
+        renderIssues(issues, '服务端拒绝导入');
+        els.json.value = JSON.stringify(parsed.value, null, 2);
+        setStoryboardStatus('导入失败（HTTP ' + response.status + '）：未写入文件。', 'error');
+        return;
+      }
+      els.json.value = JSON.stringify(data.storyboard, null, 2);
+      renderIssues([]);
+      renderStoryboard(data.storyboard, {saved: true});
+      setStoryboardMeta(data);
+      setStoryboardStatus('已写入 ' + data.path + '（' + data.bytes + ' 字节，sha256 ' +
+        String(data.sha256).slice(0, 12) + '…）。', 'ok');
+    } catch (error) {
+      setStoryboardStatus('导入失败：' + (error instanceof Error ? error.message : String(error)), 'error');
+    } finally {
+      els.save.disabled = false;
+      els.save.textContent = '校验并导入';
+    }
+  }
+
+  async function loadFile(event) {
+    const file = event.target.files && event.target.files[0];
+    event.target.value = '';
+    if (!file) return;
+    if (file.size > MAX_BYTES) {
+      renderIssues([{
+        path: '$',
+        code: 'payload_too_large',
+        message: '文件超过 ' + MAX_BYTES + ' 字节，服务端也会拒绝。',
+      }], '文件过大');
+      setStoryboardStatus('未读取文件。', 'error');
+      return;
+    }
+    try {
+      els.json.value = await file.text();
+      previewDraft();
+      setStoryboardStatus('已载入文件 ' + file.name + ' 为草稿；尚未写入。', '');
+    } catch (error) {
+      setStoryboardStatus('读取文件失败：' + (error instanceof Error ? error.message : String(error)), 'error');
+    }
+  }
+
+  async function requestJson(url, options) {
+    const response = await fetch(url, options);
+    const text = await response.text();
+    let data = null;
+    try { data = text ? JSON.parse(text) : null; } catch { data = null; }
+    if (!response.ok || (data && data.ok === false)) {
+      const error = new Error((data && (data.error || 'request_failed')) || ('HTTP ' + response.status));
+      error.status = response.status;
+      error.data = data;
+      throw error;
+    }
+    return data;
+  }
+
+  function renderMedia(state) {
+    els.media.replaceChildren();
+    const artifacts = state && Array.isArray(state.artifacts) ? state.artifacts : [];
+    if (artifacts.length === 0) {
+      els.media.append(el('p', 'media-empty', '尚无本地产物。运行受控本地生产后，这里会显示可播放、可下载的 MP4。'));
+      return;
+    }
+    for (const artifact of artifacts) {
+      const card = el('article', 'media-card');
+      const video = document.createElement('video');
+      video.controls = true;
+      video.preload = 'metadata';
+      video.src = '/api/media?artifactId=' + encodeURIComponent(artifact.artifact_id);
+      const title = el('strong', '', valueText(artifact.artifact_id));
+      const detail = el('small', '', 'task ' + valueText(artifact.task_id) + ' · ' + valueText(artifact.kind || artifact.artifact_type));
+      const link = document.createElement('a');
+      link.href = video.src + '&download=1';
+      link.textContent = '下载 MP4';
+      card.append(video, title, detail, link);
+      els.media.append(card);
+    }
+  }
+
+  async function refreshState() {
+    try {
+      const state = await requestJson('/api/state', {cache: 'no-store'});
+      els.state.textContent = JSON.stringify(state, null, 2);
+      renderMedia(state);
+      return state;
+    } catch (error) {
+      setRunStatus('刷新状态失败：' + (error instanceof Error ? error.message : String(error)), 'error');
+      return null;
+    }
+  }
+
+  async function runProduction(pathname, label, button) {
+    const original = button.textContent;
+    button.disabled = true;
+    button.textContent = label + '…';
+    setRunStatus(label + '执行中…', '');
+    try {
+      const data = await requestJson(pathname, {method: 'POST'});
+      els.message.textContent = JSON.stringify(data, null, 2);
+      await refreshState();
+      setRunStatus(label + '完成。', 'ok');
+    } catch (error) {
+      setRunStatus(label + '失败：' + (error instanceof Error ? error.message : String(error)), 'error');
+      els.message.textContent = error && error.data ? JSON.stringify(error.data, null, 2) : String(error);
+    } finally {
+      button.disabled = false;
+      button.textContent = original;
+    }
+  }
+
+  els.fileButton.addEventListener('click', () => els.file.click());
+  els.file.addEventListener('change', loadFile);
+  els.reload.addEventListener('click', loadSaved);
+  els.format.addEventListener('click', formatDraft);
+  els.previewButton.addEventListener('click', previewDraft);
+  els.save.addEventListener('click', saveDraft);
+  els.render.addEventListener('click', () => runProduction('/api/render', '受控本地生产', els.render));
+  els.scan.addEventListener('click', () => runProduction('/api/scan', '周任务消费者', els.scan));
+  els.refresh.addEventListener('click', () => refreshState());
+
+  renderChips(null);
+  void Promise.allSettled([loadSaved(), refreshState()]);
+</script>
+</body>
+</html>
