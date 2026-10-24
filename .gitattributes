@@ -1,0 +1,14 @@
+# Keep text files byte-stable across platforms. Storyboard SHA-256 is part of
+# the task identity and is computed over the file bytes, so a CRLF checkout on
+# Windows would otherwise change the hash and break tests/idempotency.
+* text=auto eol=lf
+
+# Never apply text conversion to media.
+*.mp4 binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
