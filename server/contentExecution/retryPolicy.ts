@@ -36,7 +36,7 @@ export function classifyContentExecutionFailure(error: unknown, input: {
   const reconciliationAttempts = boundedInteger(env.CONTENT_RECONCILIATION_MAX_ATTEMPTS, 12, 1, 100);
 
   if (input.hasUnsettledProviderReceipt
-    || /provider_submission_(?:uncertain|unknown)|提交结果未知|do not resubmit|unknown submission|not_completed:(?:pending|uncertain)/i.test(raw)) {
+    || /provider_submission_(?:uncertain|unknown)|step5_submission_unknown|提交结果未知|do not resubmit|unknown submission|not_completed:(?:pending|uncertain)/i.test(raw)) {
     return {
       failureClass: 'provider_reconciliation',
       disposition: input.attempt >= reconciliationAttempts ? 'block' : 'reconcile',
@@ -45,7 +45,7 @@ export function classifyContentExecutionFailure(error: unknown, input: {
       publicReason: input.attempt >= reconciliationAttempts ? '供应商任务需要人工确认' : '供应商已受理，正在对账',
     };
   }
-  if (/insufficient[_\s-]*(?:balance|credit)|余额不足|quota[_\s-]*(?:exceeded|insufficient)|monthly_budget_exceeded|budget_denied|budget_unavailable|预算不足/i.test(lower)) {
+  if (/insufficient[_\s-]*(?:balance|credit)|余额不足|quota[_\s-]*(?:exceeded|insufficient)|monthly_budget_exceeded|budget_denied|budget_unavailable|预算不足|approved_budget|forecast_exceeds|step5_generation_budget_|step5_generation_cap_|cost_cap|spend_cap/i.test(lower)) {
     return {
       failureClass: 'insufficient_balance', disposition: 'block', retryDelayMs: null,
       maxAttempts: 1, publicReason: '余额或预算不足，补充后可恢复',
@@ -60,7 +60,7 @@ export function classifyContentExecutionFailure(error: unknown, input: {
   // A product-footage finding is bound to the frozen shot plan and exact
   // material bytes. Retrying the same run cannot manufacture a missing signed
   // window or restore revoked rights; a changed plan requires a new revision.
-  if (/user_input_required|production_input_required|素材.*(?:缺失|不足)|input_required|director_revision_required|product_scene_|product_footage_|quality.*failed|质量.*失败/i.test(lower)) {
+  if (/user_input_required|production_input_required|素材.*(?:缺失|不足)|input_required|director_revision_required|product_scene_|product_footage_|quality.*failed|质量.*失败|step5_generation_not_prepared|step5_generation_disabled|step5_generation_key_missing/i.test(lower)) {
     return {
       failureClass: 'input_required', disposition: 'block', retryDelayMs: null,
       maxAttempts: 1, publicReason: '需要补充素材或人工修改',

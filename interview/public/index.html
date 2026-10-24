@@ -333,6 +333,35 @@
   .run-meta .row code { font-family: var(--mono); font-size: 11px; overflow-wrap: anywhere; text-align: right; }
   .run-meta .provider-list { margin: 4px 0 0; padding-left: 16px; font-size: 11.5px; color: #334155; }
   .run-meta .provider-list li { margin: 3px 0; overflow-wrap: anywhere; }
+
+  .mode-row {
+    display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center;
+    margin: 12px 0 2px; padding: 12px 14px;
+    border: 1px solid var(--line); border-radius: 12px; background: #f8fafc;
+    font-size: 12.5px;
+  }
+  .mode-row label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+  .mode-row input[type="number"] {
+    width: 82px; padding: 5px 7px; border: 1px solid #c8d2e0; border-radius: 7px;
+    font: inherit; font-size: 12px; background: #fff;
+  }
+  .mode-row input[type="text"], .reconcile input[type="text"] {
+    width: 190px; padding: 5px 7px; border: 1px solid #c8d2e0; border-radius: 7px;
+    font: inherit; font-size: 12px; font-family: var(--mono); background: #fff;
+  }
+  .reconcile select, .mode-row select {
+    padding: 5px 7px; border: 1px solid #c8d2e0; border-radius: 7px;
+    font: inherit; font-size: 12px; background: #fff;
+  }
+  .mode-row .cap-warning { color: var(--danger); font-weight: 600; }
+  .reconcile {
+    display: grid; gap: 10px; margin-top: 14px; padding: 14px;
+    border: 1px solid #f5dfb8; background: #fffaf0; border-radius: 12px;
+  }
+  .reconcile[hidden] { display: none; }
+  .reconcile strong { font-size: 13px; color: #8a4b0f; }
+  .reconcile p { margin: 0; font-size: 12px; color: #6b4a1f; }
+  .reconcile .actions { gap: 10px; }
 </style>
 </head>
 <body>
@@ -374,16 +403,32 @@
     <div class="panel-head">
       <div>
         <h2 id="production-title">2. 数字员工任务工作台</h2>
-        <p class="hint">启动后按固定阶段执行：确认 Step 4 已付费的供应商记录 → 合成/校验 1080×1920 成片 → 用原 file/artifact 命令回写 → 原周任务消费者结算。产物强制为 <code>review_required</code>，技术/创意审核保持未通过。页面读取、刷新和播放都不会触发生成。</p>
+        <p class="hint">两种模式共用同一状态机与回写链路：<strong>零费用复用</strong>只接管 Step 4 已付费的供应商记录；<strong>真实生成</strong>在页面显式确认 CNY 上限后逐镜提交，未变化镜头复用既有媒体。结果未知时只对账、不重提。产物强制为 <code>review_required</code>。页面读取、刷新和播放都不会触发生成。</p>
       </div>
       <div class="actions">
-        <button type="button" id="start" class="primary">启动任务</button>
         <button type="button" id="refresh">刷新状态</button>
         <button type="button" id="scan">重新结算周任务</button>
       </div>
     </div>
+    <div class="mode-row" role="group" aria-label="执行模式与预算确认">
+      <label><input type="radio" name="run-mode" value="reuse" checked> 零费用复用 Step 4</label>
+      <label><input type="radio" name="run-mode" value="generate"> 页面触发真实生成</label>
+      <label>CNY 上限 <input type="number" id="cap-cny" min="0.01" max="8" step="0.01" inputmode="decimal" aria-label="CNY 预算上限"></label>
+      <label><input type="checkbox" id="confirm-generation"> 我确认按此上限产生真实费用</label>
+      <span class="chip muted" id="readiness">正在读取环境…</span>
+      <button type="button" id="start" class="primary">启动任务</button>
+    </div>
     <p class="status" id="run-status" role="status"></p>
     <div class="issues" id="pipeline-error" role="alert" hidden></div>
+    <div class="reconcile" id="reconcile" hidden>
+      <strong>提交结果未知，等待对账</strong>
+      <p>服务端不会自动重提付费任务。先按内容标题与提交时间窗查询供应商任务；找到唯一匹配后再启动同一任务继续下载与回写。</p>
+      <div class="actions">
+        <label>镜头 <select id="reconcile-shot"></select></label>
+        <label>手动 video_id（可选） <input type="text" id="reconcile-video-id" placeholder="仅在自动对账有歧义时填写"></label>
+        <button type="button" id="reconcile-run">查询并对账</button>
+      </div>
+    </div>
     <div class="workbench">
       <div class="phases" id="phases" aria-label="执行阶段"></div>
       <div class="run-meta" id="run-meta" aria-label="任务信息"></div>
@@ -422,7 +467,16 @@
     runMeta: $('run-meta'),
     media: $('media'),
     state: $('state'),
+    capCny: $('cap-cny'),
+    confirmGeneration: $('confirm-generation'),
+    readiness: $('readiness'),
+    reconcile: $('reconcile'),
+    reconcileShot: $('reconcile-shot'),
+    reconcileVideoId: $('reconcile-video-id'),
+    reconcileRun: $('reconcile-run'),
   };
+  let runtimeStatus = null;
+  let lastPipeline = null;
   const MAX_BYTES = 256 * 1024;
 
   function el(tag, className, textValue) {
@@ -785,6 +839,64 @@
     els.runStatus.dataset.kind = kind || '';
   }
 
+  function currentMode() {
+    const checked = document.querySelector('input[name="run-mode"]:checked');
+    return checked && checked.value === 'generate' ? 'generate' : 'reuse';
+  }
+
+  function updateModeUi() {
+    const generate = currentMode() === 'generate';
+    els.capCny.disabled = !generate;
+    const enabled = Boolean(runtimeStatus && runtimeStatus.pageGenerationEnabled);
+    els.confirmGeneration.disabled = !generate || !enabled;
+    if (!runtimeStatus) {
+      els.readiness.className = 'chip muted';
+      els.readiness.textContent = '环境状态未知';
+      return;
+    }
+    if (!enabled) {
+      els.readiness.className = 'chip warn';
+      els.readiness.textContent = '真实生成未启用：需 real:dev、包外 Key、STEP5_PAGE_GENERATION_ENABLED=1';
+    } else if (runtimeStatus.generationCapCny === null || runtimeStatus.generationCapCny === undefined) {
+      els.readiness.className = 'chip warn';
+      els.readiness.textContent = '未配置 CNY 上限（' + valueText(runtimeStatus.generationCapError) + '）';
+    } else {
+      els.readiness.className = 'chip ok';
+      els.readiness.textContent = '真实生成就绪 · HEYGEN_INTERVIEW_MAX_CNY=' +
+        runtimeStatus.generationCapCny + ' CNY（硬上限 8）';
+    }
+  }
+
+  async function loadRuntimeStatus() {
+    try {
+      runtimeStatus = await requestJson('/api/real/status', {cache: 'no-store'});
+      if (runtimeStatus && runtimeStatus.generationCapCny !== null
+          && runtimeStatus.generationCapCny !== undefined && !els.capCny.value) {
+        els.capCny.value = String(runtimeStatus.generationCapCny);
+      }
+    } catch (error) {
+      runtimeStatus = null;
+      setRunStatus('读取环境状态失败：' + (error instanceof Error ? error.message : String(error)), 'error');
+    }
+    updateModeUi();
+  }
+
+  function renderReconcile(ledger, pipeline) {
+    const shots = ledger && Array.isArray(ledger.shots) ? ledger.shots : [];
+    const unknownIds = new Set(Array.isArray(ledger && ledger.unknownShots) ? ledger.unknownShots : []);
+    const unknown = shots.filter(shot => shot.phase === 'submission_unknown' || unknownIds.has(shot.shotId));
+    const visible = unknown.length > 0 || (pipeline && pipeline.phase === 'submission_unknown');
+    els.reconcile.hidden = !visible;
+    if (!visible) return;
+    const previous = els.reconcileShot.value;
+    els.reconcileShot.replaceChildren();
+    const candidates = unknown.length ? unknown : shots.filter(shot => shot.kind === 'presenter');
+    for (const shot of candidates) {
+      els.reconcileShot.append(new Option(shot.shotId + ' · ' + kindLabel(shot.kind) + ' · ' + shot.phase, shot.shotId));
+    }
+    if (previous && candidates.some(shot => shot.shotId === previous)) els.reconcileShot.value = previous;
+  }
+
   function shortHash(value) {
     const text = value === null || value === undefined ? '' : String(value);
     return text ? text.slice(0, 12) + '…' : '—';
@@ -794,7 +906,8 @@
     const error = pipeline && pipeline.error;
     els.pipelineError.replaceChildren();
     if (!error) { els.pipelineError.hidden = true; return; }
-    els.pipelineError.append(el('strong', '', '执行失败'));
+    const unknown = pipeline.phase === 'submission_unknown' || error.code === 'step5_submission_unknown';
+    els.pipelineError.append(el('strong', '', unknown ? '提交结果未知（等待对账，未重提）' : '执行失败'));
     const list = el('ul');
     const item = el('li', '', error.message || '未知错误');
     item.append(el('p', '', '阶段：' + valueText(error.phase) + ' · 代码：' + valueText(error.code) + ' · 时间：' + formatDate(error.at)));
@@ -818,13 +931,29 @@
       const body = el('div');
       body.append(el('strong', '', valueText(phase.label)));
       body.append(el('small', '', phase.detail || statusText[phase.status] || phase.status));
-      if (phase.source) body.append(el('small', '', '来源：' + phase.source));
+      if (phase.source) body.append(el('small', '', '来源：' + sourceText(phase.source)));
       const time = phase.completedAt || phase.startedAt;
       const stamp = el('span', 'phase-time', time ? formatDate(time) : statusText[phase.status] || '');
       card.append(dot, body, stamp);
       els.phases.append(card);
     }
   }
+
+  const PROVIDER_SOURCE_LABEL = {
+    'local-step4-state': 'Step 4 本地状态',
+    'committed-step4-evidence': 'Step 4 已提交证据',
+    mixed: '混合来源',
+    'live-bridge': '原 bridge 实时查询/下载（0 次新提交）',
+    'live-generated': '页面确认真实生成（逐镜提交）',
+  };
+  const PROVIDER_MEDIA_LABEL = {
+    'step4-local': 'Step 4 本地人物媒体',
+    'live-adopted': '原 bridge 重新下载的人物媒体',
+    'live-generated': '本次真实生成/复用的媒体',
+    'committed-evidence': '已提交的 Step 4 成片证据',
+  };
+  const MODE_LABEL = {reuse: '零费用复用', generate: '真实生成'};
+  const sourceText = value => PROVIDER_SOURCE_LABEL[value] || valueText(value);
 
   function metaRow(label, value) {
     const row = el('div', 'row');
@@ -840,6 +969,7 @@
       els.runMeta.append(el('p', 'media-empty', '尚无任务记录。'));
       return;
     }
+    els.runMeta.append(metaRow('执行模式', MODE_LABEL[pipeline.mode] || valueText(pipeline.mode)));
     els.runMeta.append(metaRow('内容任务', pipeline.contentTaskId));
     els.runMeta.append(metaRow('周任务', pipeline.weeklyTaskId));
     els.runMeta.append(metaRow('run', pipeline.runId));
@@ -853,20 +983,51 @@
       if (provider.approvedCny !== null) budget.push('上限 ' + provider.approvedCny + ' CNY');
       if (provider.chargedCny !== null) budget.push('已记账 ' + provider.chargedCny + ' CNY');
       if (provider.paidSubmissions !== null) budget.push(provider.paidSubmissions + ' 次付费');
-      els.runMeta.append(metaRow('供应商阶段', provider.source));
-      els.runMeta.append(metaRow('费用', budget.join(' · ') || '—'));
+      els.runMeta.append(metaRow('供应商来源', sourceText(provider.source)));
+      els.runMeta.append(metaRow('Step 4 费用', budget.join(' · ') || '—'));
+      if (provider.live) {
+        els.runMeta.append(metaRow('本次新增付费提交', provider.live.newPaidSubmissions + ' 次 / ' + provider.live.newChargedCny + ' CNY'));
+        els.runMeta.append(metaRow('在线调用', '状态查询 ' + provider.live.statusCalls + ' 次 · 下载 ' +
+          provider.live.downloads + ' 次 · 上传 ' + provider.live.uploads + ' 次 · 接管 ' + provider.live.presentersAdopted + ' 段'));
+      }
+      els.runMeta.append(metaRow('说明', provider.note));
       const list = el('ul', 'provider-list');
       for (const shot of provider.shots) {
         list.append(el('li', '', shot.id + ' · ' + shot.kind + ' · ' +
-          'video_id ' + (shot.videoId || '—') + ' · requestId ' + shot.requestId +
-          (shot.durationSeconds ? ' · ' + shot.durationSeconds.toFixed(2) + 's' : '')));
+          'video_id ' + (shot.videoId || '—') + ' · requestId ' + (shot.requestId || '—') +
+          (shot.durationSeconds ? ' · ' + shot.durationSeconds.toFixed(2) + 's' : '') +
+          (shot.providerStatus ? ' · 状态 ' + shot.providerStatus : '') +
+          (shot.mediaSha256 ? ' · SHA ' + shortHash(shot.mediaSha256) : '') +
+          (shot.mediaBytes ? ' · ' + shot.mediaBytes + ' 字节' : '')));
+      }
+      els.runMeta.append(list);
+    }
+    if (pipeline.generation) {
+      const generation = pipeline.generation;
+      els.runMeta.append(metaRow('生成预算', '本页上限 ' + generation.capCny + ' CNY · 账本批准 ' +
+        generation.approvedCny + ' CNY · 剩余 ' + generation.budgetRemainingCny + ' CNY'));
+      els.runMeta.append(metaRow('本次生成', '新增付费 ' + generation.newPaidSubmissions + ' 次 / ' +
+        generation.newChargedCny + ' CNY · 复用 ' + generation.reusedShots + ' 镜 · 对账 ' +
+        generation.reconciledShots + ' 镜 · 旁白引擎 ' + generation.narrationEngine));
+      const list = el('ul', 'provider-list');
+      for (const shot of generation.shots) {
+        list.append(el('li', '', shot.shotId + ' · ' + kindLabel(shot.kind) + ' · ' + shot.phase +
+          ' · ' + valueText(shot.title) +
+          (shot.providerTaskId ? ' · provider ' + shot.providerTaskId : '') +
+          (shot.durationSeconds ? ' · ' + Number(shot.durationSeconds).toFixed(2) + 's' : '') +
+          (shot.reusedFrom ? ' · 复用自 ' + shot.reusedFrom : '')));
       }
       els.runMeta.append(list);
     }
     if (pipeline.composition) {
       const composition = pipeline.composition;
-      els.runMeta.append(metaRow('合成', composition.mode + ' · ' + composition.probe.durationSeconds.toFixed(2) + 's · ' +
+      els.runMeta.append(metaRow('合成', composition.mode + ' · ' +
+        (PROVIDER_MEDIA_LABEL[composition.providerMedia] || composition.providerMedia || '—') + ' · ' +
+        composition.probe.durationSeconds.toFixed(2) + 's · ' +
         composition.probe.width + '×' + composition.probe.height + ' · ' + composition.probe.videoCodec + '/' + composition.probe.audioCodec));
+      if (composition.adoptedManifestSha256) {
+        els.runMeta.append(metaRow('接管清单 SHA-256', shortHash(composition.adoptedManifestSha256)));
+      }
       els.runMeta.append(metaRow('成片 SHA-256', shortHash(composition.sha256)));
     }
     if (pipeline.writeBack) {
@@ -923,10 +1084,12 @@
     }
   }
 
-  function renderPipeline(pipeline, state) {
+  function renderPipeline(pipeline, state, ledger) {
+    lastPipeline = pipeline;
     renderPhases(pipeline);
     renderRunMeta(pipeline);
     renderPipelineError(pipeline);
+    renderReconcile(ledger, pipeline);
     renderMedia(pipeline, state);
   }
 
@@ -946,7 +1109,7 @@
   async function refreshPipelineOnly() {
     try {
       const data = await requestJson('/api/pipeline', {cache: 'no-store'});
-      renderPipeline(data.pipeline, null);
+      renderPipeline(data.pipeline, null, data.generationLedger);
       return data.pipeline;
     } catch (error) {
       setRunStatus('读取任务状态失败：' + (error instanceof Error ? error.message : String(error)), 'error');
@@ -961,7 +1124,7 @@
         requestJson('/api/state', {cache: 'no-store'}),
       ]);
       els.state.textContent = JSON.stringify(state, null, 2);
-      renderPipeline(pipelineData.pipeline, state);
+      renderPipeline(pipelineData.pipeline, state, pipelineData.generationLedger);
       if (pipelineData.pipeline && pipelineData.pipeline.active) schedulePoll();
       return pipelineData.pipeline;
     } catch (error) {
@@ -971,11 +1134,35 @@
   }
 
   async function startRun() {
+    const mode = currentMode();
+    const body = {mode};
+    if (mode === 'generate') {
+      if (!(runtimeStatus && runtimeStatus.pageGenerationEnabled)) {
+        setRunStatus('真实生成未启用：需 real:dev、包外 Key 与 STEP5_PAGE_GENERATION_ENABLED=1。', 'error');
+        return;
+      }
+      const cap = Number(els.capCny.value);
+      if (!(Number.isFinite(cap) && cap > 0 && cap <= 8)) {
+        setRunStatus('请填写 0–8 之间的 CNY 上限；未提交任何付费任务。', 'error');
+        return;
+      }
+      if (!els.confirmGeneration.checked) {
+        setRunStatus('请先勾选“我确认按此上限产生真实费用”。', 'error');
+        return;
+      }
+      body.confirmedCapCny = cap;
+    }
     els.start.disabled = true;
-    els.start.textContent = '启动中…';
-    setRunStatus('正在启动任务；只会创建一次执行，重复点击不会重复提交。', '');
+    els.start.textContent = mode === 'generate' ? '生成中…' : '启动中…';
+    setRunStatus(mode === 'generate'
+      ? '已确认 ' + body.confirmedCapCny + ' CNY 上限；服务端先做只读预检，再逐镜提交。'
+      : '正在启动任务；只会创建一次执行，重复点击不会重复提交。', '');
     try {
-      const data = await requestJson('/api/start', {method: 'POST'});
+      const data = await requestJson('/api/start', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(body),
+      });
       const pipeline = data.pipeline;
       if (!pipeline) throw new Error('服务端未返回任务状态');
       if (data.status === 'already_complete') {
@@ -983,18 +1170,57 @@
       } else if (data.status === 'already_running') {
         setRunStatus('任务已在执行，继续显示当前阶段。', '');
       } else {
-        setRunStatus('任务已启动，正在推进阶段…', '');
+        setRunStatus(mode === 'generate'
+          ? '真实生成已启动：逐镜提交与下载，结果未知时停止并对账，不会重提。'
+          : '任务已启动，正在推进阶段…', '');
       }
       await refreshState();
       if (pipeline.active) schedulePoll();
       else if (pipeline.phase === 'review_required') setRunStatus('成片已回写，等待人工审核。', 'ok');
-      else if (pipeline.phase === 'failed') setRunStatus('任务失败：' + valueText(pipeline.error && pipeline.error.message), 'error');
+      else if (pipeline.phase === 'submission_unknown') {
+        setRunStatus('提交结果未知：已在下方提供对账入口；不会自动重提付费任务。', 'error');
+      } else if (pipeline.phase === 'failed') {
+        setRunStatus('任务失败：' + valueText(pipeline.error && pipeline.error.message), 'error');
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       setRunStatus('启动失败：' + message, 'error');
     } finally {
       els.start.disabled = false;
       els.start.textContent = '启动任务';
+    }
+  }
+
+  async function runReconcile() {
+    const shotId = els.reconcileShot.value;
+    const videoId = els.reconcileVideoId.value.trim();
+    if (!shotId && !videoId) {
+      setRunStatus('请选择待对账镜头，或填写供应商 video_id。', 'error');
+      return;
+    }
+    els.reconcileRun.disabled = true;
+    els.reconcileRun.textContent = '查询中…';
+    setRunStatus('正在按标题与提交时间窗只读查询供应商任务；不会创建或重提。', '');
+    try {
+      const data = await requestJson('/api/reconcile', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          ...(shotId ? {shotId} : {}),
+          ...(videoId ? {videoId} : {}),
+        }),
+      });
+      const shot = data.shot || {};
+      setRunStatus('对账完成：' + valueText(shot.shotId) + ' 已确认供应商任务 ' +
+        valueText(shot.providerTaskId) + '。请再次点击“启动任务”继续下载、合成与回写。', 'ok');
+      els.reconcileVideoId.value = '';
+      await refreshState();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      setRunStatus('对账未完成：' + message, 'error');
+    } finally {
+      els.reconcileRun.disabled = false;
+      els.reconcileRun.textContent = '查询并对账';
     }
   }
 
@@ -1024,9 +1250,13 @@
   els.start.addEventListener('click', startRun);
   els.scan.addEventListener('click', runScan);
   els.refresh.addEventListener('click', () => refreshState());
+  els.reconcileRun.addEventListener('click', runReconcile);
+  for (const radio of document.querySelectorAll('input[name="run-mode"]'))
+    radio.addEventListener('change', updateModeUi);
 
   renderChips(null);
-  void Promise.allSettled([loadSaved(), refreshState()]);
+  updateModeUi();
+  void Promise.allSettled([loadSaved(), refreshState(), loadRuntimeStatus()]);
 </script>
 </body>
 </html>

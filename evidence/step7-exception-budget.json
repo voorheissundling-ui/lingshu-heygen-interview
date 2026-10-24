@@ -1,0 +1,158 @@
+{
+  "schemaVersion": "step7-exception-budget.v1",
+  "step": "step7",
+  "generatedAt": "2026-10-24",
+  "status": "implemented_offline_and_local_fault_injection_verified",
+  "scope": [
+    "exception matrix for auth, rate limit/service failure, download failure, budget exhaustion and corrupt media",
+    "budget reservation, beforeSubmit revalidation, accepted/status receipts and wallet-delta settlement",
+    "real vs injected labeling"
+  ],
+  "safety": {
+    "liveProviderCallsThisStep": 0,
+    "paidSubmissionsThisStep": 0,
+    "realKeyReadThisStep": false,
+    "walletReadOnlyCheckEarlierInSession": true,
+    "deployed": false,
+    "socialPublished": false,
+    "committedOrPushed": false,
+    "secretsInEvidence": false,
+    "signedUrlsInEvidence": false
+  },
+  "budget": {
+    "approvedCny": 8,
+    "chargedCny": 5.339473,
+    "reservedCny": 0,
+    "remainingCny": 2.660527,
+    "remainingUsdAtCurrentFx": 0.39862,
+    "paidSubmissions": 6,
+    "fxCnyPerUsd": 6.674341811691209,
+    "walletObservation": {
+      "source": "earlier read-only GET /v3/users/me in this session",
+      "currency": "usd",
+      "remainingBalanceUsd": 1.35,
+      "autoReloadEnabled": false,
+      "paid": false
+    },
+    "providerAccount": {
+      "billingType": "wallet",
+      "accountSpendingCapConfigured": false,
+      "walletBalanceIsNotHardLimit": true
+    },
+    "appBudget": {
+      "hardLimitCny": 8,
+      "enforcedBeforeSubmit": true,
+      "reservationsCountTowardCap": true,
+      "step7ExpandedAuthorization": false
+    },
+    "settlementRule": "charged = max(observed wallet delta, price estimate); paidSubmissions increments on settle"
+  },
+  "exceptionMatrix": [
+    {
+      "fault": "auth_401",
+      "trigger": "injected HeyGenRequestError(401)",
+      "classification": "injected",
+      "observed": "phase rejected; one POST; reservation released; no resubmit; readable Chinese auth message",
+      "test": "a 401 auth failure is rejected once, releases the reservation and is readable"
+    },
+    {
+      "fault": "rate_limit_or_service_failure_on_create",
+      "trigger": "injected 429 and 500 on create",
+      "classification": "injected",
+      "observed": "phase submission_unknown; one POST; reservation retained; later run list-reconciles with GET only and never resubmits",
+      "test": "429 and 5xx submissions stay unknown, keep the reservation and never resubmit"
+    },
+    {
+      "fault": "rate_limit_on_status_read",
+      "trigger": "injected 429 from status",
+      "classification": "injected",
+      "observed": "phase accepted; waits until deadline; step5_provider_pending; no second POST",
+      "test": "a status-read 429 waits on the existing video id instead of resubmitting"
+    },
+    {
+      "fault": "download_failure",
+      "trigger": "injected step5_generation_download_failed:502",
+      "classification": "injected",
+      "observed": "phase accepted; lastError persisted; reservation retained; retry downloads the same video id; one POST total; settles after success",
+      "test": "a download failure retries the same video id without a second submission"
+    },
+    {
+      "fault": "budget_exhausted",
+      "trigger": "local ledger chargedCny 7.9 and next forecast about 0.744 CNY",
+      "classification": "local ledger",
+      "observed": "rejected before wallet read and before POST; reservation unchanged; readable budget message",
+      "test": "insufficient budget is rejected before any provider or wallet call"
+    },
+    {
+      "fault": "corrupt_media",
+      "trigger": "real local ffmpeg probe on a text file pretending to be MP4; plus injected validator failure",
+      "classification": "real local probe plus injected failure",
+      "observed": "probe rejected with step5_generation_media_probe_failed; no completed receipt; phase accepted; retry downloads again without resubmitting",
+      "test": "a real ffmpeg probe rejects corrupt media without writing it back as success; corrupt media retries the download and never marks the shot completed early"
+    }
+  ],
+  "budgetPoints": {
+    "beforeSubmit": "assertCanReserve checks charged + reserved + forecast against the approved cap; wallet balance is checked separately",
+    "beforeSubmitCallback": "revalidates phase, paidSubmissions=0, requestId and request body hash",
+    "reserve": "persisted immediately; crashes cannot silently authorize a second spend",
+    "onAccepted": "persists provider video id and an accepted receipt",
+    "onStatus": "records provider status, duration and media host",
+    "afterDownload": "compares wallet before/after with the price estimate and settles the larger value",
+    "onSettle": "releases the reservation, increments paidSubmissions and appends an auditable operation",
+    "concurrency": "another in-flight reservation counts toward the same cap"
+  },
+  "realVsInjected": {
+    "real": [
+      "local ffmpeg-static probe rejecting corrupt media",
+      "Step 2 previously observed a real read-only 401 without sending credentials"
+    ],
+    "injected": [
+      "create 401, 429 and 500",
+      "status-read 429",
+      "media download failure",
+      "media validator failure",
+      "budget exhaustion through a local ledger"
+    ],
+    "note": "No real 429/5xx/download fault was induced at the provider, and no paid submission was made for the exception matrix."
+  },
+  "codeChanges": [
+    "persist lastError while keeping accepted state after download or media validation failure",
+    "add Chinese messages for Step 4 budget errors",
+    "add Step 7 boundary tests and include them in pnpm test"
+  ],
+  "verification": {
+    "step7Tests": {
+      "file": "interview/step7Boundaries.test.ts",
+      "passed": 8,
+      "failed": 0
+    },
+    "mainSuite": {
+      "command": "pnpm test",
+      "passed": 128,
+      "failed": 0
+    },
+    "queueSuite": {
+      "command": "pnpm run test:queue",
+      "passed": 37,
+      "failed": 0
+    },
+    "typecheck": {
+      "command": "pnpm run typecheck",
+      "result": "pass"
+    }
+  },
+  "notVerified": [
+    "real 429/5xx and real download interruption were not induced at the provider",
+    "unknown submission reconciliation was not exercised against a real lost create response",
+    "no live page-triggered paid generation was performed in Step 7",
+    "human video review, listening/ASR review and technical/creative approval remain outstanding",
+    "remaining budget supports at most one minimal live demonstration; retry headroom is limited"
+  ],
+  "files": [
+    "interview/step5Generation.ts",
+    "interview/step5Pipeline.ts",
+    "interview/step7Boundaries.test.ts",
+    "package.json",
+    "evidence/step7-exception-budget.md"
+  ]
+}

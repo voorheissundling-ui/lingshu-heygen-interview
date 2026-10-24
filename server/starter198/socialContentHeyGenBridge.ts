@@ -19,7 +19,11 @@ import type {
   AuthorizedDigitalPresenter,
   SocialDigitalPresenterBridgePorts,
 } from './socialContentDigitalPresenterAdapter.js';
-import { validateHeyGenPresenterRecord } from '../lib/presenterAssetTrust.js';
+import {
+  validateHeyGenPresenterRecord,
+  validatePublicHeyGenPresenterRecord,
+  type PublicPresenterEvidence,
+} from '../lib/presenterAssetTrust.js';
 import { recordCurrentContentProviderReceipt, ContentExecutionStoppedError } from '../contentExecution/context.js';
 import { isInternalBudgetExemptTenant } from '../lib/tenantBudgetExemption.js';
 
@@ -270,13 +274,117 @@ function configuredPresenter(item: PresenterRecord, presenterAssetId: string): A
     consistencyKey: String(item.consistencyKey || '') || undefined };
 }
 
+/** Public catalog presenters are supplier stock assets, not cloned people.
+ * This shape deliberately has no authorizationRef/consentRef fields. */
+export interface PublicHeyGenPresenter {
+  presenterAssetId: string;
+  providerId: 'heygen';
+  providerPresenterId: string;
+  providerVoiceId: string;
+  assetVersion: number;
+  ownership: 'public';
+  publicEvidence: PublicPresenterEvidence;
+}
+
+export interface SocialHeyGenAdoptionEvent {
+  state: 'accepted' | 'checking' | 'pending' | 'downloaded' | 'uploaded' | 'completed' | 'failed';
+  providerTaskId: string;
+  providerStatus?: string;
+  durationSeconds?: number;
+  contentHash?: string;
+  localPath?: string;
+  bytes?: number;
+  objectKey?: string;
+  error?: string;
+}
+
+export interface SocialHeyGenAdoptionRequest {
+  tenantId: string;
+  taskId: string;
+  runId: string;
+  shotId: string;
+  presenter: PublicHeyGenPresenter;
+  /** Step 4's persisted request id. It is the provider receipt identity. */
+  idempotencyKey: string;
+  /** Step 4's already accepted video_id. Adoption never creates a new task. */
+  adoptedProviderTaskId: string;
+  script: string;
+  expectedDurationSeconds?: number;
+  expectedMediaSha256?: string;
+  expectedMediaBytes?: number;
+  outputDirectory: string;
+  onProviderEvent?: (event: SocialHeyGenAdoptionEvent) => void | Promise<void>;
+}
+
+export interface SocialHeyGenAdoptionResult {
+  status: 'completed' | 'pending' | 'failed' | 'uncertain';
+  providerTaskId: string;
+  localPath?: string;
+  contentHash?: string;
+  duration?: number;
+  bytes?: number;
+  error?: string;
+}
+
+/** Additive ports. The clone/whole-track execute() path above is unchanged. */
+export interface SocialHeyGenAdoptionPorts {
+  resolvePublicPresenter(input: { tenantId: string; presenterAssetId: string }): Promise<PublicHeyGenPresenter | null>;
+  adoptProviderTask(input: SocialHeyGenAdoptionRequest): Promise<SocialHeyGenAdoptionResult>;
+}
+
+export type SocialHeyGenBridgePorts = SocialDigitalPresenterBridgePorts & SocialHeyGenAdoptionPorts;
+
+export function configuredPublicPresenter(
+  item: Record<string, unknown>,
+  presenterAssetId: string,
+): PublicHeyGenPresenter | null {
+  if (String(item.id || '') !== presenterAssetId) return null;
+  const validated = validatePublicHeyGenPresenterRecord(item);
+  if (!validated.ok) return null;
+  return {
+    presenterAssetId,
+    providerId: 'heygen',
+    providerPresenterId: validated.avatarId,
+    providerVoiceId: validated.voiceId,
+    assetVersion: validated.assetVersion,
+    ownership: 'public',
+    publicEvidence: validated.evidence,
+  };
+}
+
+/** Registry payload for a verified public catalog presenter. It contains the
+ * catalog/terms evidence and provider ids only; it never fabricates clone
+ * authorization or subject consent. */
+export function buildPublicPresenterRecord(
+  evidence: PublicPresenterEvidence,
+  avatarId: string,
+  voiceId: string,
+  id = 'presenter-public-storyboard',
+): Record<string, unknown> {
+  return {
+    id,
+    name: 'HeyGen 公共授权形象',
+    ownership: 'public',
+    assetVersion: 1,
+    avatarId,
+    voiceId,
+    publicCatalogRef: evidence.publicCatalogRef,
+    providerTermsRef: evidence.providerTermsRef,
+    verifiedAt: evidence.verifiedAt,
+    accountId: evidence.accountId,
+    toolMappings: { heygen: { avatarId, voiceId } },
+  };
+}
+
 /** Creates the concrete ports used by the social adapter. The environment
  * gate lives outside this function so tests and alternate runtimes can inject
  * deterministic dependencies without enabling a paid supplier. */
-export function createSocialHeyGenBridgePorts(deps: SocialHeyGenBridgeDependencies): SocialDigitalPresenterBridgePorts {
+export function createSocialHeyGenBridgePorts(deps: SocialHeyGenBridgeDependencies): SocialHeyGenBridgePorts {
   const polls = Math.max(1, Math.min(240, deps.maxPolls ?? 120));
   const pollInterval = Math.max(0, deps.pollIntervalMs ?? 5_000);
-  const ports: SocialDigitalPresenterBridgePorts = {
+  const adoptionError = (input: SocialHeyGenAdoptionRequest, event: Omit<SocialHeyGenAdoptionEvent, 'providerTaskId' | 'state'>, state: 'failed' = 'failed') =>
+    input.onProviderEvent?.({ state, providerTaskId: input.adoptedProviderTaskId, ...event });
+  const ports: SocialHeyGenBridgePorts = {
     ...(deps.speechAudio ? { resolveSpeechAudio: (input: import('./socialContentDigitalPresenterAdapter.js').DigitalPresenterExecutionRequest) => deps.speechAudio!.resolve(input) } : {}),
     maximumCostCny: deps.wholeBudget?.maximumCostCny ?? (Number(deps.budget.status('heygen').reservationCny) || 0),
     // This bridge is the current talking-presenter integration. It does not
@@ -443,6 +551,147 @@ export function createSocialHeyGenBridgePorts(deps: SocialHeyGenBridgeDependenci
       });
       await deps.wholeBudget?.completed(input,{providerTaskId,contentHash,duration,objectKey});
       return { status: 'completed', providerTaskId, localPath, contentHash, duration };
+    },
+    async resolvePublicPresenter({ tenantId, presenterAssetId }) {
+      const result = await deps.store.list<{ payload?: { presenters?: Record<string, unknown>[] } }>('studio_production_defaults',
+        { where: { tenant_id: tenantId }, perPage: 2 });
+      if (result.totalItems !== 1 || result.items.length !== 1) throw new Error('public_presenter_registry_ambiguous');
+      return (result.items[0]?.payload?.presenters || [])
+        .map(item => configuredPublicPresenter(item, presenterAssetId)).find(Boolean) || null;
+    },
+    /** Takes over an already-accepted provider task. It never calls
+     * client.create, never reserves budget and never settles a whole-track
+     * plan; the only paid work happened before this call. */
+    async adoptProviderTask(input) {
+      if (!String(input.adoptedProviderTaskId || '').trim())
+        return { status: 'uncertain', providerTaskId: '', error: 'accepted_provider_task_required' };
+      if (!input.presenter.providerPresenterId || !input.presenter.providerVoiceId)
+        throw new Error('heygen_avatar_voice_mapping_required');
+      if (input.presenter.ownership !== 'public')
+        throw new Error('public_presenter_evidence_required');
+      const existing = await deps.store.list<any>('studio_social_presenter_jobs',
+        { where: { tenant_id: input.tenantId, request_id: input.idempotencyKey }, perPage: 2 });
+      if (existing.totalItems > 1 || existing.items.length > 1 || existing.totalItems !== existing.items.length)
+        return { status: 'uncertain', providerTaskId: input.adoptedProviderTaskId, error: 'duplicate_provider_job_records' };
+      let record = existing.items[0];
+      if (record) {
+        if (record.task_id !== input.taskId || record.shot_id !== input.shotId || record.provider !== 'heygen'
+          || record.presenter_asset_id !== input.presenter.presenterAssetId
+          || record.visual_control?.adoption !== true
+          || String(record.provider_task_id || '') !== input.adoptedProviderTaskId)
+          return { status: 'uncertain', providerTaskId: input.adoptedProviderTaskId, error: 'adopted_provider_job_scope_changed' };
+      } else {
+        record = await deps.store.create<any>('studio_social_presenter_jobs', {
+          tenant_id: input.tenantId, task_id: input.taskId, shot_id: input.shotId, request_id: input.idempotencyKey,
+          status: 'accepted', provider: 'heygen', presenter_asset_id: input.presenter.presenterAssetId,
+          provider_task_id: input.adoptedProviderTaskId,
+          visual_control: {
+            adoption: true,
+            publicEvidence: structuredClone(input.presenter.publicEvidence),
+            scriptSha256: createHash('sha256').update(input.script).digest('hex'),
+          },
+          created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+        });
+        if (!record) return { status: 'uncertain', providerTaskId: input.adoptedProviderTaskId, error: 'provider_job_claim_failed' };
+      }
+      await recordCurrentContentProviderReceipt({
+        provider: 'heygen', requestId: input.idempotencyKey, state: 'accepted',
+        providerTaskId: input.adoptedProviderTaskId, metadata: { adoption: true },
+      });
+      await input.onProviderEvent?.({ state: 'accepted', providerTaskId: input.adoptedProviderTaskId });
+
+      let completed: Awaited<ReturnType<HeyGenClient['status']>> | null = null;
+      for (let index = 0; index < polls; index += 1) {
+        const status = await deps.client.status(input.adoptedProviderTaskId);
+        await input.onProviderEvent?.({ state: 'checking', providerTaskId: input.adoptedProviderTaskId,
+          providerStatus: status.status, durationSeconds: Number(status.duration) > 0 ? Number(status.duration) : undefined });
+        if (status.status === 'failed') {
+          await deps.store.update('studio_social_presenter_jobs', record.id, {
+            status: 'failed', error: status.error || 'provider_failed', updated_at: new Date().toISOString() });
+          await recordCurrentContentProviderReceipt({
+            provider: 'heygen', requestId: input.idempotencyKey, state: 'failed',
+            providerTaskId: input.adoptedProviderTaskId, metadata: { adoption: true, providerError: status.error || 'provider_failed' },
+          });
+          await adoptionError(input, { error: status.error || 'provider_failed', providerStatus: status.status });
+          return { status: 'failed', providerTaskId: input.adoptedProviderTaskId, error: status.error || 'provider_failed' };
+        }
+        if (status.status === 'completed') { completed = status; break; }
+        if (pollInterval) await new Promise(resolve => setTimeout(resolve, pollInterval));
+      }
+      const duration = Number(completed?.duration);
+      if (completed && duration > 0 && input.expectedDurationSeconds !== undefined
+        && Math.abs(duration - input.expectedDurationSeconds) > 0.2) {
+        await deps.store.update('studio_social_presenter_jobs', record.id, {
+          status: 'failed', error: 'provider_duration_mismatch', updated_at: new Date().toISOString() });
+        await adoptionError(input, { error: 'provider_duration_mismatch', providerStatus: completed.status, durationSeconds: duration });
+        return { status: 'failed', providerTaskId: input.adoptedProviderTaskId, error: 'provider_duration_mismatch', duration };
+      }
+      if (!completed?.url || !(duration > 0)) {
+        await input.onProviderEvent?.({ state: 'pending', providerTaskId: input.adoptedProviderTaskId,
+          providerStatus: completed?.status || 'pending', error: 'provider_still_processing' });
+        return { status: 'pending', providerTaskId: input.adoptedProviderTaskId, error: 'provider_still_processing' };
+      }
+      let bytes: Buffer;
+      try {
+        bytes = await deps.download(completed.url);
+      } catch (error) {
+        const message = String(error instanceof Error ? error.message : error);
+        await deps.store.update('studio_social_presenter_jobs', record.id,
+          { status: 'accepted', error: message, updated_at: new Date().toISOString() }).catch(() => undefined);
+        await adoptionError(input, { error: message, providerStatus: completed.status, durationSeconds: duration });
+        return { status: 'uncertain', providerTaskId: input.adoptedProviderTaskId, error: message };
+      }
+      const contentHash = createHash('sha256').update(bytes).digest('hex');
+      if (input.expectedMediaSha256 && contentHash !== input.expectedMediaSha256) {
+        await deps.store.update('studio_social_presenter_jobs', record.id, {
+          status: 'failed', error: 'provider_content_hash_mismatch', updated_at: new Date().toISOString() });
+        await adoptionError(input, { error: 'provider_content_hash_mismatch', providerStatus: completed.status,
+          durationSeconds: duration, contentHash, bytes: bytes.length });
+        return { status: 'failed', providerTaskId: input.adoptedProviderTaskId, error: 'provider_content_hash_mismatch', contentHash, duration };
+      }
+      await input.onProviderEvent?.({ state: 'downloaded', providerTaskId: input.adoptedProviderTaskId,
+        providerStatus: completed.status, durationSeconds: duration, contentHash, bytes: bytes.length });
+
+      const filename = `social-presenter-${createHash('sha256').update(input.idempotencyKey).digest('hex').slice(0, 24)}.mp4`;
+      const objectKey = materialAssetObjectKey(input.tenantId, filename);
+      let localPath: string;
+      let objectEtag = '';
+      try {
+        fs.mkdirSync(input.outputDirectory, { recursive: true, mode: 0o700 });
+        localPath = path.join(input.outputDirectory, filename);
+        fs.writeFileSync(localPath, bytes, { mode: 0o600 });
+        await deps.upload({ key: objectKey, body: bytes, contentType: 'video/mp4' });
+        const stored = await deps.head(objectKey);
+        if (!stored?.size || !stored.etag) throw new Error('digital_presenter_object_storage_verification_failed');
+        objectEtag = String(stored.etag);
+        await input.onProviderEvent?.({ state: 'uploaded', providerTaskId: input.adoptedProviderTaskId,
+          providerStatus: completed.status, durationSeconds: duration, contentHash, bytes: bytes.length, localPath, objectKey });
+      } catch (error) {
+        const message = String(error instanceof Error ? error.message : error);
+        await deps.store.update('studio_social_presenter_jobs', record.id,
+          { status: 'accepted', error: message, updated_at: new Date().toISOString() }).catch(() => undefined);
+        await adoptionError(input, { error: message, providerStatus: completed.status, durationSeconds: duration });
+        return { status: 'uncertain', providerTaskId: input.adoptedProviderTaskId, error: message, contentHash, duration };
+      }
+      const materialId = `social-presenter-${createHash('sha256').update(input.idempotencyKey).digest('hex').slice(0, 24)}`;
+      const materials = readLocalMaterials();
+      saveLocalMaterials([...materials.filter(item => !(item.id === materialId && item.tenantId === input.tenantId)), {
+        id: materialId, name: `社媒数字人口播 · ${input.shotId}`, folder: 'presenter', type: 'video',
+        duration, size: `${bytes.length} B`, file: '', url: '', objectKey,
+        objectEtag, contentSha256: contentHash, scope: 'own', tenantId: input.tenantId,
+        usage: 'editable', sourceType: 'heygen', sourceExecutionId: input.adoptedProviderTaskId, createdAt: new Date().toISOString(),
+      }]);
+      await deps.store.update('studio_social_presenter_jobs', record.id, { status: 'completed',
+        provider_task_id: input.adoptedProviderTaskId, material_id: materialId, object_key: objectKey,
+        content_sha256: contentHash, updated_at: new Date().toISOString() });
+      await recordCurrentContentProviderReceipt({
+        provider: 'heygen', requestId: input.idempotencyKey, state: 'completed',
+        providerTaskId: input.adoptedProviderTaskId,
+        metadata: { adoption: true, materialId, objectKey, contentHash, duration },
+      });
+      await input.onProviderEvent?.({ state: 'completed', providerTaskId: input.adoptedProviderTaskId,
+        providerStatus: completed.status, durationSeconds: duration, contentHash, bytes: bytes.length, localPath, objectKey });
+      return { status: 'completed', providerTaskId: input.adoptedProviderTaskId, localPath, contentHash, duration, bytes: bytes.length };
     },
   };
   return ports;

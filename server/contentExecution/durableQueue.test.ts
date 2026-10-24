@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import os from 'node:os';
+import { spawnSync } from 'node:child_process';
 import { currentDataAuthority, runWithDataAuthority } from '../storage/dataAuthority.js';
 import type { DataStore, ListQuery, ListResult } from '../storage/datastore.js';
 import {
@@ -19,6 +21,7 @@ import {
   refreshUnspentContentExecutionCheckpoint,
   DurableContentExecutionWorker,
   controlContentExecutionJob,
+  localWorkerPid,
   pauseContentExecutionJobsForRun,
   readContentExecutionJob,
   resumeContentExecutionJobsForRun,
@@ -745,6 +748,51 @@ test('abandoned accepted provider job enters reconciliation without blind resubm
   });
   await store.update(CONTENT_EXECUTION_JOB_COLLECTION, job.id, {
     status: 'running', attempt: 1, worker_id: 'dead-worker', lease_expires_at: '2026-10-04T00:01:00Z',
+    provider_state: 'accepted', provider_receipts: [{
+      provider: 'heygen', requestId: 'request-a', state: 'accepted', providerTaskId: 'provider-task-a',
+      metadata: {}, firstRecordedAt: '2026-10-04T00:00:10Z', updatedAt: '2026-10-04T00:00:10Z',
+    }],
+  });
+  let executions = 0;
+  let settled!: () => void;
+  const didSettle = new Promise<void>(resolve => { settled = resolve; });
+  const worker = new DurableContentExecutionWorker({
+    dataStore: store, env, now: () => new Date('2026-10-04T00:02:00Z'),
+    execute: async () => { executions += 1; throw new Error('provider_submission_unknown:heygen'); },
+    onRetry: async () => settled(),
+  });
+  await worker.drain();
+  await didSettle;
+  const recovered = await readContentExecutionJob(store, 'tenant-a', 'task-a', 'run-a');
+  assert.equal(executions, 1);
+  assert.equal(recovered?.status, 'reconciling');
+  assert.equal(recovered?.retryClass, 'provider_reconciliation');
+  assert.equal(recovered?.providerReceipts[0]?.providerTaskId, 'provider-task-a');
+  worker.stop();
+});
+
+test('worker id parser keeps a digit-led uuid out of the host segment', () => {
+  const host = os.hostname().replace(/[^a-zA-Z0-9._-]/g, '-').slice(0, 80);
+  // The first uuid segment here is all digits; a loose regex would parse the
+  // host as "<host>-4321-91640a75" and never detect the dead local worker.
+  assert.equal(localWorkerPid(`${host}-4321-91640a75-6326-4f1f-b52f-bc9eaf20b301`), 4321);
+  assert.equal(localWorkerPid(`other-host-4321-91640a75-6326-4f1f-b52f-bc9eaf20b301`), null);
+  assert.equal(localWorkerPid('dead-worker'), null);
+});
+
+test('dead local worker is recovered before its lease expires', async () => {
+  const store = new MemoryStore();
+  const job = await admitContentExecutionJob({
+    dataStore: store, tenantId: 'tenant-a', userId: 'user-a', taskId: 'task-a', runId: 'run-a',
+    accountId: 'account-a', taskType: 'social_content_weekly', now: new Date('2026-10-04T00:00:00Z'),
+  });
+  const exited = spawnSync(process.execPath, ['-e', ''], { stdio: 'ignore' });
+  assert.ok(exited.pid);
+  const host = os.hostname().replace(/[^a-zA-Z0-9._-]/g, '-').slice(0, 80);
+  await store.update(CONTENT_EXECUTION_JOB_COLLECTION, job.id, {
+    status: 'running', attempt: 1,
+    worker_id: `${host}-${exited.pid}-91640a75-6326-4f1f-b52f-bc9eaf20b301`,
+    lease_expires_at: '2030-01-01T00:00:00Z',
     provider_state: 'accepted', provider_receipts: [{
       provider: 'heygen', requestId: 'request-a', state: 'accepted', providerTaskId: 'provider-task-a',
       metadata: {}, firstRecordedAt: '2026-10-04T00:00:10Z', updatedAt: '2026-10-04T00:00:10Z',

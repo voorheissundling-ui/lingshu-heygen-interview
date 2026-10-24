@@ -4,6 +4,10 @@ import {snapshot, scan, local} from './control.js';
 import {
   describeError, readPublicPipeline, startPipeline, step5ErrorCode,
 } from './step5Pipeline.js';
+import {
+  isStep5PageGenerationEnabled, readStep5GenerationSummary, reconcileStep5Generation,
+  step5GenerationCapFromEnv,
+} from './step5Generation.js';
 import {pbStore} from '../server/storage/pbStore.js';
 import {createStarter198Repository} from '../server/starter198/repository.js';
 import {openSocialArtifactPreviewMedia} from '../server/starter198/socialArtifactMedia.js';
@@ -49,6 +53,24 @@ async function readJsonBody(req: IncomingMessage, maxBytes: number): Promise<Bod
     chunks.push(Buffer.from(chunk));
   }
   return {ok: true, text: Buffer.concat(chunks).toString('utf8')};
+}
+
+/** Reads an optional JSON object body. An absent body means "use defaults". */
+async function readOptionalJsonObject(req: IncomingMessage, maxBytes = 16 * 1024):
+  Promise<{ok: true; value: Record<string, unknown>} | {ok: false; status: number; error: string}> {
+  const declared = Number(req.headers['content-length'] ?? 0);
+  if (!(declared > 0) && !req.headers['transfer-encoding']) return {ok: true, value: {}};
+  const body = await readJsonBody(req, maxBytes);
+  if (!body.ok) return {ok: false, status: body.status, error: body.error};
+  if (!body.text.trim()) return {ok: true, value: {}};
+  try {
+    const value = JSON.parse(body.text);
+    if (!value || typeof value !== 'object' || Array.isArray(value))
+      return {ok: false, status: 400, error: 'invalid_json_object'};
+    return {ok: true, value: value as Record<string, unknown>};
+  } catch {
+    return {ok: false, status: 400, error: 'invalid_json'};
+  }
 }
 
 const server = createServer(async (req, res) => {
@@ -125,6 +147,10 @@ const server = createServer(async (req, res) => {
     // Public, non-secret runtime state. It never returns the key or the key file path.
     if (req.method === 'GET' && url.pathname === '/api/real/status') {
       const real = process.env.INTERVIEW_REAL_MODE === '1';
+      let capCny: number | null = null;
+      let capError: string | null = null;
+      try { capCny = step5GenerationCapFromEnv(); }
+      catch (error) { capError = step5ErrorCode(error); }
       return send(200, {
         mode: real ? 'real' : 'offline',
         keyConfigured: real && Boolean(process.env.HEYGEN_API_KEY),
@@ -132,6 +158,11 @@ const server = createServer(async (req, res) => {
         providerHost: 'api.heygen.com',
         socialContentHeyGenEnabled: process.env.SOCIAL_CONTENT_HEYGEN_ENABLED === 'true',
         generationEnabled: process.env.HEYGEN_GENERATION_ENABLED === 'true',
+        pageGenerationEnabled: isStep5PageGenerationEnabled(),
+        generationCapCny: capCny,
+        generationCapError: capError,
+        maxGenerationCapCny: 8,
+        reconcileAvailable: real,
         paidGenerationPerformed: false,
         notice: real
           ? '真实模式只加载凭据并限制外网；供应商操作仍需显式开关和预算。'
@@ -142,7 +173,25 @@ const server = createServer(async (req, res) => {
     // Read-only pipeline state. Loading this endpoint never starts, resumes, or
     // settles anything; execution is only reachable through POST /api/start.
     if (req.method === 'GET' && url.pathname === '/api/pipeline') {
-      return send(200, {ok: true, pipeline: await readPublicPipeline()});
+      const generationLedger = await readStep5GenerationSummary().catch(() => null);
+      return send(200, {
+        ok: true,
+        pipeline: await readPublicPipeline(),
+        generationLedger: generationLedger
+          ? {
+            shots: generationLedger.shots.map(shot => ({
+              shotId: shot.shotId, kind: shot.kind, phase: shot.phase,
+              requestId: shot.requestId, title: shot.title,
+              providerTaskId: shot.kind === 'presenter' ? shot.providerTaskId : null,
+              providerStatus: shot.providerStatus, durationSeconds: shot.durationSeconds,
+              chargedCny: shot.chargedCny, reusedFrom: shot.reusedFrom,
+              mediaSha256: shot.mediaSha256, mediaBytes: shot.mediaBytes,
+            })),
+            unknownShots: generationLedger.unknownShots,
+            pendingShots: generationLedger.pendingShots,
+          }
+          : null,
+      });
     }
 
     if (req.method === 'GET' && url.pathname === '/api/state') return send(200, await snapshot());
@@ -175,12 +224,44 @@ const server = createServer(async (req, res) => {
 
     if (req.method === 'POST' && url.pathname === '/api/start') {
       try {
-        const result = await startPipeline();
+        const body = await readOptionalJsonObject(req);
+        if (!body.ok) return send(body.status, {ok: false, error: body.error, code: body.error});
+        const mode = body.value.mode === undefined ? 'reuse' : body.value.mode;
+        if (mode !== 'reuse' && mode !== 'generate')
+          return send(400, {ok: false, error: 'mode_must_be_reuse_or_generate', code: 'invalid_mode'});
+        const confirmedCapCny = body.value.confirmedCapCny === undefined
+          ? undefined : Number(body.value.confirmedCapCny);
+        if (mode === 'generate' && !(typeof confirmedCapCny === 'number' && Number.isFinite(confirmedCapCny)))
+          return send(400, {
+            ok: false, error: '真实生成必须显式确认 CNY 预算上限', code: 'step5_generation_cap_not_confirmed',
+          });
+        const result = await startPipeline({mode, ...(confirmedCapCny !== undefined ? {confirmedCapCny} : {})});
         return send(result.status === 'started' ? 202 : 200, {ok: true, ...result});
       } catch (error) {
         const code = step5ErrorCode(error);
         const status = code === 'step5_execution_running' ? 409
           : code === 'step5_seed_required' || code === 'step5_session_missing' ? 409 : 400;
+        return send(status, {ok: false, error: describeError(error), code});
+      }
+    }
+
+    // Explicit reconciliation for an unknown submission. Read-only against the
+    // provider: it never creates, downloads or re-submits a paid task.
+    if (req.method === 'POST' && url.pathname === '/api/reconcile') {
+      try {
+        const body = await readOptionalJsonObject(req);
+        if (!body.ok) return send(body.status, {ok: false, error: body.error, code: body.error});
+        const shotId = body.value.shotId === undefined ? undefined : String(body.value.shotId);
+        const videoId = body.value.videoId === undefined ? undefined : String(body.value.videoId);
+        const shot = await local(() => reconcileStep5Generation({
+          ...(shotId ? {shotId} : {}),
+          ...(videoId ? {videoId} : {}),
+        }));
+        return send(200, {ok: true, shot, pipeline: await readPublicPipeline()});
+      } catch (error) {
+        const code = step5ErrorCode(error);
+        const status = code === 'step5_submission_unknown' || code === 'step5_reconcile_not_found'
+          || code === 'step5_reconcile_ambiguous' ? 409 : 400;
         return send(status, {ok: false, error: describeError(error), code});
       }
     }

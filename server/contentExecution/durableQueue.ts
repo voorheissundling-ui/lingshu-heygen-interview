@@ -134,14 +134,32 @@ function canRun(job: ContentExecutionJob, running: ContentExecutionJob[], limits
   return true;
 }
 
+function localHostPrefix(): string {
+  return os.hostname().replace(/[^a-zA-Z0-9._-]/g, '-').slice(0, 80);
+}
+
+/**
+ * Extracts the PID from a worker id written by this host
+ * (`<host>-<pid>-<uuid>`). The UUID must be matched as a whole: a looser
+ * `[0-9a-f-]{20,}` tail lets the greedy host group swallow part of a UUID
+ * whose first segment is all digits, so the same-host check fails and a dead
+ * worker's job is never recovered.
+ */
+export function localWorkerPid(workerId: string): number | null {
+  const match = /^(.+)-(\d+)-([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i
+    .exec(workerId || '');
+  if (!match || match[1] !== localHostPrefix()) return null;
+  const pid = Number(match[2]);
+  return Number.isSafeInteger(pid) && pid > 0 ? pid : null;
+}
+
 async function recoverAbandonedJobs(dataStore: DataStore, jobs: ContentExecutionJob[], now: Date): Promise<void> {
   for (const job of jobs) {
     if (job.status !== 'running' || !job.leaseExpiresAt) continue;
-    const worker = /^(.+)-(\d+)-[0-9a-f-]{20,}$/i.exec(job.workerId || '');
-    const sameHost = worker?.[1] === os.hostname().replace(/[^a-zA-Z0-9._-]/g, '-').slice(0, 80);
+    const pid = localWorkerPid(job.workerId || '');
     let localOwnerAlive = true;
-    if (sameHost && worker) {
-      try { process.kill(Number(worker[2]), 0); }
+    if (pid !== null) {
+      try { process.kill(pid, 0); }
       catch (error) { if ((error as NodeJS.ErrnoException).code === 'ESRCH') localOwnerAlive = false; }
     }
     if (Date.parse(job.leaseExpiresAt) > now.getTime() && localOwnerAlive) continue;
@@ -210,10 +228,9 @@ async function claimNextJob(input: {
         where: { tenant_id: candidate.tenantId, lease_scope: 'content_execution_job', subject_id: candidate.id }, perPage: 2,
       });
       for (const prior of priorLeases.items) {
-        const owner = String(prior.owner_id || '');
-        const match = /^(.+)-(\d+)-[0-9a-f-]{20,}$/i.exec(owner);
-        if (match?.[1] !== os.hostname().replace(/[^a-zA-Z0-9._-]/g, '-').slice(0, 80)) continue;
-        try { process.kill(Number(match[2]), 0); }
+        const pid = localWorkerPid(String(prior.owner_id || ''));
+        if (pid === null) continue;
+        try { process.kill(pid, 0); }
         catch (error) {
           if ((error as NodeJS.ErrnoException).code === 'ESRCH') await input.dataStore.delete('durable_operation_leases', String(prior.id));
         }

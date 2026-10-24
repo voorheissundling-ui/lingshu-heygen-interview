@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "step": "step5-p0",
+  "generatedAt": "2026-10-24",
+  "status": "implemented_offline_verified_live_not_executed",
+  "scope": {
+    "p0a": "page-triggered real HeyGen generation",
+    "p0b": "unknown-submission reconciliation without resubmission"
+  },
+  "safety": {
+    "liveProviderCalls": 0,
+    "paidSubmissions": 0,
+    "realKeyRead": false,
+    "walletObservedThisRun": false,
+    "deployed": false,
+    "socialPublished": false,
+    "committedOrPushed": false,
+    "secretsInEvidence": false,
+    "signedUrlsInEvidence": false
+  },
+  "budget": {
+    "approvedCny": 8,
+    "chargedCny": 5.339473,
+    "reservedCny": 0,
+    "remainingCny": 2.660527,
+    "paidSubmissions": 6,
+    "walletBalanceUsd": 1.35,
+    "fxCnyPerUsd": 6.674341811691209,
+    "avatarUsdPerMinute": 2.31,
+    "speechUsdPerMillionChars": 15,
+    "forecastNotes": {
+      "presenterFormula": "avatarUsdPerMinute * fx * (durationSeconds + 3) / 60",
+      "narrationFormula": "speechUsdPerMillionChars * chars / 1e6 * fx",
+      "examplePresenter3_2sCny": 1.59,
+      "conclusion": "remaining budget covers at most one changed presenter shot plus narration; two simultaneous presenter changes are blocked"
+    }
+  },
+  "generationMode": {
+    "startEndpoint": "POST /api/start",
+    "body": {
+      "mode": "generate",
+      "confirmedCapCny": 8
+    },
+    "requiredEnv": {
+      "INTERVIEW_REAL_MODE": "1",
+      "HEYGEN_API_KEY": "loaded from outside the repo by real:dev",
+      "STEP5_PAGE_GENERATION_ENABLED": "1",
+      "HEYGEN_INTERVIEW_MAX_CNY": "8"
+    },
+    "maxApprovedCny": 8,
+    "pageConfirmationRequired": true,
+    "serverRevalidatesCap": true,
+    "capMustEqualEnv": true,
+    "zeroCostReuseFirst": true,
+    "shotLedgerRoot": ".interview-data/step5-generation/<shot>/state.json",
+    "shotPhases": [
+      "prepared",
+      "submitting",
+      "accepted",
+      "downloaded",
+      "submission_unknown",
+      "rejected",
+      "failed"
+    ],
+    "pipelinePhases": [
+      "prepared",
+      "submitting",
+      "accepted",
+      "generating",
+      "downloading",
+      "compositing",
+      "writing_back",
+      "review_required"
+    ],
+    "identities": {
+      "presenterContentHash": "sha256(JSON({v:1,kind:'presenter',avatarId,voiceId,speech}))",
+      "narrationContentHash": "sha256(JSON({v:1,kind:'illustration',voiceId,engine,language,text}))",
+      "presenterRequestId": "interview-step5-presenter-<shot>-<hash12>",
+      "narrationRequestId": "interview-step5-tts-<shot>-<hash12>",
+      "providerTitle": "LingShu Step5 <shot> <hash8>"
+    },
+    "changedContentBehavior": "archive state-<oldHash16>.json and treat as a new content revision",
+    "finalCompose": {
+      "planner": "reuse Step 4 plan/manifest builder",
+      "renderer": "desktop/render.cjs",
+      "requirements": "30-37s, 1080x1920, H.264/AAC, fully decodable"
+    }
+  },
+  "unknownSubmissionPolicy": {
+    "neverAutoResubmit": true,
+    "budgetReservationKept": true,
+    "presenter": {
+      "reconcileMethods": ["list", "manual"],
+      "listMatch": "exact title plus submitted_at time window",
+      "manualMatch": "provider video_id, title and time window revalidated",
+      "requiresGetOnly": true,
+      "adoptThenPollDownloadSettle": true
+    },
+    "narration": {
+      "listReconcile": false,
+      "manualVideoId": false,
+      "requiredAction": "change the text to create a new content revision"
+    },
+    "ambiguousOrMissing": "remain submission_unknown; no guess",
+    "pipelineMapping": {
+      "unknownShotsPresent": "step5_submission_unknown",
+      "jobReconciling": "step5_provider_pending"
+    },
+    "retryPolicyClass": "provider_reconciliation"
+  },
+  "apiSurface": {
+    "GET /api/real/status": [
+      "pageGenerationEnabled",
+      "generationCapCny",
+      "generationCapError",
+      "maxGenerationCapCny",
+      "reconcileAvailable"
+    ],
+    "GET /api/pipeline": [
+      "pipeline",
+      "generationLedger.shots",
+      "generationLedger.unknownShots",
+      "generationLedger.pendingShots"
+    ],
+    "POST /api/start": "mode + confirmedCapCny; generate requires a numeric confirmed cap",
+    "POST /api/reconcile": "shotId or videoId; GET-only provider reconciliation; 409 on unknown/not-found/ambiguous"
+  },
+  "writeBackCoordination": {
+    "reopenTerminalJob": true,
+    "clearReceiptsOnlyAfterPreviousSuccess": true,
+    "runningJobLeftToRecovery": true,
+    "weeklyTaskResetFromSucceededToQueued": true,
+    "artifactRemainsReviewRequired": true,
+    "technicalReviewApproved": false,
+    "creativeReviewApproved": false
+  },
+  "verification": {
+    "offlineOnly": true,
+    "generationTests": {
+      "file": "interview/step5Generation.test.ts",
+      "passed": 6,
+      "failed": 0,
+      "cases": [
+        "content-addressed identities stable and change only with content",
+        "cap above 8 or mismatched confirmation fails before any provider call",
+        "lost create response becomes submission_unknown with one POST; later list reconciliation uses GET only and completes",
+        "manual video_id reconciliation adopts the task without resubmission",
+        "known 4xx rejection releases the reservation and never resubmits",
+        "unchanged shots reuse Step 4 media with zero new submissions"
+      ]
+    },
+    "runtimeSuite": {
+      "command": "pnpm test",
+      "passed": 120,
+      "failed": 0
+    },
+    "queueSuite": {
+      "command": "pnpm run test:queue",
+      "passed": 37,
+      "failed": 0
+    },
+    "typecheck": {
+      "command": "pnpm run typecheck",
+      "result": "pass"
+    }
+  },
+  "notVerified": [
+    "No live page-triggered provider generation was executed in this run",
+    "No real wallet debit or provider POST was performed",
+    "Human video review, listening/ASR review and technical/creative approval remain outstanding",
+    "Step 7 delivery documentation and Step 8 final package verification remain outstanding"
+  ],
+  "files": [
+    "interview/step5Generation.ts",
+    "interview/step5Generation.test.ts",
+    "interview/step5Pipeline.ts",
+    "interview/step5Pipeline.test.ts",
+    "interview/web.ts",
+    "interview/public/index.html",
+    "server/contentExecution/retryPolicy.ts",
+    "package.json",
+    "evidence/step5-p0-page-generation.md"
+  ]
+}

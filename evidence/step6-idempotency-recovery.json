@@ -1,0 +1,585 @@
+{
+  "schemaVersion": "step6-idempotency-recovery.v1",
+  "generatedAt": "2026-10-24T02:38:06.767Z",
+  "mode": "real",
+  "entry": "node --import tsx interview/realWeb.ts (pnpm real:dev) + HTTP API probes",
+  "scope": {
+    "covered": [
+      "two simultaneous POST /api/start calls execute once",
+      "hard kill of the server after the first adopted provider task",
+      "restart and re-start recover the same durable job without a new paid submission",
+      "same Step 4 provider video ids, three completed receipts, one artifact/file, review_required",
+      "third start after completion returns already_complete and keeps completedAt",
+      "wallet unchanged"
+    ],
+    "notCovered": [
+      "unknown provider submission reconciliation (the killed run had known accepted tasks only)",
+      "manual listening / human creative review",
+      "deployment, social publishing and any new paid generation"
+    ]
+  },
+  "codeFix": {
+    "file": "server/contentExecution/durableQueue.ts",
+    "reason": "Step 6 recovery run failed: the worker-id parser was ambiguous and classified a dead same-host worker as alive.",
+    "oldPattern": "^(.+)-(\\d+)-[0-9a-f-]{20,}$",
+    "newPattern": "^(.+)-(\\d+)-([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$",
+    "behavior": "The greedy host group could absorb a UUID prefix that is all digits (e.g. 91640a75-...), so localWorkerPid returned null, the same-host check was skipped, and an unexpired lease kept the dead worker's job in running forever. Parsing the UUID as a strict whole pins the PID segment and makes both abandoned-job recovery and stale-lease cleanup work.",
+    "tests": [
+      "worker id parser keeps a digit-led uuid out of the host segment",
+      "dead local worker is recovered before its lease expires"
+    ]
+  },
+  "wallet": {
+    "before": {
+      "at": "2026-10-24T02:27:31.531Z",
+      "balanceUsd": 1.35,
+      "currency": "usd",
+      "autoReload": false
+    },
+    "after": {
+      "at": "2026-10-24T02:37:25.578Z",
+      "balanceUsd": 1.35,
+      "currency": "usd",
+      "autoReload": false
+    },
+    "deltaUsd": 0,
+    "unchanged": true
+  },
+  "cases": {
+    "concurrency": {
+      "entry": "two simultaneous POST /api/start calls on a clean seed",
+      "startedAt": "2026-10-24T02:28:20.808Z",
+      "before": {
+        "pipelinePhase": null,
+        "jobs": 1,
+        "artifacts": 0,
+        "files": 0
+      },
+      "starts": [
+        {
+          "label": "first",
+          "status": 202,
+          "pipelineStatus": "started",
+          "code": null
+        },
+        {
+          "label": "second",
+          "status": 200,
+          "pipelineStatus": "already_running",
+          "code": null
+        }
+      ],
+      "transitions": [
+        {
+          "at": "2026-10-24T02:28:20.835Z",
+          "phase": "submitting"
+        },
+        {
+          "at": "2026-10-24T02:28:21.041Z",
+          "phase": "accepted"
+        },
+        {
+          "at": "2026-10-24T02:28:23.858Z",
+          "phase": "compositing"
+        },
+        {
+          "at": "2026-10-24T02:28:47.376Z",
+          "phase": "writing_back"
+        },
+        {
+          "at": "2026-10-24T02:28:48.130Z",
+          "phase": "review_required"
+        }
+      ],
+      "phase": "review_required",
+      "counts": {
+        "jobs": 1,
+        "artifacts": 1,
+        "files": 1,
+        "operations": 2,
+        "receipts": 2,
+        "presenterJobs": 3
+      },
+      "job": {
+        "status": "succeeded",
+        "attempt": 1,
+        "workerId": "",
+        "reconciliationAttempt": 0,
+        "retryClass": "",
+        "receipts": []
+      },
+      "artifact": {
+        "artifactId": "socialart_362ad83b8e0e75d1a781fc92",
+        "status": "review_required",
+        "resourceRef": "socialfile:socialfile_d3b595780a78461c4b48a37d",
+        "mediaSha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
+        "technicalApproved": false,
+        "creativeApproved": false
+      },
+      "file": {
+        "fileId": "socialfile_d3b595780a78461c4b48a37d",
+        "sha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
+        "bytes": 8995181
+      },
+      "weekly": {
+        "status": "succeeded",
+        "refs": [
+          {
+            "type": "starter_social_content_artifact",
+            "id": "socialart_362ad83b8e0e75d1a781fc92",
+            "version": 1
+          }
+        ]
+      },
+      "media": {
+        "status": 200,
+        "bytes": 8995181,
+        "sha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f"
+      },
+      "live": {
+        "newPaidSubmissions": 0,
+        "newChargedCny": 0,
+        "statusCalls": 3,
+        "downloads": 3,
+        "uploads": 3,
+        "presentersAdopted": 3,
+        "accountRef": "heygen:c8c7bbadf7e2dc23b6933e3f1d888288b84f35274e77da6e8843124bfbc7aada",
+        "presenterAssetId": "presenter-public-storyboard"
+      },
+      "thirdStart": {
+        "status": 200,
+        "pipelineStatus": "already_complete",
+        "completedAt": "2026-10-24T02:28:47.919Z"
+      },
+      "checks": {
+        "exactlyOneStarted": true,
+        "exactlyOneAlreadyRunning": true,
+        "reachedReviewRequired": true,
+        "oneJob": true,
+        "oneArtifact": true,
+        "oneFile": true,
+        "threeCompletedReceipts": true,
+        "threePresenterJobs": true,
+        "artifactReviewRequired": true,
+        "reviewsFalse": true,
+        "hashChain": true,
+        "servedBytes": true,
+        "zeroNewPaid": true,
+        "thirdStartAlreadyComplete": true
+      },
+      "passed": true,
+      "failedChecks": []
+    },
+    "strongKill": {
+      "entry": "start once, wait for the first adopted presenter, kill the server process",
+      "trigger": "adopted_at_least_one",
+      "start": {
+        "status": 202,
+        "pipelineStatus": "started"
+      },
+      "killTool": "process.kill(pid, SIGKILL), taskkill /F /PID fallback",
+      "portClosedAfterKill": true,
+      "beforeKill": {
+        "phase": "accepted",
+        "live": {
+          "newPaidSubmissions": 0,
+          "newChargedCny": 0,
+          "statusCalls": 1,
+          "downloads": 1,
+          "uploads": 1,
+          "presentersAdopted": 1,
+          "accountRef": "heygen:c8c7bbadf7e2dc23b6933e3f1d888288b84f35274e77da6e8843124bfbc7aada",
+          "presenterAssetId": "presenter-public-storyboard"
+        },
+        "presenterShots": [
+          {
+            "id": "hook",
+            "phase": "completed",
+            "providerStatus": "completed",
+            "videoId": "c15b32aecb501970d0f0d0fa3958cf03",
+            "mediaSha256": "163b50edd0c9f1c7e2c770d45ea3bd51104a4469ec5665363b1d604be4547dcc"
+          },
+          {
+            "id": "capabilities",
+            "phase": "downloaded",
+            "providerStatus": "completed",
+            "videoId": "9c7ab31c7ef49df5a9a92a6804c73599",
+            "mediaSha256": "82c1be19cfeb66413d1f4d34399545dc4070b0919de3e458f265c56d5ae3531f"
+          },
+          {
+            "id": "cta",
+            "phase": "downloaded",
+            "providerStatus": "completed",
+            "videoId": "da9b079f3329488bdb77f31b462bb31e",
+            "mediaSha256": "9b340b8a5b31200f12df72005ab5f308884342e96e487bb90db281bb35c874fb"
+          }
+        ],
+        "job": {
+          "status": "running",
+          "attempt": 1,
+          "workerId": "<host>-13424-16c1f1df-97d6-4b07-976c-42c76d96a63d",
+          "leaseExpiresAt": "2026-10-02T12:30:00.000Z",
+          "reconciliationAttempt": 0,
+          "retryClass": "",
+          "receipts": [
+            {
+              "requestId": "interview-step4-hook-62426984-859b-4f2c-aac9-0c4cbc7c4c66",
+              "state": "completed",
+              "providerTaskId": "c15b32aecb501970d0f0d0fa3958cf03",
+              "adoption": true
+            },
+            {
+              "requestId": "interview-step4-capabilities-436bb29b-4e20-4f03-9b34-a78125128f57",
+              "state": "accepted",
+              "providerTaskId": "9c7ab31c7ef49df5a9a92a6804c73599",
+              "adoption": true
+            }
+          ]
+        },
+        "counts": {
+          "jobs": 1,
+          "artifacts": 0,
+          "files": 0,
+          "operations": 0,
+          "presenterJobs": 2
+        }
+      },
+      "afterKill": {
+        "phase": "accepted",
+        "job": {
+          "status": "running",
+          "attempt": 1,
+          "workerId": "<host>-13424-16c1f1df-97d6-4b07-976c-42c76d96a63d",
+          "leaseExpiresAt": "2026-10-02T12:30:00.000Z",
+          "reconciliationAttempt": 0,
+          "retryClass": "",
+          "receipts": [
+            {
+              "requestId": "interview-step4-hook-62426984-859b-4f2c-aac9-0c4cbc7c4c66",
+              "state": "completed",
+              "providerTaskId": "c15b32aecb501970d0f0d0fa3958cf03",
+              "adoption": true
+            },
+            {
+              "requestId": "interview-step4-capabilities-436bb29b-4e20-4f03-9b34-a78125128f57",
+              "state": "accepted",
+              "providerTaskId": "9c7ab31c7ef49df5a9a92a6804c73599",
+              "adoption": true
+            }
+          ]
+        },
+        "counts": {
+          "jobs": 1,
+          "artifacts": 0,
+          "files": 0,
+          "operations": 0,
+          "presenterJobs": 2
+        }
+      },
+      "checks": {
+        "triggerObserved": true,
+        "atLeastOneAdoptedBeforeKill": true,
+        "portClosedAfterKill": true,
+        "jobWasRunning": true,
+        "noArtifactBeforeKill": true,
+        "noFileBeforeKill": true,
+        "phaseWasNotComplete": true
+      },
+      "passed": true,
+      "failedChecks": [],
+      "harnessNote": {
+        "attempt1": {
+          "generatedAt": "2026-10-24T02:29:55.426Z",
+          "passed": false,
+          "failedChecks": [
+            "portClosedAfterKill"
+          ],
+          "cause": "taskkill.exe was spawned without an absolute path and was not found; the server survived and the attempt was discarded as a harness error, not a product result."
+        }
+      }
+    },
+    "recovery": {
+      "entry": "restart the server after the hard kill, then POST /api/start for the same task",
+      "beforeRestart": {
+        "phase": "accepted",
+        "jobStatus": "running",
+        "jobAttempt": 1,
+        "receipts": [
+          {
+            "requestId": "interview-step4-hook-62426984-859b-4f2c-aac9-0c4cbc7c4c66",
+            "state": "completed",
+            "providerTaskId": "c15b32aecb501970d0f0d0fa3958cf03"
+          },
+          {
+            "requestId": "interview-step4-capabilities-436bb29b-4e20-4f03-9b34-a78125128f57",
+            "state": "accepted",
+            "providerTaskId": "9c7ab31c7ef49df5a9a92a6804c73599"
+          }
+        ],
+        "counts": {
+          "artifacts": 0,
+          "files": 0
+        }
+      },
+      "start": {
+        "status": 202,
+        "pipelineStatus": "started",
+        "code": null
+      },
+      "transitions": [
+        {
+          "at": "2026-10-24T02:36:48.983Z",
+          "phase": "submitting",
+          "active": [
+            "submitting"
+          ]
+        },
+        {
+          "at": "2026-10-24T02:36:49.201Z",
+          "phase": "accepted",
+          "active": [
+            "accepted"
+          ]
+        },
+        {
+          "at": "2026-10-24T02:36:52.417Z",
+          "phase": "compositing",
+          "active": [
+            "compositing"
+          ]
+        },
+        {
+          "at": "2026-10-24T02:37:17.876Z",
+          "phase": "writing_back",
+          "active": [
+            "writing_back"
+          ]
+        },
+        {
+          "at": "2026-10-24T02:37:18.597Z",
+          "phase": "review_required",
+          "active": []
+        }
+      ],
+      "phase": "review_required",
+      "error": null,
+      "expectedProviderTasks": [
+        {
+          "shotId": "hook",
+          "videoId": "c15b32aecb501970d0f0d0fa3958cf03"
+        },
+        {
+          "shotId": "capabilities",
+          "videoId": "9c7ab31c7ef49df5a9a92a6804c73599"
+        },
+        {
+          "shotId": "cta",
+          "videoId": "da9b079f3329488bdb77f31b462bb31e"
+        }
+      ],
+      "actualProviderTasks": [
+        {
+          "shotId": "hook",
+          "videoId": "c15b32aecb501970d0f0d0fa3958cf03",
+          "providerStatus": "completed",
+          "mediaSha256": "163b50edd0c9f1c7e2c770d45ea3bd51104a4469ec5665363b1d604be4547dcc",
+          "phase": "completed"
+        },
+        {
+          "shotId": "capabilities",
+          "videoId": "9c7ab31c7ef49df5a9a92a6804c73599",
+          "providerStatus": "completed",
+          "mediaSha256": "82c1be19cfeb66413d1f4d34399545dc4070b0919de3e458f265c56d5ae3531f",
+          "phase": "completed"
+        },
+        {
+          "shotId": "cta",
+          "videoId": "da9b079f3329488bdb77f31b462bb31e",
+          "providerStatus": "completed",
+          "mediaSha256": "9b340b8a5b31200f12df72005ab5f308884342e96e487bb90db281bb35c874fb",
+          "phase": "completed"
+        }
+      ],
+      "counts": {
+        "jobs": 1,
+        "artifacts": 1,
+        "files": 1,
+        "operations": 2,
+        "receipts": 2,
+        "presenterJobs": 3
+      },
+      "job": {
+        "status": "succeeded",
+        "attempt": 2,
+        "workerId": "",
+        "reconciliationAttempt": 1,
+        "retryClass": "",
+        "receipts": [
+          {
+            "requestId": "interview-step4-hook-62426984-859b-4f2c-aac9-0c4cbc7c4c66",
+            "state": "completed",
+            "providerTaskId": "c15b32aecb501970d0f0d0fa3958cf03",
+            "adoption": true
+          },
+          {
+            "requestId": "interview-step4-capabilities-436bb29b-4e20-4f03-9b34-a78125128f57",
+            "state": "completed",
+            "providerTaskId": "9c7ab31c7ef49df5a9a92a6804c73599",
+            "adoption": true
+          },
+          {
+            "requestId": "interview-step4-cta-38b3c815-eb89-4082-99a6-a074ef28f7cd",
+            "state": "completed",
+            "providerTaskId": "da9b079f3329488bdb77f31b462bb31e",
+            "adoption": true
+          }
+        ]
+      },
+      "artifact": {
+        "artifactId": "socialart_a8f0d112e6e9e4db954ec402",
+        "status": "review_required",
+        "resourceRef": "socialfile:socialfile_2379e35d6b2bdc272ee903a7",
+        "mediaSha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
+        "technicalApproved": false,
+        "creativeApproved": false
+      },
+      "file": {
+        "fileId": "socialfile_2379e35d6b2bdc272ee903a7",
+        "sha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
+        "bytes": 8995181
+      },
+      "weekly": {
+        "status": "succeeded",
+        "refs": [
+          {
+            "type": "starter_social_content_artifact",
+            "id": "socialart_a8f0d112e6e9e4db954ec402",
+            "version": 1
+          }
+        ]
+      },
+      "live": {
+        "newPaidSubmissions": 0,
+        "newChargedCny": 0,
+        "statusCalls": 3,
+        "downloads": 3,
+        "uploads": 3,
+        "presentersAdopted": 3,
+        "accountRef": "heygen:c8c7bbadf7e2dc23b6933e3f1d888288b84f35274e77da6e8843124bfbc7aada",
+        "presenterAssetId": "presenter-public-storyboard"
+      },
+      "media": {
+        "compositionSha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
+        "diskSha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
+        "served": {
+          "status": 200,
+          "bytes": 8995181,
+          "sha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f"
+        },
+        "durationSeconds": 33.52,
+        "width": 1080,
+        "height": 1920,
+        "videoCodec": "h264",
+        "audioCodec": "aac"
+      },
+      "thirdStart": {
+        "status": 200,
+        "pipelineStatus": "already_complete",
+        "completedAtUnchanged": true
+      },
+      "checks": {
+        "restartAccepted": true,
+        "reachedReviewRequired": true,
+        "sameThreeVideoIds": true,
+        "jobSucceeded": true,
+        "recoveredUnderNewAttempt": true,
+        "threeCompletedReceipts": true,
+        "oneArtifact": true,
+        "oneFile": true,
+        "threePresenterJobs": true,
+        "artifactReviewRequired": true,
+        "reviewsFalse": true,
+        "hashChain": true,
+        "servedBytes": true,
+        "zeroNewPaid": true,
+        "threeStatusCalls": true,
+        "threeDownloads": true,
+        "threeAdoptions": true,
+        "weeklySucceeded": true,
+        "thirdStartAlreadyComplete": true,
+        "completedAtUnchanged": true
+      },
+      "passed": true,
+      "failedChecks": []
+    }
+  },
+  "discoveredFailure": {
+    "attempt": "first recovery after the kill (before the fix)",
+    "at": "2026-10-24T02:35:48.903Z",
+    "pipelinePhase": "failed",
+    "error": {
+      "code": "step5_job_terminal_error",
+      "message": "原队列任务未成功结束，未生成可审核产物。（running）",
+      "phase": "submitting",
+      "at": "2026-10-24T02:35:03.118Z"
+    },
+    "jobStatusAtFailure": "running",
+    "workerIdPattern": "<host>-14976-91640a75-6326-4f1f-b52f-bc9eaf20b301",
+    "leaseExpiresAt": "2026-10-02T12:30:00.000Z",
+    "receipts": [
+      {
+        "requestId": "interview-step4-hook-62426984-859b-4f2c-aac9-0c4cbc7c4c66",
+        "state": "completed",
+        "providerTaskId": "c15b32aecb501970d0f0d0fa3958cf03"
+      }
+    ],
+    "recoveryChecks": {
+      "passed": false,
+      "failedChecks": [
+        "reachedReviewRequired",
+        "jobSucceeded",
+        "recoveredUnderNewAttempt",
+        "threeCompletedReceipts",
+        "oneArtifact",
+        "oneFile",
+        "threePresenterJobs",
+        "artifactReviewRequired",
+        "reviewsFalse",
+        "hashChain",
+        "servedBytes",
+        "threeStatusCalls",
+        "threeDownloads",
+        "threeAdoptions",
+        "weeklySucceeded",
+        "thirdStartAlreadyComplete"
+      ],
+      "phase": "failed"
+    },
+    "presenterJobs": 2,
+    "explanation": "The job kept worker_id/lease and status running; recoverAbandonedJobs skipped it, drain claimed nothing, writeBack raised step5_job_terminal_error. The same scenario passed after the fixed parser."
+  },
+  "regression": {
+    "fullTest": "pnpm test: 111 passed / 0 failed",
+    "queueTest": "pnpm run test:queue: 37 passed / 0 failed (2 new recovery tests)",
+    "typecheck": "pnpm run typecheck: passed"
+  },
+  "artifacts": {
+    "concurrencyResult": ".interview-data/step6-concurrency-result.json",
+    "killResult": ".interview-data/step6-kill-result.json",
+    "killAttempt1": ".interview-data/step6-kill-attempt1.json",
+    "recoveryResult": ".interview-data/step6-recovery-result.json",
+    "recoveryFailureBeforeFix": ".interview-data/step6-recovery-attempt1-context.json",
+    "walletBefore": ".interview-data/wallet-step6-before.json",
+    "walletAfter": ".interview-data/wallet-step6-after.json",
+    "report": "evidence/step6-idempotency-recovery.md"
+  },
+  "checks": {
+    "concurrencyPassed": true,
+    "strongKillPassed": true,
+    "recoveryPassed": true,
+    "walletUnchanged": true,
+    "zeroNewPaidAcrossRuns": true,
+    "sameFinalShaAsStep5": true
+  },
+  "passed": true
+}

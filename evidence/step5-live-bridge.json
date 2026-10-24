@@ -1,0 +1,339 @@
+{
+  "schemaVersion": "step5-live-bridge.v1",
+  "generatedAt": "2026-10-24T02:16:45.589Z",
+  "mode": "real",
+  "entry": "node --import tsx interview/realWeb.ts (pnpm real:dev) + POST /api/start",
+  "server": {
+    "listen": "127.0.0.1:4318",
+    "realMode": "real",
+    "keyConfigured": true,
+    "credentialHashSha256": "37e1d095e795d32d94695557a3c61d7f94986c2a2e912185b9ff53d6ac9f5353",
+    "providerHost": "api.heygen.com",
+    "paidGenerationPerformed": false,
+    "network": {
+      "systemProxyUsed": true,
+      "nodeEnvProxy": "NODE_USE_ENV_PROXY=1",
+      "proxyEndpointHostOnly": "127.0.0.1:7897",
+      "note": "npm undici first import replaces the env-proxy dispatcher; realWeb re-asserts a ProxyAgent before loading the app."
+    }
+  },
+  "identity": {
+    "accountRef": "heygen:c8c7bbadf7e2dc23b6933e3f1d888288b84f35274e77da6e8843124bfbc7aada",
+    "presenterAssetId": "presenter-public-storyboard",
+    "avatarId": "ee25a2363ef941a1b5b0f7b1172e57d1",
+    "voiceId": "c5e71f9038a2419d9d43c7132c31fe49",
+    "storyboardSha256": "6d78d775752986ce5c3ea22b0b42cedea0825f80842f67b351406752e8791cf2",
+    "step5IdempotencyKey": "f68ea88cc3bed2a0830c2e9a36baec7f7468ea1f0d6bd6f2ecafae7b516bb5d8",
+    "jobId": "b723a160da693f0"
+  },
+  "zeroCost": {
+    "newPaidSubmissions": 0,
+    "newChargedCny": 0,
+    "walletBeforeUsd": 1.35,
+    "walletAfterUsd": 1.35,
+    "walletDeltaUsd": 0,
+    "currency": "USD",
+    "autoReload": false,
+    "walletBeforeAt": "2026-10-24T02:12:07.395Z",
+    "walletAfterAt": "2026-10-24T02:16:08.704Z",
+    "step4FinalWalletUsd": 1.35,
+    "paidSubmissionsInThisRun": 0,
+    "transportGuard": "GET-only adoption transport; any non-GET rejects before the network guard; budget.reserve() throws."
+  },
+  "pipeline": {
+    "startHttpStatus": 202,
+    "startStatus": "started",
+    "startedAt": "2026-10-24T02:15:14.147Z",
+    "completedAt": "2026-10-24T02:15:44.709Z",
+    "phase": "review_required",
+    "phases": [
+      {
+        "name": "prepared",
+        "status": "done",
+        "source": null
+      },
+      {
+        "name": "submitting",
+        "status": "done",
+        "source": "live-bridge"
+      },
+      {
+        "name": "accepted",
+        "status": "done",
+        "source": "live-bridge"
+      },
+      {
+        "name": "generating",
+        "status": "done",
+        "source": "live-bridge"
+      },
+      {
+        "name": "downloading",
+        "status": "done",
+        "source": "live-bridge"
+      },
+      {
+        "name": "compositing",
+        "status": "done",
+        "source": "live-adopted"
+      },
+      {
+        "name": "writing_back",
+        "status": "done",
+        "source": "original-content-commands"
+      },
+      {
+        "name": "review_required",
+        "status": "done",
+        "source": null
+      }
+    ],
+    "transitions": [
+      {
+        "at": "2026-10-24T02:15:14.161Z",
+        "phase": "submitting"
+      },
+      {
+        "at": "2026-10-24T02:15:16.169Z",
+        "phase": "accepted"
+      },
+      {
+        "at": "2026-10-24T02:15:18.177Z",
+        "phase": "compositing"
+      },
+      {
+        "at": "2026-10-24T02:15:46.305Z",
+        "phase": "review_required"
+      }
+    ],
+    "error": null
+  },
+  "provider": {
+    "source": "live-bridge",
+    "counters": {
+      "newPaidSubmissions": 0,
+      "newChargedCny": 0,
+      "statusCalls": 3,
+      "downloads": 3,
+      "uploads": 3,
+      "presentersAdopted": 3,
+      "accountRef": "heygen:c8c7bbadf7e2dc23b6933e3f1d888288b84f35274e77da6e8843124bfbc7aada",
+      "presenterAssetId": "presenter-public-storyboard"
+    },
+    "adopted": [
+      {
+        "shotId": "hook",
+        "videoId": "c15b32aecb501970d0f0d0fa3958cf03",
+        "step4": {
+          "requestId": "interview-step4-hook-62426984-859b-4f2c-aac9-0c4cbc7c4c66",
+          "providerStatus": "completed",
+          "durationSeconds": 3.21306,
+          "mediaSha256": "163b50edd0c9f1c7e2c770d45ea3bd51104a4469ec5665363b1d604be4547dcc",
+          "mediaBytes": 961494,
+          "chargedCny": 1.001151
+        },
+        "live": {
+          "providerStatus": "completed",
+          "durationSeconds": 3.21306,
+          "mediaSha256": "163b50edd0c9f1c7e2c770d45ea3bd51104a4469ec5665363b1d604be4547dcc",
+          "mediaBytes": 961494,
+          "receiptState": "completed",
+          "receiptAdoption": true
+        },
+        "durationDeltaSeconds": 0,
+        "matches": {
+          "videoId": true,
+          "mediaSha256": true,
+          "mediaBytes": true,
+          "durationWithinTolerance": true,
+          "completedReceipt": true
+        }
+      },
+      {
+        "shotId": "capabilities",
+        "videoId": "9c7ab31c7ef49df5a9a92a6804c73599",
+        "step4": {
+          "requestId": "interview-step4-capabilities-436bb29b-4e20-4f03-9b34-a78125128f57",
+          "providerStatus": "completed",
+          "durationSeconds": 4.70204,
+          "mediaSha256": "82c1be19cfeb66413d1f4d34399545dc4070b0919de3e458f265c56d5ae3531f",
+          "mediaBytes": 1386685,
+          "chargedCny": 1.334868
+        },
+        "live": {
+          "providerStatus": "completed",
+          "durationSeconds": 4.70204,
+          "mediaSha256": "82c1be19cfeb66413d1f4d34399545dc4070b0919de3e458f265c56d5ae3531f",
+          "mediaBytes": 1386685,
+          "receiptState": "completed",
+          "receiptAdoption": true
+        },
+        "durationDeltaSeconds": 0,
+        "matches": {
+          "videoId": true,
+          "mediaSha256": true,
+          "mediaBytes": true,
+          "durationWithinTolerance": true,
+          "completedReceipt": true
+        }
+      },
+      {
+        "shotId": "cta",
+        "videoId": "da9b079f3329488bdb77f31b462bb31e",
+        "step4": {
+          "requestId": "interview-step4-cta-38b3c815-eb89-4082-99a6-a074ef28f7cd",
+          "providerStatus": "completed",
+          "durationSeconds": 7.15755,
+          "mediaSha256": "9b340b8a5b31200f12df72005ab5f308884342e96e487bb90db281bb35c874fb",
+          "mediaBytes": 1988205,
+          "chargedCny": 2.002303
+        },
+        "live": {
+          "providerStatus": "completed",
+          "durationSeconds": 7.15755,
+          "mediaSha256": "9b340b8a5b31200f12df72005ab5f308884342e96e487bb90db281bb35c874fb",
+          "mediaBytes": 1988205,
+          "receiptState": "completed",
+          "receiptAdoption": true
+        },
+        "durationDeltaSeconds": 0,
+        "matches": {
+          "videoId": true,
+          "mediaSha256": true,
+          "mediaBytes": true,
+          "durationWithinTolerance": true,
+          "completedReceipt": true
+        }
+      }
+    ],
+    "receipts": [
+      {
+        "requestId": "interview-step4-hook-62426984-859b-4f2c-aac9-0c4cbc7c4c66",
+        "state": "completed",
+        "videoId": "c15b32aecb501970d0f0d0fa3958cf03",
+        "adoption": true,
+        "contentHash": "163b50edd0c9f1c7e2c770d45ea3bd51104a4469ec5665363b1d604be4547dcc",
+        "durationSeconds": 3.21306
+      },
+      {
+        "requestId": "interview-step4-capabilities-436bb29b-4e20-4f03-9b34-a78125128f57",
+        "state": "completed",
+        "videoId": "9c7ab31c7ef49df5a9a92a6804c73599",
+        "adoption": true,
+        "contentHash": "82c1be19cfeb66413d1f4d34399545dc4070b0919de3e458f265c56d5ae3531f",
+        "durationSeconds": 4.70204
+      },
+      {
+        "requestId": "interview-step4-cta-38b3c815-eb89-4082-99a6-a074ef28f7cd",
+        "state": "completed",
+        "videoId": "da9b079f3329488bdb77f31b462bb31e",
+        "adoption": true,
+        "contentHash": "9b340b8a5b31200f12df72005ab5f308884342e96e487bb90db281bb35c874fb",
+        "durationSeconds": 7.15755
+      }
+    ],
+    "presenterJobRows": 3
+  },
+  "media": {
+    "compositionMode": "recomposed",
+    "providerMedia": "live-adopted",
+    "sha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
+    "bytes": 8995181,
+    "durationSeconds": 33.52,
+    "width": 1080,
+    "height": 1920,
+    "videoCodec": "h264",
+    "audioCodec": "aac",
+    "manifestSha256": "504408750194eb3ec74919acb2bf026bb0ab99a19e104da04f9f9e7fc0ff0aa6",
+    "adoptedManifestSha256": "504408750194eb3ec74919acb2bf026bb0ab99a19e104da04f9f9e7fc0ff0aa6",
+    "diskSha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
+    "artifactMediaSha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
+    "fileContentSha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
+    "fileByteSize": 8995181,
+    "servedApiSha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
+    "servedApiBytes": 8995181,
+    "servedApiHttpStatus": 200,
+    "allHashesEqual": true
+  },
+  "writeBack": {
+    "artifactId": "socialart_046bfcaa88e473d6027748f2",
+    "fileId": "socialfile_bb1e49532972c4d832b976cf",
+    "fileRef": "socialfile:socialfile_bb1e49532972c4d832b976cf",
+    "status": "review_required",
+    "sha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
+    "bytes": 8995181,
+    "technicalApproved": false,
+    "creativeApproved": false,
+    "artifactReviewRequired": "review_required"
+  },
+  "durableJob": {
+    "jobId": "b723a160da693f0",
+    "status": "succeeded",
+    "attempt": 1,
+    "reconciliationAttempt": 0,
+    "retryClass": "",
+    "lastError": "",
+    "providerState": "completed",
+    "receiptStates": [
+      "completed",
+      "completed",
+      "completed"
+    ]
+  },
+  "weekly": {
+    "taskId": "video",
+    "status": "succeeded",
+    "settlement": {
+      "status": "succeeded",
+      "code": null,
+      "message": "已由原周任务消费者结算"
+    }
+  },
+  "idempotency": {
+    "secondStartHttpStatus": 200,
+    "secondStartStatus": "already_complete",
+    "secondStartPipelinePhase": "review_required",
+    "completedAtUnchanged": true
+  },
+  "verification": {
+    "checks": {
+      "reachedReviewRequired": true,
+      "providerSourceLiveBridge": true,
+      "zeroNewPaidSubmissions": true,
+      "zeroNewCharge": true,
+      "threeStatusCalls": true,
+      "threeDownloads": true,
+      "threeUploads": true,
+      "threePresentersAdopted": true,
+      "adoptedVideoIdsAndHashesMatchStep4": true,
+      "recomposedWithLiveMedia": true,
+      "compositionShaMatchesDisk": true,
+      "compositionShaMatchesArtifactMedia": true,
+      "compositionShaMatchesFile": true,
+      "compositionBytesMatchFile": true,
+      "servedMediaMatchesComposition": true,
+      "artifactReviewRequired": true,
+      "reviewsNotApproved": true,
+      "artifactResourceRef": true,
+      "durableJobSucceeded": true,
+      "durableJobNotReconciling": true,
+      "threeCompletedAdoptionReceipts": true,
+      "presenterJobRowsAreIdempotentAdoptions": true,
+      "weeklyTaskSucceeded": true,
+      "walletUnchanged": true,
+      "walletStaysOnePointThreeFive": true,
+      "secondStartAlreadyComplete": true,
+      "secondStartDidNotAdvancePipeline": true,
+      "realModeOnly": true
+    },
+    "passed": true,
+    "checkCount": 28,
+    "failedChecks": [],
+    "postRunChecks": {
+      "typecheck": "pass (tsc --noEmit)",
+      "mainRegression": "111/111 pass",
+      "durableQueue": "35/35 pass",
+      "at": "2026-10-24T02:17:43.690Z"
+    }
+  }
+}

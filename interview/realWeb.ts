@@ -1,3 +1,6 @@
+// Windows cannot fsync a directory handle; the local store still writes and
+// renames durably. The offline entry point already loads this shim.
+import './fsync-compat.mjs';
 import path from 'node:path';
 import {
   REAL_PROVIDER_HOST,
@@ -29,6 +32,17 @@ async function main(): Promise<void> {
   applyRealProviderKey(process.env, loaded);
   installRealModeRuntime();
   const allowlist = activeProviderDownloadAllowlist();
+
+  // The app pulls in the npm `undici` copy, and that module registers a plain
+  // global dispatcher on first import. That silently overrides the proxy that
+  // NODE_USE_ENV_PROXY installs for the built-in fetch, so provider calls would
+  // go direct and time out. Re-assert the proxy agent here, before the app
+  // modules load provider traffic.
+  const envProxy = process.env.HTTPS_PROXY || process.env.HTTP_PROXY;
+  if (process.env.NODE_USE_ENV_PROXY === '1' && envProxy) {
+    const {ProxyAgent, setGlobalDispatcher} = await import('undici');
+    setGlobalDispatcher(new ProxyAgent(envProxy));
+  }
 
   // Paid generation is not switched on implicitly. Step 2 is read-only; later
   // steps must set the readiness flags and a positive business budget explicitly.
