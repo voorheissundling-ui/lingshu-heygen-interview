@@ -14,7 +14,8 @@
     "walletObservedThisRun": false,
     "deployed": false,
     "socialPublished": false,
-    "committedOrPushed": false,
+    "committedOrPushed": true,
+    "pushedCommit": "2d58d2d",
     "secretsInEvidence": false,
     "signedUrlsInEvidence": false
   },
