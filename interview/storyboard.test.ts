@@ -141,6 +141,24 @@ test('duration range and target/sum agreement are enforced', () => {
   assert.ok(codes(validateStoryboard(mismatch)).includes('timeline_duration_mismatch'));
 });
 
+test('validation and save preserve the presenter voice-revision metadata', async () => {
+  const checked = validateStoryboard(valid);
+  if (!checked.ok) assert.fail(JSON.stringify(checked.issues));
+  const presenter = checked.value.presenter;
+  assert.equal(presenter.previousVoiceId, valid.presenter.previousVoiceId);
+  assert.deepEqual(presenter.voiceCatalogEvidence, valid.presenter.voiceCatalogEvidence);
+  assert.equal(presenter.voiceId, valid.presenter.voiceId);
+
+  const directory = await fsp.mkdtemp(path.join(os.tmpdir(), 'storyboard-'));
+  const file = path.join(directory, 'storyboard.json');
+  try {
+    const saved = await saveStoryboardFile(checked.value, file);
+    assert.equal(saved.sha256, loaded.sha256);
+  } finally {
+    await fsp.rm(directory, {recursive: true, force: true});
+  }
+});
+
 test('save is atomic and read-back validates with the same hash', async () => {
   const directory = await fsp.mkdtemp(path.join(os.tmpdir(), 'storyboard-'));
   const file = path.join(directory, 'storyboard.json');

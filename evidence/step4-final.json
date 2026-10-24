@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "mode": "step4_multishot_composition",
-  "jobId": "step4-244a6fb03b0f",
+  "jobId": "step4-0367302a7caa",
   "storyboardPath": "assets/storyboard.json",
-  "storyboardSha256": "6d78d775752986ce5c3ea22b0b42cedea0825f80842f67b351406752e8791cf2",
+  "storyboardSha256": "ce3de043fcb22b36ef495664ad53ba69ce8c52d5bc702023d76e6ff1f51c86a6",
   "plan": {
     "schemaVersion": 1,
     "language": "en",
@@ -19,10 +19,10 @@
         "subtitle": "Launch your own skincare line",
         "framing": "portrait medium shot, lab-coat presenter at eye level, clean lab background",
         "startSeconds": 0,
-        "durationSeconds": 3.213,
-        "endSeconds": 3.213,
+        "durationSeconds": 3.04,
+        "endSeconds": 3.04,
         "localFile": "D:\\project\\毕业项目\\real-digital-employee-20fe685\\.interview-data\\step4-shots\\hook\\provider-output.mp4",
-        "measuredDurationSeconds": 3.213,
+        "measuredDurationSeconds": 3.04,
         "narrationDurationSeconds": null,
         "narrationFile": null
       },
@@ -32,12 +32,12 @@
         "speech": "From brightening serums to gentle cleansers, we turn your formula into a retail-ready product.",
         "subtitle": "Serums, creams, cleansers — retail-ready",
         "framing": "vertical product hero montage, four bottles and jars, slow push-in",
-        "startSeconds": 3.213,
-        "durationSeconds": 6.597,
-        "endSeconds": 9.81,
+        "startSeconds": 3.04,
+        "durationSeconds": 6.76,
+        "endSeconds": 9.8,
         "localFile": "assets/illustrations/product-range.png",
         "measuredDurationSeconds": 6.5,
-        "narrationDurationSeconds": 5.93,
+        "narrationDurationSeconds": 6.01,
         "narrationFile": "D:\\project\\毕业项目\\real-digital-employee-20fe685\\.interview-data\\step4-narration\\product-range\\narration.mp3"
       },
       {
@@ -46,11 +46,11 @@
         "speech": "Low minimums, transparent pricing, and packaging that fits your brand.",
         "subtitle": "Low MOQs. Clear pricing. Your branding.",
         "framing": "portrait medium shot, lab-coat presenter gesturing, product shelves behind",
-        "startSeconds": 9.81,
-        "durationSeconds": 4.702,
-        "endSeconds": 14.512,
+        "startSeconds": 9.8,
+        "durationSeconds": 4.24,
+        "endSeconds": 14.04,
         "localFile": "D:\\project\\毕业项目\\real-digital-employee-20fe685\\.interview-data\\step4-shots\\capabilities\\provider-output.mp4",
-        "measuredDurationSeconds": 4.702,
+        "measuredDurationSeconds": 4.24,
         "narrationDurationSeconds": null,
         "narrationFile": null
       },
@@ -60,12 +60,12 @@
         "speech": "Our lab tests every batch for stability, texture, and safety before production.",
         "subtitle": "Every batch tested for stability and safety",
         "framing": "vertical process diagram, bench sample to sealed unit, top-to-bottom flow",
-        "startSeconds": 14.512,
-        "durationSeconds": 5.6,
-        "endSeconds": 20.112,
+        "startSeconds": 14.04,
+        "durationSeconds": 5.81,
+        "endSeconds": 19.85,
         "localFile": "assets/illustrations/lab-process.png",
-        "measuredDurationSeconds": 5.6,
-        "narrationDurationSeconds": 5.25,
+        "measuredDurationSeconds": 5.81,
+        "narrationDurationSeconds": 5.46,
         "narrationFile": "D:\\project\\毕业项目\\real-digital-employee-20fe685\\.interview-data\\step4-narration\\lab-process\\narration.mp3"
       },
       {
@@ -74,12 +74,12 @@
         "speech": "Then our automated line fills, seals, and inspects each unit for a consistent finish.",
         "subtitle": "Automated filling, sealing, and QC",
         "framing": "vertical factory line, conveyor with bottles and inline inspection arch",
-        "startSeconds": 20.112,
-        "durationSeconds": 6.23,
-        "endSeconds": 26.342,
+        "startSeconds": 19.85,
+        "durationSeconds": 6.41,
+        "endSeconds": 26.26,
         "localFile": "assets/illustrations/factory-quality.png",
-        "measuredDurationSeconds": 6.23,
-        "narrationDurationSeconds": 5.88,
+        "measuredDurationSeconds": 6.41,
+        "narrationDurationSeconds": 6.06,
         "narrationFile": "D:\\project\\毕业项目\\real-digital-employee-20fe685\\.interview-data\\step4-narration\\factory-quality\\narration.mp3"
       },
       {
@@ -88,11 +88,11 @@
         "speech": "Fifteen years of skincare manufacturing, with documentation from sample to shipment. Contact us for a quote.",
         "subtitle": "15 years of manufacturing. Contact us for a quote.",
         "framing": "portrait medium shot, presenter to camera, subtle open-hand CTA gesture",
-        "startSeconds": 26.342,
-        "durationSeconds": 7.158,
+        "startSeconds": 26.26,
+        "durationSeconds": 7.24,
         "endSeconds": 33.5,
         "localFile": "D:\\project\\毕业项目\\real-digital-employee-20fe685\\.interview-data\\step4-shots\\cta\\provider-output.mp4",
-        "measuredDurationSeconds": 7.158,
+        "measuredDurationSeconds": 7.24,
         "narrationDurationSeconds": null,
         "narrationFile": null
       }
@@ -103,53 +103,53 @@
       "id": "hook",
       "kind": "presenter",
       "startSeconds": 0,
-      "endSeconds": 3.213,
-      "durationSeconds": 3.213,
+      "endSeconds": 3.04,
+      "durationSeconds": 3.04,
       "speech": "Hi there. Ready to launch your own skincare line?",
       "subtitle": "Launch your own skincare line"
     },
     {
       "id": "product-range",
       "kind": "illustration",
-      "startSeconds": 3.213,
-      "endSeconds": 9.81,
-      "durationSeconds": 6.597,
+      "startSeconds": 3.04,
+      "endSeconds": 9.8,
+      "durationSeconds": 6.76,
       "speech": "From brightening serums to gentle cleansers, we turn your formula into a retail-ready product.",
       "subtitle": "Serums, creams, cleansers — retail-ready"
     },
     {
       "id": "capabilities",
       "kind": "presenter",
-      "startSeconds": 9.81,
-      "endSeconds": 14.512,
-      "durationSeconds": 4.702,
+      "startSeconds": 9.8,
+      "endSeconds": 14.04,
+      "durationSeconds": 4.24,
       "speech": "Low minimums, transparent pricing, and packaging that fits your brand.",
       "subtitle": "Low MOQs. Clear pricing. Your branding."
     },
     {
       "id": "lab-process",
       "kind": "illustration",
-      "startSeconds": 14.512,
-      "endSeconds": 20.112,
-      "durationSeconds": 5.6,
+      "startSeconds": 14.04,
+      "endSeconds": 19.85,
+      "durationSeconds": 5.81,
       "speech": "Our lab tests every batch for stability, texture, and safety before production.",
       "subtitle": "Every batch tested for stability and safety"
     },
     {
       "id": "factory-quality",
       "kind": "illustration",
-      "startSeconds": 20.112,
-      "endSeconds": 26.342,
-      "durationSeconds": 6.23,
+      "startSeconds": 19.85,
+      "endSeconds": 26.26,
+      "durationSeconds": 6.41,
       "speech": "Then our automated line fills, seals, and inspects each unit for a consistent finish.",
       "subtitle": "Automated filling, sealing, and QC"
     },
     {
       "id": "cta",
       "kind": "presenter",
-      "startSeconds": 26.342,
+      "startSeconds": 26.26,
       "endSeconds": 33.5,
-      "durationSeconds": 7.158,
+      "durationSeconds": 7.24,
       "speech": "Fifteen years of skincare manufacturing, with documentation from sample to shipment. Contact us for a quote.",
       "subtitle": "15 years of manufacturing. Contact us for a quote."
     }
@@ -167,7 +167,7 @@
       "kind": "illustration",
       "file": "assets\\illustrations\\product-range.png",
       "narrationFile": ".interview-data\\step4-narration\\product-range\\narration.mp3",
-      "narrationDurationSeconds": 5.93
+      "narrationDurationSeconds": 6.01
     },
     {
       "id": "capabilities",
@@ -181,14 +181,14 @@
       "kind": "illustration",
       "file": "assets\\illustrations\\lab-process.png",
       "narrationFile": ".interview-data\\step4-narration\\lab-process\\narration.mp3",
-      "narrationDurationSeconds": 5.25
+      "narrationDurationSeconds": 5.46
     },
     {
       "id": "factory-quality",
       "kind": "illustration",
       "file": "assets\\illustrations\\factory-quality.png",
       "narrationFile": ".interview-data\\step4-narration\\factory-quality\\narration.mp3",
-      "narrationDurationSeconds": 5.88
+      "narrationDurationSeconds": 6.06
     },
     {
       "id": "cta",
@@ -200,168 +200,245 @@
   ],
   "provider": {
     "hook": {
-      "videoId": "c15b32aecb501970d0f0d0fa3958cf03",
-      "requestId": "interview-step4-hook-62426984-859b-4f2c-aac9-0c4cbc7c4c66",
-      "requestHash": "b4a33c07bca4c7963913631e7d981501e6a7c8355efb51de46d5cd916a8a58fc",
-      "duration": 3.21306,
-      "mediaSha256": "163b50edd0c9f1c7e2c770d45ea3bd51104a4469ec5665363b1d604be4547dcc",
-      "mediaBytes": 961494,
+      "videoId": "9d0519064be63dd8a4056e7cf0cb6646",
+      "requestId": "interview-voicefix-hook-c84b1467453a",
+      "requestHash": "dc3d14d08e4c3da09f6875830790115e4b942c0983f81d40edad3f547024ca40",
+      "duration": 3.04,
+      "mediaSha256": "a55c5b85f744f6ffe450889a7ec495c5b0e97cd9a9f22be27c665e34a28cc0fd",
+      "mediaBytes": 2177412,
       "fit": "cover",
-      "barAnalysis": {
-        "sampledAt": 1.61,
-        "width": 720,
-        "height": 1280,
-        "topBarPx": 0,
-        "bottomBarPx": 0,
-        "leftBarPx": 0,
-        "rightBarPx": 0,
-        "criteria": ">=97% sampled pixels near-black(<=20) or near-white(>=235) from the edge"
-      },
       "validation": {
         "durationMatchesProvider": true,
         "decodable": true,
-        "resolution": "720x1280",
+        "resolution": "1080x1920",
         "videoCodec": "h264",
         "audioCodec": "aac",
-        "sampleRate": 48000,
-        "fps": 25,
         "errors": []
       },
-      "chargedCny": 1.001151,
-      "observedWalletDeltaCny": 1.0011512717536808,
+      "chargedCny": 0.934408,
+      "observedWalletDeltaCny": 0.800921,
       "providerStatus": "completed",
-      "submittedAt": "2026-10-23T12:06:13.428Z",
-      "completedAt": "2026-10-23T12:07:01.134Z"
+      "completedAt": "2026-10-24T06:03:13.087Z",
+      "videoChargedCny": 0.800921,
+      "ttsChargedCny": 0.133487
     },
     "narration:product-range": {
-      "requestId": "interview-step4-tts-product-range-d7e91ca9-40fc-43cc-b779-634850f52b49",
+      "requestId": "interview-voicefix-product-range-463147d4e605",
       "provider": {
         "engine": "orca",
-        "requestId": "7dafbef1e77344509233041054f3d1a9",
+        "requestId": "6b80dd163b1047d585ddb657501dd9b0",
         "audioUrlHost": "resource2.heygen.ai",
-        "duration": 5.929795918367347
+        "duration": 6.0081632653061225
       },
       "engine": "orca",
-      "duration": 5.929795918367347,
-      "audioSha256": "b2a6f27794ae73cdeff2e190d481a85d5b232d27b8e3e5fa5ea07894e094cac2",
-      "audioBytes": 189753,
-      "chargedCny": 0.333717,
-      "observedWalletDeltaCny": 0.3337170905845608
+      "duration": 6.0081632653061225,
+      "audioSha256": "f7152cc7312f748493344741c9269073bb69854d69e9f22ab3d97d49c326daa4",
+      "audioBytes": 192261,
+      "chargedCny": 0.133487,
+      "observedWalletDeltaCny": 0.133487
     },
     "capabilities": {
-      "videoId": "9c7ab31c7ef49df5a9a92a6804c73599",
-      "requestId": "interview-step4-capabilities-436bb29b-4e20-4f03-9b34-a78125128f57",
-      "requestHash": "a6f59f4451b3e5b1a200ead521ce8c9d955466c75548066aa781e0e6657faadb",
-      "duration": 4.70204,
-      "mediaSha256": "82c1be19cfeb66413d1f4d34399545dc4070b0919de3e458f265c56d5ae3531f",
-      "mediaBytes": 1386685,
+      "videoId": "9b3e92ba5b88fdb7979186f213939c48",
+      "requestId": "interview-voicefix-capabilities-4e73af265400",
+      "requestHash": "0bd71ce575d3c2658fe32d712a6e9777c8c877e14b3b22b73594512b7270cba6",
+      "duration": 4.24,
+      "mediaSha256": "2b46b8cbbb11f5af4458a8d4098ac15f567507e6ad18a36c1d5e538eba7db06f",
+      "mediaBytes": 3352304,
       "fit": "cover",
-      "barAnalysis": {
-        "sampledAt": 2.36,
-        "width": 720,
-        "height": 1280,
-        "topBarPx": 0,
-        "bottomBarPx": 0,
-        "leftBarPx": 0,
-        "rightBarPx": 0,
-        "criteria": ">=97% sampled pixels near-black(<=20) or near-white(>=235) from the edge"
-      },
       "validation": {
         "durationMatchesProvider": true,
         "decodable": true,
-        "resolution": "720x1280",
+        "resolution": "1080x1920",
         "videoCodec": "h264",
         "audioCodec": "aac",
-        "sampleRate": 48000,
-        "fps": 25,
         "errors": []
       },
-      "chargedCny": 1.334868,
-      "observedWalletDeltaCny": 1.334868,
+      "chargedCny": 1.201381,
+      "observedWalletDeltaCny": 1.134638,
       "providerStatus": "completed",
-      "submittedAt": "2026-10-23T12:04:45.944Z",
-      "completedAt": "2026-10-23T12:05:44.812Z"
+      "completedAt": "2026-10-24T06:04:22.446Z",
+      "videoChargedCny": 1.134638,
+      "ttsChargedCny": 0.066743
     },
     "narration:lab-process": {
-      "requestId": "interview-step4-tts-lab-process-07de7ace-310e-4864-bb3e-b59c50018597",
+      "requestId": "interview-voicefix-lab-process-ae21bf162c5b",
       "provider": {
         "engine": "orca",
-        "requestId": "40cfbcb31e3149ad8ae76dddab3b9189",
+        "requestId": "f485162af6084b45867456fba1e03c2a",
         "audioUrlHost": "resource2.heygen.ai",
-        "duration": 5.250612244897959
+        "duration": 5.459591836734694
       },
       "engine": "orca",
-      "duration": 5.250612244897959,
-      "audioSha256": "d04a3960f753418aff6c19d6d6309e15b786249dbd6220b90075685e948dcd4d",
-      "audioBytes": 168019,
-      "chargedCny": 0.333717,
-      "observedWalletDeltaCny": 0.3337170905845608
+      "duration": 5.459591836734694,
+      "audioSha256": "449d838bb00cb4cd72adbf057d81b688fa51d663bab247f2469b2b3fe040a899",
+      "audioBytes": 174707,
+      "chargedCny": 0.133487,
+      "observedWalletDeltaCny": 0.133487
     },
     "narration:factory-quality": {
-      "requestId": "interview-step4-tts-factory-quality-187ec7f5-f132-471e-9b7c-183f5e998c9f",
+      "requestId": "interview-voicefix-factory-quality-a6f065aa9a18",
       "provider": {
         "engine": "orca",
-        "requestId": "6e73620599e1436286539a3a20e32cc1",
+        "requestId": "5d17f246268d4dbcb43430dcbd1f8dcc",
         "audioUrlHost": "resource2.heygen.ai",
-        "duration": 5.877551020408164
+        "duration": 6.060408163265306
       },
       "engine": "orca",
-      "duration": 5.877551020408164,
-      "audioSha256": "365ca299dc34e537e2ac2aaa350bec6640f938ca89891b275df0dcc8a5a974e3",
-      "audioBytes": 188081,
-      "chargedCny": 0.333717,
-      "observedWalletDeltaCny": 0.3337170905845593
+      "duration": 6.060408163265306,
+      "audioSha256": "5cfeba0175dd193191647f4efc172ee8abbe11359a9b8c8a12ba3fcbdcf7d476",
+      "audioBytes": 193933,
+      "chargedCny": 0.133487,
+      "observedWalletDeltaCny": 0.133487
     },
     "cta": {
-      "videoId": "da9b079f3329488bdb77f31b462bb31e",
-      "requestId": "interview-step4-cta-38b3c815-eb89-4082-99a6-a074ef28f7cd",
-      "requestHash": "40ed87ff92f91966a067a965243a97afe8f1fe926962250018d0398016e6252f",
-      "duration": 7.15755,
-      "mediaSha256": "9b340b8a5b31200f12df72005ab5f308884342e96e487bb90db281bb35c874fb",
-      "mediaBytes": 1988205,
+      "videoId": "dfc6cab7de73b99afc80db654d497dd4",
+      "requestId": "interview-voicefix-cta-5f22ea8405e5",
+      "requestHash": "713c81322dec32d599ee9818d3fb9e71dbd00a7799b67c3cc855e5bdf18d2bff",
+      "duration": 7.24,
+      "mediaSha256": "b8c94e29c2beb9a29e9081e1db06c58728238262f4b4fe09314573c57e72a1d4",
+      "mediaBytes": 5177208,
       "fit": "cover",
-      "barAnalysis": {
-        "sampledAt": 3.585,
-        "width": 720,
-        "height": 1280,
-        "topBarPx": 0,
-        "bottomBarPx": 0,
-        "leftBarPx": 0,
-        "rightBarPx": 0,
-        "criteria": ">=97% sampled pixels near-black(<=20) or near-white(>=235) from the edge"
-      },
       "validation": {
         "durationMatchesProvider": true,
         "decodable": true,
-        "resolution": "720x1280",
+        "resolution": "1080x1920",
         "videoCodec": "h264",
         "audioCodec": "aac",
-        "sampleRate": 48000,
-        "fps": 25,
         "errors": []
       },
-      "chargedCny": 2.002303,
-      "observedWalletDeltaCny": 2.002302543507363,
+      "chargedCny": 1.935559,
+      "observedWalletDeltaCny": 1.868816,
       "providerStatus": "completed",
-      "submittedAt": "2026-10-23T12:07:11.637Z",
-      "completedAt": "2026-10-23T12:08:11.754Z"
+      "completedAt": "2026-10-24T06:10:51.617Z",
+      "videoChargedCny": 1.868816,
+      "ttsChargedCny": 0.066743
     }
   },
   "voiceover": {
     "file": ".interview-data\\step4-compose\\voiceover.wav",
-    "sha256": "6950f2e6a6e1e5ed60b0ab5594cfd1afbc6c586df690ff66f3c7abec04e61435",
+    "sha256": "f28b139ad53322956a1722141ec88922a056cc0312e247ef5e7aceaf1747cfc1",
     "bytes": 5909478
   },
   "manifest": {
     "file": ".interview-data\\step4-compose\\manifest.json",
-    "sha256": "2164a63895b7a9723c4622fc18e136428e1c84b8231b123768630ccbf33ae415"
+    "sha256": "1535c664fc448bee53cf1e45f0d674e3b698581c4f3e935d175e4bdfa4b00804"
   },
   "budget": {
     "approvedCny": 8,
-    "chargedCny": 5.339473,
+    "chargedCny": 4.471809,
     "reservedCny": 0,
-    "paidSubmissions": 6,
+    "paidSubmissions": 9,
+    "voiceFix": {
+      "currency": "CNY ledger / USD wallet",
+      "fxCnyPerUsd": 6.674341811691209,
+      "ttsChargedCny": 0.667434,
+      "presenterChargedCny": 3.804375,
+      "totalChargedCny": 4.471809,
+      "ttsChargedUsd": 0.1,
+      "presenterChargedUsd": 0.57,
+      "totalChargedUsd": 0.67,
+      "walletBeforeUsd": 4.32,
+      "walletAfterUsd": 3.65,
+      "caps": {
+        "ttsCny": 3,
+        "presenterCny": 8,
+        "combinedCny": 11
+      },
+      "note": "TTS 与人物镜头分别受 3 CNY / 8 CNY 独立上限约束；3 段插图旁白复用 TTS 结果，未额外调用视频供应商。"
+    },
     "operations": [
+      {
+        "kind": "voicefix_tts",
+        "id": "hook",
+        "at": "2026-10-24T06:01:03.049Z",
+        "requestedAt": "2026-10-24T06:00:57.592Z",
+        "chargedCny": 0.133487,
+        "walletBefore": 4.32,
+        "walletAfter": 4.3,
+        "providerRef": "66aeb4d29b414d7cab5f54c1116e54dc"
+      },
+      {
+        "kind": "voicefix_tts",
+        "id": "product-range",
+        "at": "2026-10-24T06:01:08.080Z",
+        "requestedAt": "2026-10-24T06:01:03.052Z",
+        "chargedCny": 0.133487,
+        "walletBefore": 4.3,
+        "walletAfter": 4.28,
+        "providerRef": "6b80dd163b1047d585ddb657501dd9b0"
+      },
+      {
+        "kind": "voicefix_tts",
+        "id": "capabilities",
+        "at": "2026-10-24T06:01:13.803Z",
+        "requestedAt": "2026-10-24T06:01:08.084Z",
+        "chargedCny": 0.066743,
+        "walletBefore": 4.28,
+        "walletAfter": 4.27,
+        "providerRef": "6f53efb3c4514ec68527a20e64c14efd"
+      },
+      {
+        "kind": "voicefix_tts",
+        "id": "lab-process",
+        "at": "2026-10-24T06:01:21.004Z",
+        "requestedAt": "2026-10-24T06:01:13.807Z",
+        "chargedCny": 0.133487,
+        "walletBefore": 4.27,
+        "walletAfter": 4.25,
+        "providerRef": "f485162af6084b45867456fba1e03c2a"
+      },
+      {
+        "kind": "voicefix_tts",
+        "id": "factory-quality",
+        "at": "2026-10-24T06:01:29.403Z",
+        "requestedAt": "2026-10-24T06:01:21.008Z",
+        "chargedCny": 0.133487,
+        "walletBefore": 4.25,
+        "walletAfter": 4.23,
+        "providerRef": "5d17f246268d4dbcb43430dcbd1f8dcc"
+      },
+      {
+        "kind": "voicefix_tts",
+        "id": "cta",
+        "at": "2026-10-24T06:01:35.372Z",
+        "requestedAt": "2026-10-24T06:01:29.406Z",
+        "chargedCny": 0.066743,
+        "walletBefore": 4.23,
+        "walletAfter": 4.22,
+        "providerRef": "e39cb340786a47b0b54ad9c65e7a7568"
+      },
+      {
+        "kind": "voicefix_presenter",
+        "id": "hook",
+        "at": "2026-10-24T06:03:13.087Z",
+        "requestedAt": "2026-10-24T06:02:26.959Z",
+        "chargedCny": 0.800921,
+        "walletBefore": 4.22,
+        "walletAfter": 4.1,
+        "providerRef": "9d0519064be63dd8a4056e7cf0cb6646"
+      },
+      {
+        "kind": "voicefix_presenter",
+        "id": "capabilities",
+        "at": "2026-10-24T06:04:22.446Z",
+        "requestedAt": "2026-10-24T06:03:26.891Z",
+        "chargedCny": 1.134638,
+        "walletBefore": 4.1,
+        "walletAfter": 3.93,
+        "providerRef": "9b3e92ba5b88fdb7979186f213939c48"
+      },
+      {
+        "kind": "voicefix_presenter",
+        "id": "cta",
+        "at": "2026-10-24T06:10:51.617Z",
+        "requestedAt": "2026-10-24T06:04:30.502Z",
+        "chargedCny": 1.868816,
+        "walletBefore": 3.93,
+        "walletAfter": 3.65,
+        "providerRef": "dfc6cab7de73b99afc80db654d497dd4"
+      }
+    ],
+    "historicalOperations": [
       {
         "kind": "presenter_shot",
         "id": "capabilities",
@@ -444,9 +521,9 @@
   },
   "final": {
     "file": "evidence/step4-final.mp4",
-    "outputPath": ".interview-data\\step4-output\\studio-step4-244a6fb03b0f.mp4",
-    "bytes": 8995181,
-    "sha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
+    "outputPath": ".interview-data\\step4-output\\studio-step4-0367302a7caa.mp4",
+    "bytes": 7701275,
+    "sha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7",
     "durationSeconds": 33.52,
     "width": 1080,
     "height": 1920,
@@ -459,82 +536,82 @@
       {
         "id": "hook",
         "start": 0,
-        "duration": 3.213,
-        "meanVolumeDb": -18.2,
-        "maxVolumeDb": -3.8
+        "duration": 3.04,
+        "meanVolumeDb": -18.7,
+        "maxVolumeDb": -4.3
       },
       {
         "id": "product-range",
-        "start": 3.213,
-        "duration": 6.597,
-        "meanVolumeDb": -19.1,
-        "maxVolumeDb": -3.1
+        "start": 3.04,
+        "duration": 6.76,
+        "meanVolumeDb": -20.6,
+        "maxVolumeDb": -3.2
       },
       {
         "id": "capabilities",
-        "start": 9.81,
-        "duration": 4.702,
-        "meanVolumeDb": -19.2,
-        "maxVolumeDb": -3.4
+        "start": 9.8,
+        "duration": 4.24,
+        "meanVolumeDb": -20.7,
+        "maxVolumeDb": -3.1
       },
       {
         "id": "lab-process",
-        "start": 14.512,
-        "duration": 5.6,
-        "meanVolumeDb": -19.3,
-        "maxVolumeDb": -3.3
+        "start": 14.04,
+        "duration": 5.81,
+        "meanVolumeDb": -22,
+        "maxVolumeDb": -3
       },
       {
         "id": "factory-quality",
-        "start": 20.112,
-        "duration": 6.23,
-        "meanVolumeDb": -19.6,
-        "maxVolumeDb": -3.3
+        "start": 19.85,
+        "duration": 6.41,
+        "meanVolumeDb": -21.9,
+        "maxVolumeDb": -5.5
       },
       {
         "id": "cta",
-        "start": 26.342,
-        "duration": 7.158,
-        "meanVolumeDb": -20,
-        "maxVolumeDb": -3.3
+        "start": 26.26,
+        "duration": 7.24,
+        "meanVolumeDb": -21.3,
+        "maxVolumeDb": -2.9
       }
     ],
     "frames": [
       {
         "id": "hook",
-        "at": 1.6065,
+        "at": 1.52,
         "file": "evidence\\step4-frames\\hook.png",
-        "bytes": 626294
+        "bytes": 641792
       },
       {
         "id": "product-range",
-        "at": 6.5115,
+        "at": 6.42,
         "file": "evidence\\step4-frames\\product-range.png",
-        "bytes": 162084
+        "bytes": 162113
       },
       {
         "id": "capabilities",
-        "at": 12.161000000000001,
+        "at": 11.920000000000002,
         "file": "evidence\\step4-frames\\capabilities.png",
-        "bytes": 651006
+        "bytes": 660648
       },
       {
         "id": "lab-process",
-        "at": 17.312,
+        "at": 16.945,
         "file": "evidence\\step4-frames\\lab-process.png",
-        "bytes": 150132
+        "bytes": 150246
       },
       {
         "id": "factory-quality",
-        "at": 23.226999999999997,
+        "at": 23.055,
         "file": "evidence\\step4-frames\\factory-quality.png",
-        "bytes": 153679
+        "bytes": 153646
       },
       {
         "id": "cta",
-        "at": 29.921,
+        "at": 29.880000000000003,
         "file": "evidence\\step4-frames\\cta.png",
-        "bytes": 613645
+        "bytes": 647380
       }
     ],
     "errors": []
@@ -549,10 +626,37 @@
     "withinApprovedCap": true
   },
   "notes": [
-    "Presenter video is generated by HeyGen from the storyboard public avatar/voice with fit=cover; 720p source is upscaled to 1080x1920 by the compositor.",
-    "Explainer visuals are original local illustrations; narration uses the same public voice through HeyGen speech.",
-    "Numbers such as 15 years, low MOQ and per-batch testing are demo copy from the storyboard, not verified client facts.",
+    "Presenter clips were regenerated from the original frame plus a new Brodie male audio track at 1080p; the previous Jennifer/female media is retained in historicalVoiceFix and *.jennifer files.",
+    "All six spoken lines were regenerated with the same Brodie male voice; narration timing changed, so the Step 4 plan was recomputed.",
+    "Explainer visuals are original local illustrations; numbers such as 15 years, low MOQ and per-batch testing are demo copy from the storyboard, not verified client facts.",
     "This is the isolated Step 4 composition. Business task write-back and workbench playback belong to later steps."
   ],
-  "createdAt": "2026-10-23T12:09:25.429Z"
+  "createdAt": "2026-10-24T06:12:07.740Z",
+  "voiceFix": {
+    "issue": "male presenter with female Jennifer voice",
+    "adoptedAt": "2026-10-24T05:50:30.000Z",
+    "voiceId": "c30ecab014cb4a8d816d07f6b2b625c8",
+    "voiceName": "Brodie - Breezy & Genuine",
+    "gender": "male",
+    "storyboardSha256": "ce3de043fcb22b36ef495664ad53ba69ce8c52d5bc702023d76e6ff1f51c86a6",
+    "pitchEvidence": {
+      "method": "autocorrelation F0 per 40 ms voiced frame, 60-350 Hz search, 16 kHz mono",
+      "newFinal": {
+        "file": "evidence/step4-final.mp4",
+        "medianHz": 112.7,
+        "p25Hz": 97.6,
+        "p75Hz": 131.1,
+        "voicedFrames": 773
+      },
+      "oldFinal": {
+        "file": ".interview-data/backup-pre-voicefix-20261024-140031/step5/final.mp4",
+        "medianHz": 169.3,
+        "p25Hz": 144.1,
+        "p75Hz": 207.8,
+        "voicedFrames": 932
+      },
+      "interpretation": "新成片中位基频落入成年男声常见区间，旧成片明显更高；作为客观辅助证据，最终仍需人工听感确认。"
+    },
+    "evidence": "evidence/voice-fix-brodie.json"
+  }
 }

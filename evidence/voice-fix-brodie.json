@@ -1,0 +1,336 @@
+{
+  "schemaVersion": 1,
+  "kind": "voice-fix-brodie",
+  "step": "Step 4/5 corrective pass",
+  "title": "男声修订：Brodie 重做全片口播与人物镜头，复用原写回链路",
+  "verifiedAt": "2026-10-24T06:20:00.000Z",
+  "scope": {
+    "reason": "原成片人物为男性，但声音为 Jennifer - Smooth & Warm（female）；6 段口播与 3 段人物镜头均使用了该 voiceId。",
+    "decision": "全片换英文男声 Brodie - Breezy & Genuine 重做，优先保证成片质量。",
+    "preserved": "旧 Jennifer 女声媒体、Step 5 状态与旧 artifact 完整保留，可回滚。"
+  },
+  "voice": {
+    "voiceId": "c30ecab014cb4a8d816d07f6b2b625c8",
+    "name": "Brodie - Breezy & Genuine",
+    "gender": "male",
+    "language": "English",
+    "engine": "orca",
+    "source": "GET https://api.heygen.com/v2/voices",
+    "superseded": {
+      "voiceId": "c5e71f9038a2419d9d43c7132c31fe49",
+      "name": "Jennifer - Smooth & Warm",
+      "gender": "female"
+    }
+  },
+  "tts": {
+    "provider": "heygen",
+    "endpoint": "POST https://api.heygen.com/v3/voices/speech",
+    "capCny": 3,
+    "requests": 6,
+    "chargedUsd": 0.1,
+    "chargedCny": 0.667434,
+    "walletBeforeUsd": 4.32,
+    "walletAfterUsd": 4.22,
+    "shots": [
+      {
+        "id": "hook",
+        "text": "Hi there. Ready to launch your own skincare line?",
+        "requestId": "interview-voicefix-hook-c7e3b6a3f7df",
+        "providerRequestId": "66aeb4d29b414d7cab5f54c1116e54dc",
+        "durationSeconds": 3.030204081632653,
+        "audioBytes": 96966,
+        "audioSha256": "33b244fd560ae39fc210df0331cfbd2da3094afcda295f56702ec53d351e8ec0",
+        "chargedCny": 0.133487,
+        "walletBefore": 4.32,
+        "walletAfter": 4.3,
+        "submittedAt": "2026-10-24T06:00:57.592Z",
+        "completedAt": "2026-10-24T06:01:03.049Z"
+      },
+      {
+        "id": "product-range",
+        "text": "From brightening serums to gentle cleansers, we turn your formula into a retail-ready product.",
+        "requestId": "interview-voicefix-product-range-463147d4e605",
+        "providerRequestId": "6b80dd163b1047d585ddb657501dd9b0",
+        "durationSeconds": 6.0081632653061225,
+        "audioBytes": 192261,
+        "audioSha256": "f7152cc7312f748493344741c9269073bb69854d69e9f22ab3d97d49c326daa4",
+        "chargedCny": 0.133487,
+        "walletBefore": 4.3,
+        "walletAfter": 4.28,
+        "submittedAt": "2026-10-24T06:01:03.052Z",
+        "completedAt": "2026-10-24T06:01:08.080Z"
+      },
+      {
+        "id": "capabilities",
+        "text": "Low minimums, transparent pricing, and packaging that fits your brand.",
+        "requestId": "interview-voicefix-capabilities-72fb9425085e",
+        "providerRequestId": "6f53efb3c4514ec68527a20e64c14efd",
+        "durationSeconds": 4.231836734693878,
+        "audioBytes": 135418,
+        "audioSha256": "5fe718918fc76bbabd40f3559198882cec06f0a0602274a9067799117bc48faa",
+        "chargedCny": 0.066743,
+        "walletBefore": 4.28,
+        "walletAfter": 4.27,
+        "submittedAt": "2026-10-24T06:01:08.084Z",
+        "completedAt": "2026-10-24T06:01:13.803Z"
+      },
+      {
+        "id": "lab-process",
+        "text": "Our lab tests every batch for stability, texture, and safety before production.",
+        "requestId": "interview-voicefix-lab-process-ae21bf162c5b",
+        "providerRequestId": "f485162af6084b45867456fba1e03c2a",
+        "durationSeconds": 5.459591836734694,
+        "audioBytes": 174707,
+        "audioSha256": "449d838bb00cb4cd72adbf057d81b688fa51d663bab247f2469b2b3fe040a899",
+        "chargedCny": 0.133487,
+        "walletBefore": 4.27,
+        "walletAfter": 4.25,
+        "submittedAt": "2026-10-24T06:01:13.807Z",
+        "completedAt": "2026-10-24T06:01:21.004Z"
+      },
+      {
+        "id": "factory-quality",
+        "text": "Then our automated line fills, seals, and inspects each unit for a consistent finish.",
+        "requestId": "interview-voicefix-factory-quality-a6f065aa9a18",
+        "providerRequestId": "5d17f246268d4dbcb43430dcbd1f8dcc",
+        "durationSeconds": 6.060408163265306,
+        "audioBytes": 193933,
+        "audioSha256": "5cfeba0175dd193191647f4efc172ee8abbe11359a9b8c8a12ba3fcbdcf7d476",
+        "chargedCny": 0.133487,
+        "walletBefore": 4.25,
+        "walletAfter": 4.23,
+        "submittedAt": "2026-10-24T06:01:21.008Z",
+        "completedAt": "2026-10-24T06:01:29.403Z"
+      },
+      {
+        "id": "cta",
+        "text": "Fifteen years of skincare manufacturing, with documentation from sample to shipment. Contact us for a quote.",
+        "requestId": "interview-voicefix-cta-37861b3eeca6",
+        "providerRequestId": "e39cb340786a47b0b54ad9c65e7a7568",
+        "durationSeconds": 7.2359183673469385,
+        "audioBytes": 231549,
+        "audioSha256": "4f8df056aaec1039f774ee077028b25cdeb2cf3952f5a073a779c9ad045c2950",
+        "chargedCny": 0.066743,
+        "walletBefore": 4.23,
+        "walletAfter": 4.22,
+        "submittedAt": "2026-10-24T06:01:29.406Z",
+        "completedAt": "2026-10-24T06:01:35.372Z"
+      }
+    ]
+  },
+  "presenterRegeneration": {
+    "provider": "heygen",
+    "endpoint": "POST https://api.heygen.com/v3/videos",
+    "source": "original-frame-and-voicefix-audio",
+    "resolution": "1080p",
+    "aspectRatio": "9:16",
+    "capCny": 8,
+    "requests": 3,
+    "chargedUsd": 0.57,
+    "chargedCny": 3.804375,
+    "walletBeforeUsd": 4.22,
+    "walletAfterUsd": 3.65,
+    "shots": [
+      {
+        "id": "hook",
+        "requestId": "interview-voicefix-hook-c84b1467453a",
+        "title": "LingShu VoiceFix hook c84b1467",
+        "videoId": "9d0519064be63dd8a4056e7cf0cb6646",
+        "imageAssetId": "36f319f9a92f4a71a798bf54fc30ad8a",
+        "audioAssetId": "fc199bc4ca9a4a088871995ca9caaa34",
+        "imageSha256": "fccecd5c9bddf119712b0340804b7bba9e4998a07042378173aa8fdf1095131d",
+        "audioSha256": "33b244fd560ae39fc210df0331cfbd2da3094afcda295f56702ec53d351e8ec0",
+        "providerDurationSeconds": 3.03019,
+        "mediaDurationSeconds": 3.04,
+        "mediaBytes": 2177412,
+        "mediaSha256": "a55c5b85f744f6ffe450889a7ec495c5b0e97cd9a9f22be27c665e34a28cc0fd",
+        "chargedCny": 0.800921,
+        "walletBefore": 4.22,
+        "walletAfter": 4.1,
+        "submittedAt": "2026-10-24T06:02:26.959Z",
+        "completedAt": "2026-10-24T06:03:13.087Z"
+      },
+      {
+        "id": "capabilities",
+        "requestId": "interview-voicefix-capabilities-4e73af265400",
+        "title": "LingShu VoiceFix capabilities 4e73af26",
+        "videoId": "9b3e92ba5b88fdb7979186f213939c48",
+        "imageAssetId": "298f9506fa7f4f1e99c2cfb0f2bc96f0",
+        "audioAssetId": "54e2613d345c4c779d3f9548a39bc42e",
+        "imageSha256": "587feacc131591f1dbc158277b9a3fe6556d2efb036c8ea5625f43b99aa2b965",
+        "audioSha256": "5fe718918fc76bbabd40f3559198882cec06f0a0602274a9067799117bc48faa",
+        "providerDurationSeconds": 4.23181,
+        "mediaDurationSeconds": 4.24,
+        "mediaBytes": 3352304,
+        "mediaSha256": "2b46b8cbbb11f5af4458a8d4098ac15f567507e6ad18a36c1d5e538eba7db06f",
+        "chargedCny": 1.134638,
+        "walletBefore": 4.1,
+        "walletAfter": 3.93,
+        "submittedAt": "2026-10-24T06:03:26.891Z",
+        "completedAt": "2026-10-24T06:04:22.446Z"
+      },
+      {
+        "id": "cta",
+        "requestId": "interview-voicefix-cta-5f22ea8405e5",
+        "title": "LingShu VoiceFix cta 5f22ea84",
+        "videoId": "dfc6cab7de73b99afc80db654d497dd4",
+        "imageAssetId": "483ad669359f4a9a8a4af5fc9da94008",
+        "audioAssetId": "6de262c88e2f470fb4e125d3cb80dcfa",
+        "imageSha256": "e00b83ab1c972303d54507c2be7c2207b3a08c41df68a0536007a6a8adc75983",
+        "audioSha256": "4f8df056aaec1039f774ee077028b25cdeb2cf3952f5a073a779c9ad045c2950",
+        "providerDurationSeconds": 7.23591,
+        "mediaDurationSeconds": 7.24,
+        "mediaBytes": 5177208,
+        "mediaSha256": "b8c94e29c2beb9a29e9081e1db06c58728238262f4b4fe09314573c57e72a1d4",
+        "chargedCny": 1.868816,
+        "walletBefore": 3.93,
+        "walletAfter": 3.65,
+        "submittedAt": "2026-10-24T06:04:30.502Z",
+        "completedAt": "2026-10-24T06:10:51.617Z"
+      }
+    ]
+  },
+  "adoption": {
+    "storyboardSha256": "ce3de043fcb22b36ef495664ad53ba69ce8c52d5bc702023d76e6ff1f51c86a6",
+    "voiceFieldUpdated": true,
+    "step4PresenterFiles": [
+      ".interview-data/step4-shots/hook/provider-output.mp4",
+      ".interview-data/step4-shots/capabilities/provider-output.mp4",
+      ".interview-data/step4-shots/cta/provider-output.mp4"
+    ],
+    "step4NarrationFiles": [
+      ".interview-data/step4-narration/product-range/narration.mp3",
+      ".interview-data/step4-narration/lab-process/narration.mp3",
+      ".interview-data/step4-narration/factory-quality/narration.mp3"
+    ],
+    "historicalFilesKept": [
+      ".interview-data/step4-shots/*/provider-output.jennifer-1080p.mp4",
+      ".interview-data/step4-narration/*/narration.jennifer.mp3"
+    ],
+    "adoptionRecord": ".interview-data/voice-fix/adoption.json"
+  },
+  "pitchAnalysis": {
+    "method": "autocorrelation F0 per 40 ms voiced frame, 60-350 Hz search, 16 kHz mono",
+    "newFinal": {
+      "file": "evidence/step4-final.mp4",
+      "medianHz": 112.7,
+      "p25Hz": 97.6,
+      "p75Hz": 131.1,
+      "voicedFrames": 773
+    },
+    "oldFinal": {
+      "file": ".interview-data/backup-pre-voicefix-20261024-140031/step5/final.mp4",
+      "medianHz": 169.3,
+      "p25Hz": 144.1,
+      "p75Hz": 207.8,
+      "voicedFrames": 932
+    },
+    "interpretation": "新成片中位基频落入成年男声常见区间，旧成片明显更高；作为客观辅助证据，最终仍需人工听感确认。"
+  },
+  "composition": {
+    "file": "evidence/step4-final.mp4",
+    "durationSeconds": 33.52,
+    "width": 1080,
+    "height": 1920,
+    "videoCodec": "h264",
+    "audioCodec": "aac",
+    "bytes": 7701275,
+    "sha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7",
+    "manifest": ".interview-data/step4-compose/manifest.json",
+    "manifestSha256": "c58da3badac1867422c74c58e0b8607803a74b047a75116169431d92a608995f",
+    "timeline": [
+      {"id": "hook", "kind": "presenter", "startSeconds": 0, "durationSeconds": 3.04},
+      {"id": "product-range", "kind": "illustration", "startSeconds": 3.04, "durationSeconds": 6.76},
+      {"id": "capabilities", "kind": "presenter", "startSeconds": 9.8, "durationSeconds": 4.24},
+      {"id": "lab-process", "kind": "illustration", "startSeconds": 14.04, "durationSeconds": 5.81},
+      {"id": "factory-quality", "kind": "illustration", "startSeconds": 19.85, "durationSeconds": 6.41},
+      {"id": "cta", "kind": "presenter", "startSeconds": 26.26, "durationSeconds": 7.24}
+    ]
+  },
+  "writeBack": {
+    "artifactId": "socialart_ae42c3e4f47b90c0dbdbc554",
+    "fileId": "socialfile_107db1207e1f029db1f17503",
+    "status": "review_required",
+    "technicalApproved": false,
+    "creativeApproved": false,
+    "jobId": "b723a160da693f0",
+    "taskId": "content",
+    "runId": "run",
+    "weeklySettlement": "succeeded",
+    "step5State": ".interview-data/step5/state.json",
+    "step5Evidence": "evidence/step5-writeback.json"
+  },
+  "artifactVerification": {
+    "page": {
+      "url": "http://127.0.0.1:4318/",
+      "httpStatus": 200,
+      "screenshots": [
+        "evidence/step5-page-brodie.png",
+        "evidence/step5-page-brodie-bottom.png"
+      ],
+      "showsArtifactId": true,
+      "showsVoiceId": true,
+      "showsPlayer": true,
+      "showsDownload": true,
+      "keyLeakPattern": false
+    },
+    "playback": {
+      "url": "/api/media?artifactId=socialart_ae42c3e4f47b90c0dbdbc554",
+      "httpStatus": 200,
+      "contentType": "video/mp4",
+      "bytes": 7701275,
+      "sha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7"
+    },
+    "download": {
+      "url": "/api/media?artifactId=socialart_ae42c3e4f47b90c0dbdbc554&download=1",
+      "httpStatus": 200,
+      "contentDisposition": "attachment; filename=\"interview-output.mp4\"",
+      "bytes": 7701275,
+      "sha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7",
+      "matchesComposition": true
+    }
+  },
+  "costs": {
+    "currency": "CNY ledger / USD wallet",
+    "fxCnyPerUsd": 6.674341811691209,
+    "ttsChargedCny": 0.667434,
+    "presenterChargedCny": 3.804375,
+    "totalChargedCny": 4.471809,
+    "ttsChargedUsd": 0.1,
+    "presenterChargedUsd": 0.57,
+    "totalChargedUsd": 0.67,
+    "paidSubmissions": 9,
+    "walletBeforeUsd": 4.32,
+    "walletAfterUsd": 3.65,
+    "caps": {
+      "ttsCny": 3,
+      "presenterCny": 8,
+      "combinedCny": 11
+    },
+    "note": "TTS 与人物镜头分别受 3 CNY / 8 CNY 独立上限约束；3 段插图旁白复用 TTS 结果，未额外调用视频供应商。"
+  },
+  "checks": {
+    "voiceIsMale": true,
+    "allSixTtsRegenerated": true,
+    "allThreePresentersRegenerated1080p": true,
+    "storyboardHashUpdated": true,
+    "oldMediaPreserved": true,
+    "compositionMatchesNewStoryboard": true,
+    "writeBackReviewRequired": true,
+    "artifactDownloadHashMatches": true,
+    "pagePlaybackAndDownloadVerified": true,
+    "withinCaps": true
+  },
+  "limitations": [
+    "尚未完成人工听感/ASR 逐字校对；音高分析只是客观辅助证据。",
+    "Step 8 的 3-5 分钟演示录制与干净环境复跑仍未完成。",
+    "本次为质量修订，不改变 Step 5 的 review_required 人工审核门槛。"
+  ],
+  "rollback": {
+    "backup": ".interview-data/backup-pre-voicefix-20261024-140031/",
+    "backupPathNote": ".interview-data/voice-fix-backup-path.txt",
+    "step5Archive": ".interview-data/step5.pre-voicefix-<timestamp>/",
+    "oldArtifact": "socialart_ea506cbb7bf6107371b71cbc",
+    "oldFinalSha256": "78126c2b6db8628c4e8b33574c72874d9db0529642350acde3938bb6a4e71ae9"
+  }
+}

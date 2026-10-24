@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-24T05:50:04.297Z",
+  "account": {
+    "billingType": "wallet",
+    "currency": "usd",
+    "walletRechargedUsd": 5,
+    "walletFinalUsd": 4.32,
+    "autoReload": false
+  },
+  "failedAttempts": [
+    {
+      "shotId": "hook",
+      "mode": "avatar-id",
+      "videoId": "17b5b6e9d2acb9129589201873f3c79d",
+      "reason": "different-person-in-new-account",
+      "chargedUsd": 0.12,
+      "chargedCny": 0.8009
+    }
+  ],
+  "shots": [
+    {
+      "shotId": "hook",
+      "requestId": "interview-regen-ia-hook-ba7c8658049f",
+      "title": "LingShu Regen IA hook ba7c8658",
+      "videoId": "ce5d644322cdf75417313b9553f0cfb7",
+      "imageAssetId": "99fb86465d434655b6f50f9fe989c959",
+      "audioAssetId": "5e5187dc9e644d63a0206b0c0f268b81",
+      "inputImageSha256": "fccecd5c9bddf119712b0340804b7bba9e4998a07042378173aa8fdf1095131d",
+      "inputAudioSha256": "aa73564849e7f57a857bd42e84e261166f2d3c834b17333c9bc2c98cdc49d985",
+      "providerDurationSeconds": 3.2,
+      "durationSeconds": 3.24,
+      "width": 1080,
+      "height": 1920,
+      "videoCodec": "h264",
+      "audioCodec": "aac",
+      "mediaBytes": 2527879,
+      "mediaSha256": "878250ec58d4a2c921ef50e9d2cdc40ff037f7e6a37493b27000ccf68cf6e4b2",
+      "walletBeforeUsd": 4.88,
+      "walletAfterUsd": 4.77,
+      "chargedUsd": 0.11,
+      "chargedCny": 0.7342,
+      "supersedes": {
+        "requestId": "interview-step4-hook-62426984-859b-4f2c-aac9-0c4cbc7c4c66",
+        "videoId": "c15b32aecb501970d0f0d0fa3958cf03",
+        "duration": 3.21306,
+        "mediaBytes": 961494,
+        "mediaSha256": "163b50edd0c9f1c7e2c770d45ea3bd51104a4469ec5665363b1d604be4547dcc",
+        "chargedCny": 1.001151,
+        "walletBefore": 1.95,
+        "walletAfter": 1.8,
+        "resolution": "720x1280",
+        "request": {
+          "type": "avatar",
+          "avatar_id": "ee25a2363ef941a1b5b0f7b1172e57d1",
+          "voice_id": "c5e71f9038a2419d9d43c7132c31fe49",
+          "script": "Hi there. Ready to launch your own skincare line?",
+          "fit": "cover",
+          "aspect_ratio": "9:16",
+          "resolution": "720p",
+          "title": "LingShu Step 4 hook 6d78d775",
+          "output_format": "mp4"
+        }
+      }
+    },
+    {
+      "shotId": "capabilities",
+      "requestId": "interview-regen-ia-capabilities-058c2056a964",
+      "title": "LingShu Regen IA capabilities 058c2056",
+      "videoId": "4322f525743df4aa4ea80ebe5f74f18e",
+      "imageAssetId": "f2d1d5b92a77417183e07d33373a2bf2",
+      "audioAssetId": "ea29b5737331486ebf092127b7f07f92",
+      "inputImageSha256": "587feacc131591f1dbc158277b9a3fe6556d2efb036c8ea5625f43b99aa2b965",
+      "inputAudioSha256": "9ae97dc06c44cb5e417bdcde5381a93f07d2436a0607e897064770b4e192fe5e",
+      "providerDurationSeconds": 4.69333,
+      "durationSeconds": 4.72,
+      "width": 1080,
+      "height": 1920,
+      "videoCodec": "h264",
+      "audioCodec": "aac",
+      "mediaBytes": 3809524,
+      "mediaSha256": "be8dad62a07317d7e0f8fd80b89710980b4035c0d710fab37752bd2f2bd27787",
+      "walletBeforeUsd": 4.77,
+      "walletAfterUsd": 4.6,
+      "chargedUsd": 0.17,
+      "chargedCny": 1.1346,
+      "supersedes": {
+        "requestId": "interview-step4-capabilities-436bb29b-4e20-4f03-9b34-a78125128f57",
+        "videoId": "9c7ab31c7ef49df5a9a92a6804c73599",
+        "duration": 4.70204,
+        "mediaBytes": 1386685,
+        "mediaSha256": "82c1be19cfeb66413d1f4d34399545dc4070b0919de3e458f265c56d5ae3531f",
+        "chargedCny": 1.334868,
+        "walletBefore": 2.15,
+        "walletAfter": 1.95,
+        "resolution": "720x1280",
+        "request": {
+          "type": "avatar",
+          "avatar_id": "ee25a2363ef941a1b5b0f7b1172e57d1",
+          "voice_id": "c5e71f9038a2419d9d43c7132c31fe49",
+          "script": "Low minimums, transparent pricing, and packaging that fits your brand.",
+          "fit": "cover",
+          "aspect_ratio": "9:16",
+          "resolution": "720p",
+          "title": "LingShu Step 4 capabilities 6d78d775",
+          "output_format": "mp4"
+        }
+      }
+    },
+    {
+      "shotId": "cta",
+      "requestId": "interview-regen-ia-cta-50bbed8b06b5",
+      "title": "LingShu Regen IA cta 50bbed8b",
+      "videoId": "4035b775b46193f363794ab9669a1bc5",
+      "imageAssetId": "db7767c311e24020b1a4a0ad0ef929ce",
+      "audioAssetId": "1fd379c17eea4c33832abb3a7569d5d9",
+      "inputImageSha256": "e00b83ab1c972303d54507c2be7c2207b3a08c41df68a0536007a6a8adc75983",
+      "inputAudioSha256": "bda4e29696f8df2faa7af696b71fe4ec896bc97d8b370e4bb007358f3953942c",
+      "providerDurationSeconds": 7.14667,
+      "durationSeconds": 7.2,
+      "width": 1080,
+      "height": 1920,
+      "videoCodec": "h264",
+      "audioCodec": "aac",
+      "mediaBytes": 5320634,
+      "mediaSha256": "8defa4a9d00c3a1ae5c85b633519c682e3fab96747d4704e85233bece4eeaa95",
+      "walletBeforeUsd": 4.6,
+      "walletAfterUsd": 4.32,
+      "chargedUsd": 0.28,
+      "chargedCny": 1.8688,
+      "supersedes": {
+        "requestId": "interview-step4-cta-38b3c815-eb89-4082-99a6-a074ef28f7cd",
+        "videoId": "da9b079f3329488bdb77f31b462bb31e",
+        "duration": 7.15755,
+        "mediaBytes": 1988205,
+        "mediaSha256": "9b340b8a5b31200f12df72005ab5f308884342e96e487bb90db281bb35c874fb",
+        "chargedCny": 2.002303,
+        "walletBefore": 1.8,
+        "walletAfter": 1.5,
+        "resolution": "720x1280",
+        "request": {
+          "type": "avatar",
+          "avatar_id": "ee25a2363ef941a1b5b0f7b1172e57d1",
+          "voice_id": "c5e71f9038a2419d9d43c7132c31fe49",
+          "script": "Fifteen years of skincare manufacturing, with documentation from sample to shipment. Contact us for a quote.",
+          "fit": "cover",
+          "aspect_ratio": "9:16",
+          "resolution": "720p",
+          "title": "LingShu Step 4 cta 6d78d775",
+          "output_format": "mp4"
+        }
+      }
+    }
+  ],
+  "totals": {
+    "paidSubmissions": 4,
+    "failedSubmissions": 1,
+    "successfulSubmissions": 3,
+    "chargedUsd": 0.68,
+    "chargedCny": 4.5385,
+    "adoptedClipsChargedUsd": 0.56,
+    "adoptedClipsChargedCny": 3.7376,
+    "capCny": 8
+  },
+  "composition": {
+    "mode": "recomposed",
+    "providerMedia": "step4-local",
+    "durationSeconds": 33.52,
+    "width": 1080,
+    "height": 1920,
+    "videoCodec": "h264",
+    "audioCodec": "aac",
+    "bytes": 8436894,
+    "sha256": "78126c2b6db8628c4e8b33574c72874d9db0529642350acde3938bb6a4e71ae9",
+    "manifestSha256": "8675ecd7721ce5328d997b9953e8bd652790301e7f7ca1deedb70855ef36b37d"
+  },
+  "writeBack": {
+    "artifactId": "socialart_ea506cbb7bf6107371b71cbc",
+    "fileId": "socialfile_84064b8f2e700d63902d4e2f",
+    "fileRef": "socialfile:socialfile_84064b8f2e700d63902d4e2f",
+    "status": "review_required",
+    "technicalApproved": false,
+    "creativeApproved": false
+  },
+  "settlement": {
+    "status": "succeeded",
+    "code": null,
+    "message": "原周任务消费者已完成结算"
+  },
+  "providerSource": "local-step4-state",
+  "providerShots": [
+    {
+      "id": "hook",
+      "kind": "presenter",
+      "videoId": "ce5d644322cdf75417313b9553f0cfb7",
+      "requestId": "interview-regen-ia-hook-ba7c8658049f",
+      "durationSeconds": 3.2,
+      "chargedCny": 0.7342,
+      "providerStatus": "completed",
+      "phase": "downloaded",
+      "mediaSha256": "878250ec58d4a2c921ef50e9d2cdc40ff037f7e6a37493b27000ccf68cf6e4b2",
+      "mediaBytes": 2527879
+    },
+    {
+      "id": "product-range",
+      "kind": "illustration",
+      "videoId": null,
+      "requestId": "interview-step4-tts-product-range-d7e91ca9-40fc-43cc-b779-634850f52b49",
+      "durationSeconds": 5.929795918367347,
+      "chargedCny": 0.333717,
+      "providerStatus": "downloaded",
+      "phase": "downloaded"
+    },
+    {
+      "id": "capabilities",
+      "kind": "presenter",
+      "videoId": "4322f525743df4aa4ea80ebe5f74f18e",
+      "requestId": "interview-regen-ia-capabilities-058c2056a964",
+      "durationSeconds": 4.69333,
+      "chargedCny": 1.1346,
+      "providerStatus": "completed",
+      "phase": "downloaded",
+      "mediaSha256": "be8dad62a07317d7e0f8fd80b89710980b4035c0d710fab37752bd2f2bd27787",
+      "mediaBytes": 3809524
+    },
+    {
+      "id": "lab-process",
+      "kind": "illustration",
+      "videoId": null,
+      "requestId": "interview-step4-tts-lab-process-07de7ace-310e-4864-bb3e-b59c50018597",
+      "durationSeconds": 5.250612244897959,
+      "chargedCny": 0.333717,
+      "providerStatus": "downloaded",
+      "phase": "downloaded"
+    },
+    {
+      "id": "factory-quality",
+      "kind": "illustration",
+      "videoId": null,
+      "requestId": "interview-step4-tts-factory-quality-187ec7f5-f132-471e-9b7c-183f5e998c9f",
+      "durationSeconds": 5.877551020408164,
+      "chargedCny": 0.333717,
+      "providerStatus": "downloaded",
+      "phase": "downloaded"
+    },
+    {
+      "id": "cta",
+      "kind": "presenter",
+      "videoId": "4035b775b46193f363794ab9669a1bc5",
+      "requestId": "interview-regen-ia-cta-50bbed8b06b5",
+      "durationSeconds": 7.14667,
+      "chargedCny": 1.8688,
+      "providerStatus": "completed",
+      "phase": "downloaded",
+      "mediaSha256": "8defa4a9d00c3a1ae5c85b633519c682e3fab96747d4704e85233bece4eeaa95",
+      "mediaBytes": 5320634
+    }
+  ],
+  "artifact": {
+    "status": "review_required",
+    "resourceRef": "socialfile:socialfile_84064b8f2e700d63902d4e2f",
+    "artifactId": "socialart_ea506cbb7bf6107371b71cbc",
+    "step5Composition": {
+      "mode": "recomposed",
+      "sha256": "78126c2b6db8628c4e8b33574c72874d9db0529642350acde3938bb6a4e71ae9",
+      "bytes": 8436894,
+      "durationSeconds": 33.52,
+      "width": 1080,
+      "height": 1920,
+      "videoCodec": "h264",
+      "audioCodec": "aac"
+    }
+  }
+}

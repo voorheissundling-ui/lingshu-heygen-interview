@@ -56,12 +56,24 @@ export interface StoryboardCatalogEvidence {
   note?: string;
 }
 
+export interface StoryboardVoiceCatalogEvidence {
+  checkedAt?: string;
+  source?: string;
+  voiceId?: string;
+  name?: string;
+  gender?: string;
+  language?: string;
+  reason?: string;
+}
+
 export interface StoryboardPresenter {
   provider: 'heygen';
   ownership: 'public';
   avatarId: string;
   voiceId: string;
   catalogEvidence?: StoryboardCatalogEvidence;
+  previousVoiceId?: string;
+  voiceCatalogEvidence?: StoryboardVoiceCatalogEvidence;
 }
 
 export interface Storyboard {
@@ -378,9 +390,86 @@ export function validateStoryboard(
       }
     }
 
+    let previousVoiceId: string | undefined;
+    if (input.presenter.previousVoiceId !== undefined && input.presenter.previousVoiceId !== null) {
+      const parsedPreviousVoiceId = readOptionalString(
+        input.presenter.previousVoiceId,
+        '$.presenter.previousVoiceId',
+        issues,
+        128,
+      );
+      if (parsedPreviousVoiceId) previousVoiceId = parsedPreviousVoiceId;
+      if (previousVoiceId && !CATALOG_ID.test(previousVoiceId)) {
+        addIssue(issues, '$.presenter.previousVoiceId', 'catalog_id_invalid', 'previousVoiceId 格式不合法');
+      }
+    }
+
+    let voiceCatalogEvidence: StoryboardVoiceCatalogEvidence | undefined;
+    if (input.presenter.voiceCatalogEvidence !== undefined && input.presenter.voiceCatalogEvidence !== null) {
+      if (!isRecord(input.presenter.voiceCatalogEvidence)) {
+        addIssue(issues, '$.presenter.voiceCatalogEvidence', 'voice_catalog_evidence_object_required', 'voiceCatalogEvidence 必须是对象');
+      } else {
+        voiceCatalogEvidence = {};
+        const checkedAt = readOptionalString(
+          input.presenter.voiceCatalogEvidence.checkedAt,
+          '$.presenter.voiceCatalogEvidence.checkedAt',
+          issues,
+          40,
+        );
+        const source = readOptionalString(
+          input.presenter.voiceCatalogEvidence.source,
+          '$.presenter.voiceCatalogEvidence.source',
+          issues,
+          300,
+        );
+        const evidenceVoiceId = readOptionalString(
+          input.presenter.voiceCatalogEvidence.voiceId,
+          '$.presenter.voiceCatalogEvidence.voiceId',
+          issues,
+          128,
+        );
+        const name = readOptionalString(
+          input.presenter.voiceCatalogEvidence.name,
+          '$.presenter.voiceCatalogEvidence.name',
+          issues,
+          120,
+        );
+        const gender = readOptionalString(
+          input.presenter.voiceCatalogEvidence.gender,
+          '$.presenter.voiceCatalogEvidence.gender',
+          issues,
+          40,
+        );
+        const evidenceLanguage = readOptionalString(
+          input.presenter.voiceCatalogEvidence.language,
+          '$.presenter.voiceCatalogEvidence.language',
+          issues,
+          40,
+        );
+        const reason = readOptionalString(
+          input.presenter.voiceCatalogEvidence.reason,
+          '$.presenter.voiceCatalogEvidence.reason',
+          issues,
+          500,
+        );
+        if (evidenceVoiceId && !CATALOG_ID.test(evidenceVoiceId)) {
+          addIssue(issues, '$.presenter.voiceCatalogEvidence.voiceId', 'catalog_id_invalid', 'voiceCatalogEvidence.voiceId 格式不合法');
+        }
+        if (checkedAt) voiceCatalogEvidence.checkedAt = checkedAt;
+        if (source) voiceCatalogEvidence.source = source;
+        if (evidenceVoiceId) voiceCatalogEvidence.voiceId = evidenceVoiceId;
+        if (name) voiceCatalogEvidence.name = name;
+        if (gender) voiceCatalogEvidence.gender = gender;
+        if (evidenceLanguage) voiceCatalogEvidence.language = evidenceLanguage;
+        if (reason) voiceCatalogEvidence.reason = reason;
+      }
+    }
+
     if (issues.length === presenterBefore && provider && ownership && avatarId && voiceId) {
       presenter = {provider: 'heygen', ownership: 'public', avatarId, voiceId};
       if (catalogEvidence) presenter.catalogEvidence = catalogEvidence;
+      if (previousVoiceId) presenter.previousVoiceId = previousVoiceId;
+      if (voiceCatalogEvidence) presenter.voiceCatalogEvidence = voiceCatalogEvidence;
     }
   }
 

@@ -8,12 +8,22 @@
     "provider": "heygen",
     "ownership": "public",
     "avatarId": "ee25a2363ef941a1b5b0f7b1172e57d1",
-    "voiceId": "c5e71f9038a2419d9d43c7132c31fe49",
+    "voiceId": "c30ecab014cb4a8d816d07f6b2b625c8",
     "catalogEvidence": {
       "probeFile": "evidence/heygen-short-probe.json",
       "probeVideoId": "8dc5e75acf48bf27c0f153d9917b319b",
       "checkedAt": "2026-10-23T03:47:24.686Z",
       "note": "avatarId/voiceId were used by the downloaded public-avatar probe. Step 2 re-checks them through the live public catalog before production."
+    },
+    "previousVoiceId": "c5e71f9038a2419d9d43c7132c31fe49",
+    "voiceCatalogEvidence": {
+      "checkedAt": "2026-10-24T06:11:34.634Z",
+      "source": "GET https://api.heygen.com/v2/voices",
+      "voiceId": "c30ecab014cb4a8d816d07f6b2b625c8",
+      "name": "Brodie - Breezy & Genuine",
+      "gender": "male",
+      "language": "English",
+      "reason": "原 voiceId 为 Jennifer（female），与男性公共形象不匹配；改为英文男声并重做全部口播。"
     }
   },
   "shots": [

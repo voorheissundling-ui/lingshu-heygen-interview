@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "step": 5,
   "title": "原任务回写 + 页面工作台",
-  "verifiedAt": "2026-10-23T12:41:17.707Z",
+  "verifiedAt": "2026-10-24T06:22:49.410Z",
   "server": "http://127.0.0.1:4318",
   "task": {
     "taskId": "video",
@@ -10,10 +10,10 @@
     "runId": "run",
     "jobId": "b723a160da693f0",
     "weeklyTaskId": "video",
-    "idempotencyKey": "f68ea88cc3bed2a0",
-    "storyboardSha256": "6d78d775752986ce5c3ea22b0b42cedea0825f80842f67b351406752e8791cf2",
+    "idempotencyKey": "1474f3f7ac560b80",
+    "storyboardSha256": "ce3de043fcb22b36ef495664ad53ba69ce8c52d5bc702023d76e6ff1f51c86a6",
     "avatarId": "ee25a2363ef941a1b5b0f7b1172e57d1",
-    "voiceId": "c5e71f9038a2419d9d43c7132c31fe49"
+    "voiceId": "c30ecab014cb4a8d816d07f6b2b625c8"
   },
   "provider": {
     "source": "local-step4-state",
@@ -21,61 +21,109 @@
       {
         "id": "hook",
         "kind": "presenter",
-        "videoId": "c15b32aecb501970d0f0d0fa3958cf03",
-        "requestId": "interview-step4-hook-62426984-859b-4f2c-aac9-0c4cbc7c4c66",
-        "durationSeconds": 3.21306,
-        "chargedCny": 1.001151
+        "videoId": "9d0519064be63dd8a4056e7cf0cb6646",
+        "requestId": "interview-voicefix-hook-c84b1467453a",
+        "durationSeconds": 3.04,
+        "chargedCny": 0.934408,
+        "videoChargedCny": 0.800921,
+        "ttsChargedCny": 0.133487,
+        "providerStatus": "completed",
+        "phase": "downloaded",
+        "mediaSha256": "a55c5b85f744f6ffe450889a7ec495c5b0e97cd9a9f22be27c665e34a28cc0fd",
+        "mediaBytes": 2177412
       },
       {
         "id": "product-range",
         "kind": "illustration",
         "videoId": null,
-        "requestId": "interview-step4-tts-product-range-d7e91ca9-40fc-43cc-b779-634850f52b49",
-        "durationSeconds": 5.929795918367347,
-        "chargedCny": 0.333717
+        "requestId": "interview-voicefix-product-range-463147d4e605",
+        "durationSeconds": 6.0081632653061225,
+        "chargedCny": 0.133487,
+        "providerStatus": "downloaded",
+        "phase": "downloaded"
       },
       {
         "id": "capabilities",
         "kind": "presenter",
-        "videoId": "9c7ab31c7ef49df5a9a92a6804c73599",
-        "requestId": "interview-step4-capabilities-436bb29b-4e20-4f03-9b34-a78125128f57",
-        "durationSeconds": 4.70204,
-        "chargedCny": 1.334868
+        "videoId": "9b3e92ba5b88fdb7979186f213939c48",
+        "requestId": "interview-voicefix-capabilities-4e73af265400",
+        "durationSeconds": 4.24,
+        "chargedCny": 1.201381,
+        "videoChargedCny": 1.134638,
+        "ttsChargedCny": 0.066743,
+        "providerStatus": "completed",
+        "phase": "downloaded",
+        "mediaSha256": "2b46b8cbbb11f5af4458a8d4098ac15f567507e6ad18a36c1d5e538eba7db06f",
+        "mediaBytes": 3352304
       },
       {
         "id": "lab-process",
         "kind": "illustration",
         "videoId": null,
-        "requestId": "interview-step4-tts-lab-process-07de7ace-310e-4864-bb3e-b59c50018597",
-        "durationSeconds": 5.250612244897959,
-        "chargedCny": 0.333717
+        "requestId": "interview-voicefix-lab-process-ae21bf162c5b",
+        "durationSeconds": 5.459591836734694,
+        "chargedCny": 0.133487,
+        "providerStatus": "downloaded",
+        "phase": "downloaded"
       },
       {
         "id": "factory-quality",
         "kind": "illustration",
         "videoId": null,
-        "requestId": "interview-step4-tts-factory-quality-187ec7f5-f132-471e-9b7c-183f5e998c9f",
-        "durationSeconds": 5.877551020408164,
-        "chargedCny": 0.333717
+        "requestId": "interview-voicefix-factory-quality-a6f065aa9a18",
+        "durationSeconds": 6.060408163265306,
+        "chargedCny": 0.133487,
+        "providerStatus": "downloaded",
+        "phase": "downloaded"
       },
       {
         "id": "cta",
         "kind": "presenter",
-        "videoId": "da9b079f3329488bdb77f31b462bb31e",
-        "requestId": "interview-step4-cta-38b3c815-eb89-4082-99a6-a074ef28f7cd",
-        "durationSeconds": 7.15755,
-        "chargedCny": 2.002303
+        "videoId": "dfc6cab7de73b99afc80db654d497dd4",
+        "requestId": "interview-voicefix-cta-5f22ea8405e5",
+        "durationSeconds": 7.24,
+        "chargedCny": 1.935559,
+        "videoChargedCny": 1.868816,
+        "ttsChargedCny": 0.066743,
+        "providerStatus": "completed",
+        "phase": "downloaded",
+        "mediaSha256": "b8c94e29c2beb9a29e9081e1db06c58728238262f4b4fe09314573c57e72a1d4",
+        "mediaBytes": 5177208
       }
     ],
     "approvedCny": 8,
-    "chargedCny": 5.339473,
-    "paidSubmissions": 6,
-    "note": "供应商阶段复用 Step 4 已付费并落盘的镜头记录；Step 5 不重复提交、不再扣费。"
+    "chargedCny": 4.471809,
+    "paidSubmissions": 9,
+    "note": "本次为 Brodie 男声修订后的复用写回：6 段 TTS 与 3 段人物镜头已重做并落盘，媒体费用合计 4.471809 CNY（TTS 0.667434 + 人物 3.804375），钱包 4.32→3.65 USD；Step 5 复用 Step 4 媒体，不重复提交、不再扣费。",
+    "voiceFix": {
+      "adoptedAt": "2026-10-24T05:50:30.000Z",
+      "voiceId": "c30ecab014cb4a8d816d07f6b2b625c8",
+      "voiceName": "Brodie - Breezy & Genuine",
+      "gender": "male",
+      "language": "English",
+      "supersededVoiceId": "c5e71f9038a2419d9d43c7132c31fe49",
+      "supersededVoiceName": "Jennifer - Smooth & Warm",
+      "ttsRequests": 6,
+      "presenterRegenerations": 3,
+      "ttsChargedCny": 0.667434,
+      "presenterChargedCny": 3.804375,
+      "totalChargedCny": 4.471809,
+      "walletBeforeUsd": 4.32,
+      "walletAfterUsd": 3.65,
+      "chargedUsd": 0.67,
+      "pitchEvidence": {
+        "method": "autocorrelation F0 on final audio",
+        "newMedianHz": 112.7,
+        "oldMedianHz": 169.3
+      },
+      "finalSha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7"
+    }
   },
   "composition": {
     "mode": "recomposed",
-    "bytes": 8995181,
-    "sha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
+    "providerMedia": "step4-local",
+    "bytes": 7701275,
+    "sha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7",
     "probe": {
       "durationSeconds": 33.52,
       "width": 1080,
@@ -85,15 +133,16 @@
       "sampleRate": 44100,
       "decodable": true
     },
-    "manifestSha256": "8675ecd7721ce5328d997b9953e8bd652790301e7f7ca1deedb70855ef36b37d",
+    "manifestSha256": "c58da3badac1867422c74c58e0b8607803a74b047a75116169431d92a608995f",
+    "adoptedManifestSha256": null,
     "fileName": "final.mp4"
   },
   "writeBack": {
-    "artifactId": "socialart_972a87313212207c9f9dc88c",
-    "fileId": "socialfile_0dad21934ca019a3d720deb6",
-    "fileRef": "socialfile:socialfile_0dad21934ca019a3d720deb6",
-    "sha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
-    "bytes": 8995181,
+    "artifactId": "socialart_ae42c3e4f47b90c0dbdbc554",
+    "fileId": "socialfile_107db1207e1f029db1f17503",
+    "fileRef": "socialfile:socialfile_107db1207e1f029db1f17503",
+    "sha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7",
+    "bytes": 7701275,
     "status": "review_required",
     "taskId": "content",
     "runId": "run",
@@ -121,17 +170,17 @@
     },
     "contentStatus": "asset_review",
     "artifact": {
-      "artifactId": "socialart_972a87313212207c9f9dc88c",
+      "artifactId": "socialart_ae42c3e4f47b90c0dbdbc554",
       "status": "review_required",
       "origin": "agent",
-      "resourceRef": "socialfile:socialfile_0dad21934ca019a3d720deb6",
+      "resourceRef": "socialfile:socialfile_107db1207e1f029db1f17503",
       "kind": "short_video"
     },
     "file": {
-      "fileId": "socialfile_0dad21934ca019a3d720deb6",
+      "fileId": "socialfile_107db1207e1f029db1f17503",
       "name": "step5-heygen-multishot.mp4",
-      "bytes": 8995181,
-      "sha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
+      "bytes": 7701275,
+      "sha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7",
       "mimeType": "video/mp4"
     },
     "receipts": [
@@ -140,7 +189,7 @@
         "sceneId": "scene-cta",
         "gate": "G4",
         "status": "review_required",
-        "recordHash": "656ed3e0c342609ef9d509cbda2c113cac8ad72c8045f0ee56b9a3d12a837339",
+        "recordHash": "3af8cb616efbcb1c3c42fe382b7acb67fe7b68f3bf57ee238fedfc901cd4f5ea",
         "checks": [
           {
             "code": "format",
@@ -184,7 +233,7 @@
         "sceneId": "scene-hook",
         "gate": "G4",
         "status": "review_required",
-        "recordHash": "a6f831dd0064fe0730066f03b35db4bde5af2af156c98a73448b8413489a8309",
+        "recordHash": "c8e03fc0e6c4f558b05d31e1c1f36757ac1d58d6125413a6ec11d40b207a8243",
         "checks": [
           {
             "code": "format",
@@ -225,45 +274,68 @@
       }
     ],
     "sceneCache": {
-      "cacheId": "1cfb1795412e464",
-      "parentArtifactId": "socialart_972a87313212207c9f9dc88c",
-      "contentHash": "ba66105df606e38bfa61390562306232c7356d3482794ef51de8e6c740303d55",
+      "cacheId": "cd58b42ac745dc8",
+      "parentArtifactId": "socialart_ae42c3e4f47b90c0dbdbc554",
+      "contentHash": "3397d9ae08fae06e715032a9605efa6e49c82102c48daa6b1a7e32d758c8647b",
       "planHash": "5c67e2199ff65e284c34a160cda7cce57bb29657c41a829467c5fe15912cec1b",
       "mediaRemap": [],
-      "voiceSha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
+      "voiceSha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7",
       "manifestEqualsSourceManifest": true,
-      "recordHash": "65c8d76178070c486a541da39cf24a6660d0fba3dd9973539391312f2dd91ca3"
+      "recordHash": "c4326db2f36e07c5c217770d367a01c7df562e821966c7a6cd9878ccba3f6e07"
     }
   },
   "hashChain": {
-    "fileSha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
-    "artifactMediaSha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
-    "compositionSha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
-    "downloadSha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
-    "downloadBytes": 8995181,
+    "fileSha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7",
+    "artifactMediaSha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7",
+    "compositionSha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7",
+    "downloadSha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7",
+    "downloadBytes": 7701275,
     "allEqual": true
   },
   "download": {
     "httpStatus": 200,
-    "bytes": 8995181,
-    "sha256": "c8fe2f84b25444e048b858dd5274ceb3942f4bd620d6147ee9b7dde03ecf815f",
-    "url": "/api/media?artifactId=socialart_972a87313212207c9f9dc88c&download=1"
+    "bytes": 7701275,
+    "sha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7",
+    "url": "/api/media?artifactId=socialart_ae42c3e4f47b90c0dbdbc554&download=1"
   },
   "repeatedStart": {
     "httpStatus": 200,
     "status": "already_complete",
     "phase": "review_required",
-    "artifactId": "socialart_972a87313212207c9f9dc88c"
+    "artifactId": "socialart_ae42c3e4f47b90c0dbdbc554"
   },
   "page": {
     "html": "/",
-    "screenshot": "evidence/step5-page.png",
-    "bottomScreenshot": "evidence/step5-page-bottom.png",
+    "screenshot": "evidence/step5-page-brodie.png",
+    "bottomScreenshot": "evidence/step5-page-brodie-bottom.png",
     "showsTaskRunJob": true,
     "showsRequestIdAndVideoId": true,
     "showsCost": true,
     "showsPlayerAndDownload": true,
     "neverShowsKey": true
+  },
+  "voiceFix": {
+    "adoptedAt": "2026-10-24T05:50:30.000Z",
+    "voiceId": "c30ecab014cb4a8d816d07f6b2b625c8",
+    "voiceName": "Brodie - Breezy & Genuine",
+    "gender": "male",
+    "language": "English",
+    "supersededVoiceId": "c5e71f9038a2419d9d43c7132c31fe49",
+    "supersededVoiceName": "Jennifer - Smooth & Warm",
+    "ttsRequests": 6,
+    "presenterRegenerations": 3,
+    "ttsChargedCny": 0.667434,
+    "presenterChargedCny": 3.804375,
+    "totalChargedCny": 4.471809,
+    "walletBeforeUsd": 4.32,
+    "walletAfterUsd": 3.65,
+    "chargedUsd": 0.67,
+    "pitchEvidence": {
+      "method": "autocorrelation F0 on final audio",
+      "newMedianHz": 112.7,
+      "oldMedianHz": 169.3
+    },
+    "finalSha256": "632b0a50d8f0f53ba4aba4d0bb2b77f240acf001a3f455f58ca1dfc0ac189ed7"
   },
   "checks": {
     "artifactReviewRequired": true,
@@ -289,7 +361,9 @@
   },
   "allPassed": true,
   "notes": [
-    "Step 5 不重新提交 HeyGen；供应商费用为 Step 4 已记账的 5.339473 CNY（上限 8 CNY，6 次付费）。",
+    "Step 5 不重新提交 HeyGen；当前媒体账本 4.471809 CNY（TTS 0.667434 + 人物镜头 3.804375；上限 8 CNY，9 次付费：6 TTS + 3 人物），钱包 4.32→3.65 USD。",
+    "本次为 Brodie 男声修订：6 段 TTS 与 3 段 1080p 人物镜头重做；旧 Jennifer 女声媒体保留为 *.jennifer 文件及 historicalVoiceFix 记录。",
+    "客观音高对比：新成片中位基频 112.7 Hz，旧女声成片 169.3 Hz（自相关 F0，静音帧已剔除）。",
     "产物状态固定为 review_required，technicalReview/creativeReview 均为 false，等待人工审核。",
     "回写通过原 file/artifact 命令和原周任务消费者完成，未伪造数据库状态。",
     "重复 POST /api/start 返回 already_complete，jobs/artifacts/files 仍各 1 条。",
